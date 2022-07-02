@@ -1,5 +1,5 @@
 ﻿using Chess.Core.Domain;
-using Chess.Core.Domain.Default_const;
+using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Repo.Game;
 using System;

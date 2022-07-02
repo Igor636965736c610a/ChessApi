@@ -9,7 +9,7 @@ namespace ChesApi.Services.Services
 {
     public class Move
     {
-        public void Move(int[,] coordinate, FigureColour figureColour, FigureType figureType, Guid id, Guid userId)
+        public void Move(int x, int y, Guid userId, Guid id)
         {
 
         }
