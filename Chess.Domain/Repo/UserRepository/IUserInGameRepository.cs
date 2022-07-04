@@ -10,6 +10,6 @@ namespace Chess.Core.Repo.UserRepository
     public interface IUserInGameRepository
     {
         void AddUser(User user);
-        User GetUser(Guid id);
+        User GetUserById(Guid id);
     }
 }

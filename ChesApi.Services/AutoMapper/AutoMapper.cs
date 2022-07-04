@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chess.Core.Repo.Game
+namespace ChesApi.Services.AutoMapper
 {
-    public interface ICreateGameRepository
+    public class AutoMapper
     {
-        void CreategGame();
+
     }
 }

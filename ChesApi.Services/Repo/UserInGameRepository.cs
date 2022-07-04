@@ -15,7 +15,7 @@ namespace ChesApi.Services.Repo
         public void AddUser(User user)
             => _users.Add(user);
 
-        public User GetUser(Guid id)
+        public User GetUserById(Guid id)
             => _users.FirstOrDefault(x => x.Id == id);
     }
 }
