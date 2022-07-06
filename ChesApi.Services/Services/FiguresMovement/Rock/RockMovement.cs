@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Services.Services.FiguresMovement.Rock
 {
-    public class RockMovement
+    public class RockMovement : IRockMovement
     {
         private readonly IFigureRepository _figureRepository;
         public RockMovement(IFigureRepository figureRepository)
@@ -19,38 +19,55 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
 
         public void RockUpMovement(int oldX, int x, int y, Figure figure, LiveGame liveGame)
         {
-            for (int i = oldX - 1; i <= x - 1; i++)
+            for (int i = oldX + 1; i <= x - 1; i++)
             {
-                switch (figure.Colour)
+                if (liveGame.OccupiedBlackFieles[i, y] || liveGame.OccupiedWhiteFieles[i,y] )
                 {
-                    case FigureColour.white:
+                    throw new InvalidOperationException();
+                }               
+            }
+            switch (figure.Colour)
+            {
+                case FigureColour.white:
+                    {
+                        if (liveGame.OccupiedWhiteFieles[x, y])
                         {
-                            if (liveGame.OccupiedBlackFieles[i, y] = true)
-                            {
-                                var toDeleteFigure = _figureRepository.GetFigure(liveGame, i, y);
-                                _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                                figure.X = i;
-                            }
-                            break;
+                            throw new InvalidOperationException();
                         }
-                    case FigureColour.black:
+                        if (liveGame.OccupiedBlackFieles[x, y])
                         {
-                            
-                            break;
+                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, x, y);
+                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
-
-                }
+                        figure.X = x;
+                        break;
+                    }
+            
+                case FigureColour.black:
+                    {
+                        if (liveGame.OccupiedBlackFieles[x, y])
+                        {
+                            throw new InvalidOperationException();
+                        }
+                        if (liveGame.OccupiedWhiteFieles[x, y])
+                        {
+                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, x, y);
+                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
+                        }
+                        figure.X = x;
+                        break;
+                    }
             }
         }
-        public static void RockDownMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
+        public void RockDownMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
         {
 
         }
-        public static void RockRightMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
+        public void RockRightMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
         {
 
         }
-        public static void RockLeftMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
+        public void RockLeftMovement(int oldX, int oldY, int x, int y, Figure figure, LiveGame liveGame)
         {
 
         }

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.FiguresMovement.Rock
+namespace ChesApi.Services.Services.FiguresMovement.Rock.@static
 {
     public static class Rock
     {
-        public static RockEnumDirection RockDirection(int oldX, int oldY, int x, int y, Figure figure, User user)
+        public static RockEnumDirection RockDirection(int oldX, int oldY, int x, int y)
         {
             if (oldX < x && oldY == y)
             {

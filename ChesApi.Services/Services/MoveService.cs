@@ -7,20 +7,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Repo.Game;
+using ChesApi.Services.Services.EnumDirection.Rock;
+using ChesApi.Services.Services.FiguresMovement.Rock.@static;
+using ChesApi.Services.Services.FiguresMovement.Rock;
 
 namespace ChesApi.Services.Services
 {
     public class MoveService
     {
         private readonly IUserInGameRepository _userInGameRepository;
-        private readonly IGameRepository _gameRepository;
         private readonly IFigureRepository _figureRepository;
+        private readonly IRockMovement _rockMovement;
         public MoveService
-            (IUserInGameRepository userInGameRepository, IGameRepository GameRepository, IFigureRepository figureRepository)
+            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
+            IRockMovement rockMovement)
         {
             _userInGameRepository = userInGameRepository;
-            _gameRepository = GameRepository;
             _figureRepository = figureRepository;
+            _rockMovement = rockMovement;
         }
 
         public void Move(int x, int y, Guid userId, Guid figureId)
@@ -52,6 +56,11 @@ namespace ChesApi.Services.Services
             {
                 throw new InvalidOperationException();
             }
+            int oldX = figure.X;
+            int oldY = figure.Y;
+            int newX = x - 1;
+            int newY = y - 1;
+
             switch (figure.FigureType)
             {
                 case FigureType.Queen:
@@ -76,6 +85,27 @@ namespace ChesApi.Services.Services
                     }
                 case FigureType.Rock:
                     {
+                        var direction = Rock.RockDirection(oldX, oldY, newX, newY);
+                        switch(direction)
+                        {
+                            case RockEnumDirection.up:
+                                {
+                                    _rockMovement.RockUpMovement(oldX, newX, newY, figure, liveGame);
+                                    break;
+                                }
+                            case RockEnumDirection.down:
+                                {
+                                    break;
+                                }
+                            case RockEnumDirection.left:
+                                {
+                                    break;
+                                }
+                            case RockEnumDirection.right:
+                                {
+                                    break;
+                                }
+                        }
                         break;
                     }
             }
