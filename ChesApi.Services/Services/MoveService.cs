@@ -12,27 +12,22 @@ namespace ChesApi.Services.Services
 {
     public class MoveService
     {
-        private readonly IUserRepository _userRepository;
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IGameRepository _gameRepository;
+        private readonly IFigureRepository _figureRepository;
         public MoveService
-            (IUserRepository userRepository, IUserInGameRepository userInGameRepository,
-            IGameRepository GameRepository)
+            (IUserInGameRepository userInGameRepository, IGameRepository GameRepository, IFigureRepository figureRepository)
         {
-            _userRepository = userRepository;
             _userInGameRepository = userInGameRepository;
             _gameRepository = GameRepository;
+            _figureRepository = figureRepository;
         }
 
         public void Move(int x, int y, Guid userId, Guid figureId)
         {
-            if (x == null || y == null || userId == null || figureId == null)
-            {
-                throw new NullReferenceException();
-            }
             if (x > Board.X || x < 1 || y > Board.Y || y < 1)
             {
-                throw new Exception("X or Y must by bigger than 0 and lower than 9");
+                throw new Exception("X and Y must be bigger than 0 and lower than 9");
             }
             var user = _userInGameRepository.GetUserById(userId);
             if (user is null)
@@ -48,10 +43,14 @@ namespace ChesApi.Services.Services
             {
                 throw new InvalidOperationException();
             }
-            var figure = _gameRepository.GetFigure(liveGame, figureId);
+            var figure = _figureRepository.GetFigure(liveGame, figureId);
             if(figure is null)
             {
                 throw new NullReferenceException();
+            }
+            if (user.FigureColour != liveGame.FigureColour)
+            {
+                throw new InvalidOperationException();
             }
             switch (figure.FigureType)
             {
@@ -80,6 +79,16 @@ namespace ChesApi.Services.Services
                         break;
                     }
             }
+            if (liveGame.FigureColour == FigureColour.white)
+            {
+                liveGame.FigureColour = FigureColour.black;
+                user.FigureColour = FigureColour.black;
+            }
+            else
+            {
+                liveGame.FigureColour = FigureColour.white;
+                user.FigureColour = FigureColour.white;
+            }         
         }
     }
 }

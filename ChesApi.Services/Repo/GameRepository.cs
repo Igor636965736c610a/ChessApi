@@ -22,9 +22,6 @@ namespace ChesApi.Services.Repo
             userHost.LiveGame = liveGame;
         }
 
-        public Figure GetFigure(LiveGame liveGame, Guid figureId)
-            => liveGame.Figures.FirstOrDefault(x => x.Id == figureId);
-
         public LiveGame GetLiveGame(Guid id)
             => _Game.FirstOrDefault(x => x.Id == id);
     }

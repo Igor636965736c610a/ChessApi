@@ -11,6 +11,5 @@ namespace Chess.Core.Repo.Game
     {
         void CreategGame(User userHost);
         LiveGame GetLiveGame(Guid id);
-        Figure GetFigure(LiveGame liveGame, Guid figureId);
     }
 }

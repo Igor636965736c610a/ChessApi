@@ -20,7 +20,7 @@ namespace Chess.Core.Domain
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User User2 { get; set; }
-        public FigureColour FigureColour {get; set; }
+        public FigureColour FigureColour { get; set; } = FigureColour.white;
         public LiveGame(List<Figure> figures, bool[,] attackedWhiteFiels, bool[,] attackedBlackFiels,
             bool[,] occupiedWhiteFieles, bool[,] occupiedBlackFieles, User userHost)
         {
