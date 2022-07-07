@@ -13,7 +13,7 @@ namespace ChesApi.Services.Repo
         public Figure GetFigure(LiveGame liveGame, Guid figureId)
            => liveGame.Figures.FirstOrDefault(x => x.Id == figureId);
 
-        public Figure GetFigure(LiveGame liveGame, int x, int y)
+        public Figure GetFigure(LiveGame liveGame, int y, int x)
             => liveGame.Figures.FirstOrDefault(z => z.X == x && z.Y == y);
  
         public void RemoveFigure(LiveGame liveGame, Figure figure)

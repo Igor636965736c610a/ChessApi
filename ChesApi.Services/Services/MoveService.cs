@@ -29,7 +29,7 @@ namespace ChesApi.Services.Services
 
         public void Move(int x, int y, Guid userId, Guid figureId)
         {
-            if (x > Board.X || x < 1 || y > Board.Y || y < 1)
+            if (x <= Board.X || x > 1 || y <= Board.Y || y > 1)
             {
                 throw new Exception("X and Y must be bigger than 0 and lower than 9");
             }
@@ -60,6 +60,10 @@ namespace ChesApi.Services.Services
             int oldY = figure.Y;
             int newX = x - 1;
             int newY = y - 1;
+            if (oldX == newX && oldY == newY)
+            {
+                throw new InvalidOperationException();
+            }
 
             switch (figure.FigureType)
             {
@@ -90,19 +94,22 @@ namespace ChesApi.Services.Services
                         {
                             case RockEnumDirection.up:
                                 {
-                                    _rockMovement.RockUpMovement(oldX, newX, newY, figure, liveGame);
+                                    _rockMovement.RockUpMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
                             case RockEnumDirection.down:
                                 {
+                                    _rockMovement.RockDownMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
                             case RockEnumDirection.left:
                                 {
+                                    _rockMovement.RockLeftMovement(oldX, newX, newY, figure, liveGame);
                                     break;
                                 }
                             case RockEnumDirection.right:
                                 {
+                                    _rockMovement.RockRightMovement(oldX, newX, newY, figure, liveGame);
                                     break;
                                 }
                         }

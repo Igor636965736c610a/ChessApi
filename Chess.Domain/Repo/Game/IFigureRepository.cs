@@ -10,7 +10,7 @@ namespace Chess.Core.Repo.Game
     public interface IFigureRepository
     {
         public Figure GetFigure(LiveGame liveGame, Guid figureId);
-        public Figure GetFigure(LiveGame liveGame, int x, int y);
+        public Figure GetFigure(LiveGame liveGame, int y, int x);
         public void RemoveFigure(LiveGame liveGame, Figure figure);
     }
 }
