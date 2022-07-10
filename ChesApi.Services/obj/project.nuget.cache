@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "zF1FfnQYj7YU2TPWEVjZ6fqKo1amZmwvqWJWnqYJdxqfVVzxV5cNdPhyPYpUfm8cY9MNtgNjjyEGqVN1f+ZILg==",
+  "dgSpecHash": "sIbhXuJMn4muf9lJBHhAXg+iNptxYPBCekeNvHNEN4LHykeLsJCLeSP+20NdDcYZWiSu78Ixdk3/dreRuW857A==",
   "success": true,
   "projectFilePath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Services.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Igor\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
-    "C:\\Users\\Igor\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\Igor\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\microsoft.data.sqlclient\\2.1.4\\microsoft.data.sqlclient.2.1.4.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\microsoft.data.sqlclient.sni.runtime\\2.1.1\\microsoft.data.sqlclient.sni.runtime.2.1.1.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.6\\microsoft.entityframeworkcore.6.0.6.nupkg.sha512",

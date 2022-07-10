@@ -1,4 +1,5 @@
 ﻿using Chess.Core.Domain;
+using Chess.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace Chess.Core.Repo.Game
     {
         public Figure GetFigure(LiveGame liveGame, Guid figureId);
         public Figure GetFigure(LiveGame liveGame, int y, int x);
+        Figure GetKing(LiveGame liveGmae, FigureColour color);
         public void RemoveFigure(LiveGame liveGame, Figure figure);
     }
 }

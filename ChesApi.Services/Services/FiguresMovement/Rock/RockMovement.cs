@@ -1,4 +1,6 @@
-﻿using Chess.Core.Domain;
+﻿using AutoMapper;
+using ChesApi.Services.Services.AttackedFiels;
+using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Repo.Game;
 using System;
@@ -21,7 +23,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
         {
             for (int i = oldY - 1; i > y; i--)
             {
-                if (liveGame.OccupiedBlackFieles[i, x])
+                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
                 {
                     throw new InvalidOperationException();
                 }               
@@ -30,35 +32,41 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
             {
                 case FigureColour.white:
                     {
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, x);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        if (newAttackedBlackFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedWhiteFiels[oldY, x] = true;
+                            throw new InvalidOperationException();
+                        }
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedWhiteFieles[y, x] = true;
-                        liveGame.OccupiedWhiteFieles[oldY, x] = false;
+                        liveGame.OccupiedWhiteFiels[y, x] = true;
                         break;
                     }
             
                 case FigureColour.black:
                     {
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedBlackFieles[y, x] = true;
-                        liveGame.OccupiedBlackFieles[oldY, x] = false;
+                        liveGame.OccupiedBlackFiels[y, x] = true;
+                        liveGame.OccupiedBlackFiels[oldY, x] = false;
                         break;
                     }
             }
@@ -67,7 +75,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
         {
             for (int i = oldY + 1; i < y; i++)
             {
-                if (liveGame.OccupiedBlackFieles[i, x])
+                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
                 {
                     throw new InvalidOperationException();
                 }
@@ -76,35 +84,35 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
             {
                 case FigureColour.white:
                     {
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedWhiteFieles[y, x] = true;
-                        liveGame.OccupiedWhiteFieles[oldY, x] = false;
+                        liveGame.OccupiedWhiteFiels[y, x] = true;
+                        liveGame.OccupiedWhiteFiels[oldY, x] = false;
                         break;
                     }
 
                 case FigureColour.black:
                     {
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedBlackFieles[y, x] = true;
-                        liveGame.OccupiedBlackFieles[oldY, x] = false;
+                        liveGame.OccupiedBlackFiels[y, x] = true;
+                        liveGame.OccupiedBlackFiels[oldY, x] = false;
                         break;
                     }
             }
@@ -113,7 +121,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
         {
             for (int i = oldX + 1; i < x; i++)
             {
-                if (liveGame.OccupiedBlackFieles[i, y])
+                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
                 {
                     throw new InvalidOperationException();
                 }
@@ -122,35 +130,36 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
             {
                 case FigureColour.white:
                     {
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
+                            //remove attacked fieles
                         }
                         figure.X = x;
-                        liveGame.OccupiedWhiteFieles[y, x] = true;
-                        liveGame.OccupiedWhiteFieles[y, oldX] = false;
+                        liveGame.OccupiedWhiteFiels[y, x] = true;
+                        liveGame.OccupiedWhiteFiels[y, oldX] = false;
                         break;
                     }
 
                 case FigureColour.black:
                     {
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedBlackFieles[y, x] = true;
-                        liveGame.OccupiedBlackFieles[y, oldX] = false;
+                        liveGame.OccupiedBlackFiels[y, x] = true;
+                        liveGame.OccupiedBlackFiels[y, oldX] = false;
                         break;
                     }
             }
@@ -159,7 +168,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
         {
             for (int i = oldX - 1; i > x; i--)
             {
-                if (liveGame.OccupiedBlackFieles[i, y])
+                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
                 {
                     throw new InvalidOperationException();
                 }
@@ -168,35 +177,35 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
             {
                 case FigureColour.white:
                     {
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedWhiteFieles[y, x] = true;
-                        liveGame.OccupiedWhiteFieles[y, oldX] = false;
+                        liveGame.OccupiedWhiteFiels[y, x] = true;
+                        liveGame.OccupiedWhiteFiels[y, oldX] = false;
                         break;
                     }
 
                 case FigureColour.black:
                     {
-                        if (liveGame.OccupiedBlackFieles[y, x])
+                        if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedWhiteFieles[y, x])
+                        if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedBlackFieles[y, x] = true;
-                        liveGame.OccupiedBlackFieles[y, oldX] = false;
+                        liveGame.OccupiedBlackFiels[y, x] = true;
+                        liveGame.OccupiedBlackFiels[y, oldX] = false;
                         break;
                     }
             }

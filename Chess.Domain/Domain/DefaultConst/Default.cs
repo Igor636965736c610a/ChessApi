@@ -9,7 +9,7 @@ namespace Chess.Core.Domain.DefaultConst
 {
     public class Default
     {
-        public static bool[,] DefaultWhiteAttackedFieles { get; set; } = new bool[DefaultConst.Board.X,DefaultConst.Board.Y]
+        public static bool[,] DefaultWhiteAttackedFieles { get; set; } = new bool[Board.Y, Board.X]
         {
             { false, false, false, false, false, false, false, false },
             { false, false, false, false, false, false, false, false },
@@ -20,7 +20,7 @@ namespace Chess.Core.Domain.DefaultConst
             { true, true, true, true, true, true, true, true },
             { false, true, true, true, true, true, true, false },
         };
-        public static bool[,] DefaultBlackAttackedFieles { get; set; } = new bool[DefaultConst.Board.X, DefaultConst.Board.Y]
+        public static bool[,] DefaultBlackAttackedFieles { get; set; } = new bool[Board.Y, Board.X]
         {
             { false, true, true, true, true, true, true, false },
             { true, true, true, true, true, true, true, true },
@@ -31,7 +31,7 @@ namespace Chess.Core.Domain.DefaultConst
             { false, false, false, false, false, false, false, false },
             { false, false, false, false, false, false, false, false },
         };
-        public static bool[,] DefaultWhiteOccupiedFieles { get; set; } = new bool[DefaultConst.Board.X, DefaultConst.Board.Y]
+        public static bool[,] DefaultWhiteOccupiedFieles { get; set; } = new bool[Board.Y, Board.X]
         {
             { false, false, false, false, false, false, false, false },
             { false, false, false, false, false, false, false, false },
@@ -42,7 +42,7 @@ namespace Chess.Core.Domain.DefaultConst
             { true, true, true, true, true, true, true, true },
             { true, true, true, true, true, true, true, true },
         };
-        public static bool[,] DefaultBlackOccupiedFieles { get; set; } = new bool[DefaultConst.Board.X, DefaultConst.Board.Y]
+        public static bool[,] DefaultBlackOccupiedFieles { get; set; } = new bool[Board.Y, Board.X]
         {
             { true, true, true, true, true, true, true, true },
             { true, true, true, true, true, true, true, true },

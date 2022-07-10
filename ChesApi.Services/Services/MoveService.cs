@@ -125,7 +125,7 @@ namespace ChesApi.Services.Services
             {
                 liveGame.FigureColour = FigureColour.white;
                 user.FigureColour = FigureColour.white;
-            }         
+            }
         }
     }
 }

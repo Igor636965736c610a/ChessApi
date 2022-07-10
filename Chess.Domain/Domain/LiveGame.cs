@@ -11,12 +11,14 @@ namespace Chess.Core.Domain
     {
         public List<Figure> Figures = new List<Figure>();
         public bool IsGaming { get; set; } = false;
+        public bool WhiteCheck { get; set; } = false;
+        public bool BlackCheck { get; set; } = false;
         public bool WhiteMat { get; set; } = false;
         public bool BlackMat { get; set; } = false;
-        public bool[,] AttackedWhiteFieles { get; set; }
-        public bool[,] AttackedBlackFieles { get; set; }
-        public bool[,] OccupiedWhiteFieles { get; set; }
-        public bool[,] OccupiedBlackFieles { get; set; }
+        public bool[,] AttackedWhiteFiels { get; set; }
+        public bool[,] AttackedBlackFiels { get; set; }
+        public bool[,] OccupiedWhiteFiels { get; set; }
+        public bool[,] OccupiedBlackFiels { get; set; }
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User User2 { get; set; }
@@ -25,10 +27,10 @@ namespace Chess.Core.Domain
             bool[,] occupiedWhiteFieles, bool[,] occupiedBlackFieles, User userHost)
         {
             Figures = figures;
-            AttackedWhiteFieles = attackedWhiteFiels;
-            AttackedBlackFieles = attackedBlackFiels;
-            OccupiedWhiteFieles = occupiedWhiteFieles;
-            OccupiedBlackFieles = occupiedBlackFieles;
+            AttackedWhiteFiels = attackedWhiteFiels;
+            AttackedBlackFiels = attackedBlackFiels;
+            OccupiedWhiteFiels = occupiedWhiteFieles;
+            OccupiedBlackFiels = occupiedBlackFieles;
             HostUser = userHost;
         }
     }
