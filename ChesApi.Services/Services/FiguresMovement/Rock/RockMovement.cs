@@ -59,6 +59,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, x);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        if (newAttackedWhiteFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedBlackFiels[oldY, x] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -66,7 +73,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedBlackFiels[y, x] = true;
-                        liveGame.OccupiedBlackFiels[oldY, x] = false;
                         break;
                     }
             }
@@ -88,6 +94,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, x);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        if (newAttackedBlackFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedWhiteFiels[oldY, x] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -95,7 +108,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedWhiteFiels[y, x] = true;
-                        liveGame.OccupiedWhiteFiels[oldY, x] = false;
                         break;
                     }
 
@@ -105,6 +117,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, x);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        if (newAttackedWhiteFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedBlackFiels[oldY, x] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -112,7 +131,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedBlackFiels[y, x] = true;
-                        liveGame.OccupiedBlackFiels[oldY, x] = false;
                         break;
                     }
             }
@@ -134,15 +152,20 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, y, oldX);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        if (newAttackedBlackFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedWhiteFiels[y, oldX] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                            //remove attacked fieles
                         }
                         figure.X = x;
                         liveGame.OccupiedWhiteFiels[y, x] = true;
-                        liveGame.OccupiedWhiteFiels[y, oldX] = false;
                         break;
                     }
 
@@ -152,6 +175,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, y, oldX);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        if (newAttackedWhiteFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedBlackFiels[y, oldX] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -159,7 +189,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedBlackFiels[y, x] = true;
-                        liveGame.OccupiedBlackFiels[y, oldX] = false;
                         break;
                     }
             }
@@ -181,6 +210,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, y, oldX);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        if (newAttackedBlackFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedWhiteFiels[y, oldX] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedBlackFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -188,7 +224,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedWhiteFiels[y, x] = true;
-                        liveGame.OccupiedWhiteFiels[y, oldX] = false;
                         break;
                     }
 
@@ -198,6 +233,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, y, oldX);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        if (newAttackedWhiteFiels[king.Y, king.X])
+                        {
+                            liveGame.OccupiedBlackFiels[y, oldX] = true;
+                            throw new InvalidOperationException();
+                        }
                         if (liveGame.OccupiedWhiteFiels[y, x])
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
@@ -205,7 +247,6 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.OccupiedBlackFiels[y, x] = true;
-                        liveGame.OccupiedBlackFiels[y, oldX] = false;
                         break;
                     }
             }

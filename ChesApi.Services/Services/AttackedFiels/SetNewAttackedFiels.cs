@@ -52,5 +52,45 @@ namespace ChesApi.Services.Services.AttackedFiels
             }
             return newAttackedBlackFiels;
         }
+        public static bool[,] SetNewAttackedWhiteFiels(LiveGame liveGame, int oldY, int oldX)
+        {
+            bool[,] ocupiedWhiteFiels = liveGame.OccupiedWhiteFiels;
+            bool[,] ocupiedBlackFiels = liveGame.OccupiedBlackFiels;
+            var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.white);
+            ocupiedBlackFiels[oldY, oldX] = false;
+            bool[,] newAttackedWhiteFiels = new bool[Board.Y, Board.X];
+            foreach (var f in figures)
+            {
+                switch (f.FigureType)
+                {
+                    case FigureType.Queen:
+                        {
+                            break;
+                        }
+                    case FigureType.Pown:
+                        {
+                            break;
+                        }
+                    case FigureType.Bishop:
+                        {
+                            break;
+                        }
+                    case FigureType.Knight:
+                        {
+                            break;
+                        }
+                    case FigureType.Rock:
+                        {
+                            SetRockAttackedFiels.RockAttakedFiels(ocupiedBlackFiels, ocupiedWhiteFiels, newAttackedWhiteFiels, oldY, oldX);
+                            break;
+                        }
+                    case FigureType.King:
+                        {
+                            break;
+                        }
+                }
+            }
+            return newAttackedWhiteFiels;
+        }
     }
 }
