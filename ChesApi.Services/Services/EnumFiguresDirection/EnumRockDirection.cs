@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.EnumDirection.Rock
+namespace ChesApi.Services.Services.EnumDirection
 {
-    public enum RockEnumDirection
+    public enum EnumRockDirection
     {
         up = 0,
         down = 1,

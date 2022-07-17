@@ -1,4 +1,5 @@
 ﻿using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace Chess.Core.Domain.DefaultConst
 {
     public class Default
     {
+        public static FielsStatus[,] DefaultFielsStatus { get; set; } = new FielsStatus[Board.Y, Board.X]
+        {
+            
+        };
+
         public static bool[,] DefaultWhiteAttackedFieles { get; set; } = new bool[Board.Y, Board.X]
         {
             { false, false, false, false, false, false, false, false },

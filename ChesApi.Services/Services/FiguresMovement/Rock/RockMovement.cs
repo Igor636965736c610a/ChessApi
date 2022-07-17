@@ -23,230 +23,93 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
         {
             for (int i = oldY - 1; i > y; i--)
             {
-                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
+                if (liveGame.FielsStatus[i, x].OccupiedBlackFiels || liveGame.FielsStatus[i, x].OccupiedWhiteFiels)
                 {
                     throw new InvalidOperationException();
                 }               
             }
-            switch (figure.Colour)
-            {
-                case FigureColour.white:
-                    {
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, x);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
-                        if (newAttackedBlackFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedWhiteFiels[oldY, x] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedWhiteFiels[y, x] = true;
-                        break;
-                    }
-            
-                case FigureColour.black:
-                    {
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, x);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
-                        if (newAttackedWhiteFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedBlackFiels[oldY, x] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedBlackFiels[y, x] = true;
-                        break;
-                    }
-            }
+            SetNewPositoin(figure, liveGame, x, y, oldY, x);
         }
         public void RockDownMovement(int oldY, int x, int y, Figure figure, LiveGame liveGame)
         {
             for (int i = oldY + 1; i < y; i++)
             {
-                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
+                if (liveGame.FielsStatus[i, x].OccupiedBlackFiels || liveGame.FielsStatus[i, x].OccupiedWhiteFiels)
                 {
                     throw new InvalidOperationException();
                 }
             }
-            switch (figure.Colour)
-            {
-                case FigureColour.white:
-                    {
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, x);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
-                        if (newAttackedBlackFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedWhiteFiels[oldY, x] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedWhiteFiels[y, x] = true;
-                        break;
-                    }
-
-                case FigureColour.black:
-                    {
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, x);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
-                        if (newAttackedWhiteFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedBlackFiels[oldY, x] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedBlackFiels[y, x] = true;
-                        break;
-                    }
-            }
+            SetNewPositoin(figure, liveGame, x, y, oldY, x);
         }
         public void RockRightMovement(int oldX, int x, int y, Figure figure, LiveGame liveGame)
         {
             for (int i = oldX + 1; i < x; i++)
             {
-                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
+                if (liveGame.FielsStatus[i, x].OccupiedBlackFiels || liveGame.FielsStatus[i, x].OccupiedWhiteFiels)
                 {
                     throw new InvalidOperationException();
                 }
             }
-            switch (figure.Colour)
-            {
-                case FigureColour.white:
-                    {
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, y, oldX);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
-                        if (newAttackedBlackFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedWhiteFiels[y, oldX] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedWhiteFiels[y, x] = true;
-                        break;
-                    }
-
-                case FigureColour.black:
-                    {
-                        if (liveGame.OccupiedBlackFiels[y, x])
-                        {
-                            throw new InvalidOperationException();
-                        }
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, y, oldX);
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
-                        if (newAttackedWhiteFiels[king.Y, king.X])
-                        {
-                            liveGame.OccupiedBlackFiels[y, oldX] = true;
-                            throw new InvalidOperationException();
-                        }
-                        if (liveGame.OccupiedWhiteFiels[y, x])
-                        {
-                            var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
-                            _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                        }
-                        figure.X = x;
-                        liveGame.OccupiedBlackFiels[y, x] = true;
-                        break;
-                    }
-            }
+            SetNewPositoin(figure, liveGame, x, y, y, oldX);
         }
         public void RockLeftMovement(int oldX, int x, int y, Figure figure, LiveGame liveGame)
         {
             for (int i = oldX - 1; i > x; i--)
             {
-                if (liveGame.OccupiedBlackFiels[i, x] || liveGame.OccupiedWhiteFiels[i, x])
+                if (liveGame.FielsStatus[i, x].OccupiedBlackFiels || liveGame.FielsStatus[i, x].OccupiedWhiteFiels)
                 {
                     throw new InvalidOperationException();
                 }
             }
+            SetNewPositoin(figure, liveGame, x, y, y, oldX);   
+        }
+
+        private void SetNewPositoin(Figure figure, LiveGame liveGame, int x, int y, int oldY, int oldX)
+        {
             switch (figure.Colour)
             {
                 case FigureColour.white:
                     {
-                        if (liveGame.OccupiedWhiteFiels[y, x])
+                        if (liveGame.FielsStatus[y, x].OccupiedWhiteFiels)
                         {
                             throw new InvalidOperationException();
                         }
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, y, oldX);
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, oldX);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
-                            liveGame.OccupiedWhiteFiels[y, oldX] = true;
+                            liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = true;
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedBlackFiels[y, x])
+                        if (liveGame.FielsStatus[y, x].OccupiedBlackFiels)
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedWhiteFiels[y, x] = true;
+                        liveGame.FielsStatus[y, x].OccupiedWhiteFiels = true;
                         break;
                     }
-
                 case FigureColour.black:
                     {
-                        if (liveGame.OccupiedBlackFiels[y, x])
+                        if (liveGame.FielsStatus[y, x].OccupiedBlackFiels)
                         {
                             throw new InvalidOperationException();
                         }
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, y, oldX);
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, oldX);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {
-                            liveGame.OccupiedBlackFiels[y, oldX] = true;
+                            liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = true;
                             throw new InvalidOperationException();
                         }
-                        if (liveGame.OccupiedWhiteFiels[y, x])
+                        if (liveGame.FielsStatus[y, x].OccupiedWhiteFiels)
                         {
                             var toDeleteFigure = _figureRepository.GetFigure(liveGame, y, x);
                             _figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                         }
                         figure.X = x;
-                        liveGame.OccupiedBlackFiels[y, x] = true;
+                        liveGame.FielsStatus[y, x].OccupiedBlackFiels = true;
                         break;
                     }
             }

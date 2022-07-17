@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ChesApi.Services.Services.AttackedFiels.Figure;
+using Chess.Core.Domain.EnumsAndStructs;
 
 namespace ChesApi.Services.Services.AttackedFiels
 {
@@ -14,12 +15,13 @@ namespace ChesApi.Services.Services.AttackedFiels
     {
         public static bool[,] SetNewAttackedBlackFiels(LiveGame liveGame, int oldY, int oldX)
         {
-            bool[,] ocupiedWhiteFiels = liveGame.OccupiedWhiteFiels;
-            bool[,] ocupiedBlackFiels = liveGame.OccupiedBlackFiels;
+            //bool[,] ocupiedWhiteFiels = liveGame.OccupiedWhiteFiels;
+            //bool[,] ocupiedBlackFiels = liveGame.OccupiedBlackFiels;
+            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
             var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.black);
-            ocupiedWhiteFiels[oldY, oldX] = false;
-            bool[,] newAttackedBlackFiels = new bool[Board.Y, Board.X];
-            foreach(var f in figures)
+            fielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
+            bool[,] newAttackedBlackFiels = new bool[Board.Y,Board.X];
+            foreach (var f in figures)
             {
                 switch(f.FigureType)
                 {
@@ -41,7 +43,7 @@ namespace ChesApi.Services.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            SetRockAttackedFiels.RockAttakedFiels(ocupiedBlackFiels, ocupiedWhiteFiels, newAttackedBlackFiels, oldY, oldX);
+                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedBlackFiels, oldY, oldX);
                             break;
                         }
                     case FigureType.King:
@@ -54,10 +56,11 @@ namespace ChesApi.Services.Services.AttackedFiels
         }
         public static bool[,] SetNewAttackedWhiteFiels(LiveGame liveGame, int oldY, int oldX)
         {
-            bool[,] ocupiedWhiteFiels = liveGame.OccupiedWhiteFiels;
-            bool[,] ocupiedBlackFiels = liveGame.OccupiedBlackFiels;
+            //bool[,] ocupiedWhiteFiels = liveGame.OccupiedWhiteFiels;
+            //bool[,] ocupiedBlackFiels = liveGame.OccupiedBlackFiels;
+            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
             var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.white);
-            ocupiedBlackFiels[oldY, oldX] = false;
+            fielsStatus[oldY, oldX].OccupiedBlackFiels = false;
             bool[,] newAttackedWhiteFiels = new bool[Board.Y, Board.X];
             foreach (var f in figures)
             {
@@ -81,7 +84,7 @@ namespace ChesApi.Services.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            SetRockAttackedFiels.RockAttakedFiels(ocupiedBlackFiels, ocupiedWhiteFiels, newAttackedWhiteFiels, oldY, oldX);
+                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedWhiteFiels, oldY, oldX);
                             break;
                         }
                     case FigureType.King:

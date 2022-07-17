@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Repo.Game;
-using ChesApi.Services.Services.EnumDirection.Rock;
 using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using ChesApi.Services.Services.FiguresMovement.Rock;
+using ChesApi.Services.Services.EnumDirection;
 
 namespace ChesApi.Services.Services
 {
@@ -92,22 +92,22 @@ namespace ChesApi.Services.Services
                         var direction = Rock.RockDirection(oldX, oldY, newX, newY);
                         switch(direction)
                         {
-                            case RockEnumDirection.up:
+                            case EnumRockDirection.up:
                                 {
                                     _rockMovement.RockUpMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case RockEnumDirection.down:
+                            case EnumRockDirection.down:
                                 {
                                     _rockMovement.RockDownMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case RockEnumDirection.left:
+                            case EnumRockDirection.left:
                                 {
                                     _rockMovement.RockLeftMovement(oldX, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case RockEnumDirection.right:
+                            case EnumRockDirection.right:
                                 {
                                     _rockMovement.RockRightMovement(oldX, newX, newY, figure, liveGame);
                                     break;

@@ -1,6 +1,7 @@
 ﻿using Chess.Core.Domain;
 using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
@@ -16,8 +17,7 @@ namespace ChesApi.Services.Repo
 
         public void CreategGame(User userHost)
         {
-            LiveGame liveGame = new LiveGame(Default.Figures, Default.DefaultWhiteAttackedFieles, Default.DefaultBlackAttackedFieles,
-                 Default.DefaultWhiteOccupiedFieles, Default.DefaultBlackOccupiedFieles, userHost);
+            LiveGame liveGame = new LiveGame(new FielsStatus(), userHost);
             _Game.Add(liveGame);
             userHost.LiveGame = liveGame;
         }
