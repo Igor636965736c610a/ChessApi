@@ -74,7 +74,8 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, oldY, oldX);
+                        liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
@@ -88,6 +89,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.FielsStatus[y, x].OccupiedWhiteFiels = true;
+                        for (int i = 0; i < liveGame.FielsStatus.GetLength(0); i++)
+                        {
+                            for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
+                            {
+                                liveGame.FielsStatus[i, y].AttackedBlackFiels = newAttackedBlackFiels[i, z];
+                            }
+                        }
                         break;
                     }
                 case FigureColour.black:
@@ -96,7 +104,8 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             throw new InvalidOperationException();
                         }
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, oldY, oldX);
+                        liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = false;
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {
@@ -110,6 +119,13 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         }
                         figure.X = x;
                         liveGame.FielsStatus[y, x].OccupiedBlackFiels = true;
+                        for (int i = 0; i < liveGame.FielsStatus.GetLength(0); i++)
+                        {
+                            for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
+                            {
+                                liveGame.FielsStatus[i, y].AttackedWhiteFiels = newAttackedWhiteFiels[i, z];
+                            }
+                        }
                         break;
                     }
             }

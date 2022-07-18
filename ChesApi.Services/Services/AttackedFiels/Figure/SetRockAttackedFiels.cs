@@ -10,8 +10,10 @@ namespace ChesApi.Services.Services.AttackedFiels.Figure
 {
     public static class SetRockAttackedFiels
     {
-        public static void RockAttakedFiels(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x)
+        public static void RockAttakedFiels(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, Chess.Core.Domain.Figure figure)
         {
+            int y = figure.Y;
+            int x = figure.X;
             Up(fielsStatus, newAttackedFiels, y, x);
             Down(fielsStatus, newAttackedFiels, y, x);
             Left(fielsStatus, newAttackedFiels, y, x);

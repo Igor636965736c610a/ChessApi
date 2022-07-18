@@ -10,6 +10,7 @@ using Chess.Core.Repo.Game;
 using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using ChesApi.Services.Services.FiguresMovement.Rock;
 using ChesApi.Services.Services.EnumDirection;
+using ChesApi.Services.Services.AttackedFiels;
 
 namespace ChesApi.Services.Services
 {
@@ -112,6 +113,37 @@ namespace ChesApi.Services.Services
                                     _rockMovement.RockRightMovement(oldX, newX, newY, figure, liveGame);
                                     break;
                                 }
+                        }
+                        break;
+                    }
+            }
+            switch(figure.Colour)
+            {
+                case FigureColour.white:
+                    {
+                        SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        if (liveGame.FielsStatus[king.Y, king.X].AttackedWhiteFiels)
+                        {
+                            liveGame.WhiteCheck = true;
+                        }
+                        else
+                        {
+                            liveGame.WhiteCheck = false;
+                        }
+                        break;
+                    }
+                case FigureColour.black:
+                    {
+                        SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame);
+                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        if (liveGame.FielsStatus[king.Y, king.X].AttackedBlackFiels)
+                        {
+                            liveGame.BlackCheck = true;
+                        }
+                        else
+                        {
+                            liveGame.BlackCheck = false;
                         }
                         break;
                     }
