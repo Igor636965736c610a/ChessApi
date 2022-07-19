@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chess.Core.Domain.EnumsAndStructs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,19 @@ namespace ChesApi.Services.Services.CheckChechmate
 {
     public static class CoveringMoveFigures
     {
-        public static bool RockUp()
+        public static bool RockUp(int oldX, int oldY, int x, int y, FielsStatus[,] fielsStatus)
+        {
+
+        }
+        public static bool RockDown(int oldX, int oldY, int x, int y, FielsStatus[,] fielsStatus)
+        {
+
+        }
+        public static bool RockLeft(int oldX, int oldY, int x, int y, FielsStatus[,] fielsStatus)
+        {
+
+        }
+        public static bool RockRight(int oldX, int oldY, int x, int y, FielsStatus[,] fielsStatus)
         {
 
         }

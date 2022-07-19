@@ -166,6 +166,8 @@ namespace ChesApi.Services.Services
         private bool CheckCheckmate(LiveGame liveGame, FigureColour figureColor, Figure king)
         {
             //sprawdzenie legalności ruchow krola
+
+
             var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, figureColor);
             if(attackingFigures.Count() > 1)
             {
@@ -177,6 +179,7 @@ namespace ChesApi.Services.Services
             }
             var color = king.Colour;
             var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, color);
+            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
             foreach (var figures in attackingFigures)
             {
                 int x = figures.X;

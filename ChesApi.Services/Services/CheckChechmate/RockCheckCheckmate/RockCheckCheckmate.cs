@@ -2,6 +2,7 @@
 using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace ChesApi.Services.Services.CheckChechmate.RockCheckCheckmate
 {
     public static class RockCheckCheckmate
     {
-        public static bool Check(int x, int y, IEnumerable<Figure> defendingFigures)
+        public static bool Check(int x, int y, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus)
         {
             foreach (var figure in defendingFigures)
             {
@@ -51,6 +52,7 @@ namespace ChesApi.Services.Services.CheckChechmate.RockCheckCheckmate
                             {
                                 case EnumRockDirection.up:
                                     {
+                                        //CoveringMoveFigures.Rock
                                         break;
                                     }
                                 case EnumRockDirection.down:
