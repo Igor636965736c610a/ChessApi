@@ -24,5 +24,10 @@ namespace ChesApi.Services.Repo
         {
             liveGame.Figures.Remove(figure);
         }
+        public IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColour figureColor)
+            => liveGame.Figures.Where(x => x.IsAttacking == true && x.Colour == figureColor);
+
+        public IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColour figureColor)
+            => liveGame.Figures.Where(x => x.Colour == figureColor);
     }
 }

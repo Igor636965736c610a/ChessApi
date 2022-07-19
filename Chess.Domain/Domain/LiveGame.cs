@@ -13,10 +13,6 @@ namespace Chess.Core.Domain
     {
         public List<Figure> Figures = new List<Figure>();
         public bool IsGaming { get; set; } = false;
-        public bool WhiteCheck { get; set; } = false;
-        public bool BlackCheck { get; set; } = false;
-        public bool WhiteMat { get; set; } = false;
-        public bool BlackMat { get; set; } = false;
         public FielsStatus[,] FielsStatus { get; set; }
 
         //public bool[,] AttackedWhiteFiels { get; set; }

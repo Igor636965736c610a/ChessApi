@@ -12,6 +12,7 @@ namespace Chess.Core.Domain
         public Guid Id { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public bool IsAttacking { get; set; } = false;
         public bool IsDeleted { get; set; } = false;
         public FigureType FigureType { get; set; }
         public Value Value { get; set; }

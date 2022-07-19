@@ -75,7 +75,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame);
+                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, null);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
@@ -93,7 +93,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
                             {
-                                liveGame.FielsStatus[i, y].AttackedBlackFiels = newAttackedBlackFiels[i, z];
+                                liveGame.FielsStatus[i, z].AttackedBlackFiels = newAttackedBlackFiels[i, z];
                             }
                         }
                         break;
@@ -105,7 +105,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = false;
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame);
+                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, null);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {
@@ -123,7 +123,7 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock
                         {
                             for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
                             {
-                                liveGame.FielsStatus[i, y].AttackedWhiteFiels = newAttackedWhiteFiels[i, z];
+                                liveGame.FielsStatus[i, z].AttackedWhiteFiels = newAttackedWhiteFiels[i, z];
                             }
                         }
                         break;

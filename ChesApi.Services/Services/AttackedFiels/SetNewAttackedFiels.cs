@@ -13,7 +13,7 @@ namespace ChesApi.Services.Services.AttackedFiels
 {
     public static class SetNewAttackedFiels
     {
-        public static bool[,] SetNewAttackedBlackFiels(LiveGame liveGame)
+        public static bool[,] SetNewAttackedBlackFiels(LiveGame liveGame, Chess.Core.Domain.Figure king)
         {
             FielsStatus[,] fielsStatus = liveGame.FielsStatus;
             var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.black);
@@ -40,7 +40,7 @@ namespace ChesApi.Services.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedBlackFiels, f);
+                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedBlackFiels, f, king);
                             break;
                         }
                     case FigureType.King:
@@ -51,7 +51,7 @@ namespace ChesApi.Services.Services.AttackedFiels
             }
             return newAttackedBlackFiels;
         }
-        public static bool[,] SetNewAttackedWhiteFiels(LiveGame liveGame)
+        public static bool[,] SetNewAttackedWhiteFiels(LiveGame liveGame, Chess.Core.Domain.Figure king)
         {
             FielsStatus[,] fielsStatus = liveGame.FielsStatus;
             var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.white);
@@ -78,7 +78,7 @@ namespace ChesApi.Services.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedWhiteFiels, f);
+                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedWhiteFiels, f, king);
                             break;
                         }
                     case FigureType.King:

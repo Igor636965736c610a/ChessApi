@@ -11,6 +11,9 @@ using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using ChesApi.Services.Services.FiguresMovement.Rock;
 using ChesApi.Services.Services.EnumDirection;
 using ChesApi.Services.Services.AttackedFiels;
+using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain;
+using System.Collections;
 
 namespace ChesApi.Services.Services
 {
@@ -28,8 +31,9 @@ namespace ChesApi.Services.Services
             _rockMovement = rockMovement;
         }
 
-        public void Move(int x, int y, Guid userId, Guid figureId)
+        public GameStatus Move(int x, int y, Guid userId, Guid figureId)
         {
+            GameStatus gameStatus = GameStatus.IsGaming;
             if (x <= Board.X || x > 1 || y <= Board.Y || y > 1)
             {
                 throw new Exception("X and Y must be bigger than 0 and lower than 9");
@@ -121,29 +125,29 @@ namespace ChesApi.Services.Services
             {
                 case FigureColour.white:
                     {
-                        SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
+                        SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, king);
                         if (liveGame.FielsStatus[king.Y, king.X].AttackedWhiteFiels)
                         {
-                            liveGame.WhiteCheck = true;
+
                         }
                         else
                         {
-                            liveGame.WhiteCheck = false;
+
                         }
                         break;
                     }
                 case FigureColour.black:
                     {
-                        SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
+                        SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, king);
                         if (liveGame.FielsStatus[king.Y, king.X].AttackedBlackFiels)
                         {
-                            liveGame.BlackCheck = true;
+
                         }
                         else
                         {
-                            liveGame.BlackCheck = false;
+
                         }
                         break;
                     }
@@ -157,6 +161,79 @@ namespace ChesApi.Services.Services
             {
                 liveGame.FigureColour = FigureColour.white;
                 user.FigureColour = FigureColour.white;
+            }
+        }
+        private bool CheckCheckmate(LiveGame liveGame, FigureColour figureColor, Figure king)
+        {
+            //sprawdzenie legalności ruchow krola
+            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, figureColor);
+            if(attackingFigures.Count() > 1)
+            {
+                if(attackingFigures.FirstOrDefault(x => x.FigureType == FigureType.Knight) is not null)
+                {
+                    return true;
+                }
+
+            }
+            var color = king.Colour;
+            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, color);
+            foreach (var figures in attackingFigures)
+            {
+                int x = figures.X;
+                int y = figures.Y;
+                int xKing = king.X;
+                int yKing = king.Y;
+                switch (figures.FigureType)
+                {
+                    case FigureType.Queen:
+                        {
+                            break;
+                        }
+                    case FigureType.Knight:
+                        {
+                            break;
+                        }
+                    case FigureType.Pown:
+                        {
+                            break;
+                        }
+                    case FigureType.King:
+                        {
+                            break;
+                        }
+                    case FigureType.Bishop:
+                        {
+                            break;
+                        }
+                    case FigureType.Rock:
+                        {
+                            var direction = Rock.RockDirection(x, y, xKing, yKing);
+                            switch (direction)
+                            {
+                                case EnumRockDirection.up:
+                                    {
+
+                                        break;
+                                    }
+                                case EnumRockDirection.down:
+                                    {
+
+                                        break;
+                                    }
+                                case EnumRockDirection.left:
+                                    {
+
+                                        break;
+                                    }
+                                case EnumRockDirection.right:
+                                    {
+
+                                        break;
+                                    }
+                            }
+                            break;
+                        }
+                }
             }
         }
     }
