@@ -17,7 +17,7 @@ namespace ChesApi.Services.Repo
 
         public void CreategGame(User userHost)
         {
-            LiveGame liveGame = new LiveGame(new FielsStatus(), userHost);
+            LiveGame liveGame = new LiveGame(new FielsStatus(), userHost); // toDo later
             _Game.Add(liveGame);
             userHost.LiveGame = liveGame;
         }
