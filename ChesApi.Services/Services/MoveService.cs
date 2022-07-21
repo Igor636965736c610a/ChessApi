@@ -209,7 +209,7 @@ namespace ChesApi.Services.Services
                 {
                     return true;
                 }
-                attackingFigures.OrderBy(x => x.X + x.Y);
+                attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y));
                 // sprawdzenie najbliższej atakujacej figury w lini ataku
             }
             var color = king.Colour;
