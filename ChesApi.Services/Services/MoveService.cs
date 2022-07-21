@@ -209,68 +209,63 @@ namespace ChesApi.Services.Services
                 {
                     return true;
                 }
+                attackingFigures.OrderBy(x => x.X + x.Y);
                 // sprawdzenie najbliższej atakujacej figury w lini ataku
             }
             var color = king.Colour;
             var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, color);
             FielsStatus[,] fielsStatus = liveGame.FielsStatus;
-            foreach (var figures in attackingFigures)
+            var figures = attackingFigures.First();
+            switch (figures.FigureType)
             {
-                int x = figures.X;
-                int y = figures.Y;
-                int xKing = king.X;
-                int yKing = king.Y;
-                switch (figures.FigureType)
-                {
-                    case FigureType.Queen:
+                case FigureType.Queen:
+                    {
+                        break;
+                    }
+                case FigureType.Knight:
+                    {
+                        break;
+                    }
+                case FigureType.Pown:
+                    {
+                        break;
+                    }
+                case FigureType.King:
+                    {
+                        break;
+                    }
+                case FigureType.Bishop:
+                    {
+                        break;
+                    }
+                case FigureType.Rock:
+                    {
+                        var direction = Rock.RockDirection(king.X, king.Y, figures.X, figures.Y);
+                        switch (direction)
                         {
-                            break;
-                        }
-                    case FigureType.Knight:
-                        {
-                            break;
-                        }
-                    case FigureType.Pown:
-                        {
-                            break;
-                        }
-                    case FigureType.King:
-                        {
-                            break;
-                        }
-                    case FigureType.Bishop:
-                        {
-                            break;
-                        }
-                    case FigureType.Rock:
-                        {
-                            var direction = Rock.RockDirection(xKing, yKing, x, y);
-                            switch (direction)
-                            {
-                                case EnumDirection.Up:
-                                    {
-                                        CheckCheckmateFigures.RockUp();
-                                        break;
-                                    }
-                                case EnumDirection.Down:
-                                    {
+                            case EnumDirection.Up:
+                                {
+                                    CheckCheckmateFigures.RockUp();
+                                    break;
+                                }
+                            case EnumDirection.Down:
+                                {
 
-                                        break;
-                                    }
-                                case EnumDirection.Left:
-                                    {
+                                    break;
+                                }
+                            case EnumDirection.Left:
+                                {
 
-                                        break;
-                                    }
-                                case EnumDirection.Right:
-                                    {
+                                    break;
+                                }
+                            case EnumDirection.Right:
+                                {
 
-                                        break;
-                                    }
-                            }
-                            break;
+                                    break;
+                                }
                         }
-                }
+                        break;
+                    }
             }
         }
     }
