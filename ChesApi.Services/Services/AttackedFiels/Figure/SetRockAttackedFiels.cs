@@ -76,7 +76,7 @@ namespace ChesApi.Services.Services.AttackedFiels.Figure
         {
             if (king is not null)
             {
-                if (king.X == x && king.Y == y)
+                if (king.X == x && king.Y == y && figure.Colour != king.Colour)
                 {
                     figure.IsAttacking = true;
                 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.CheckChechmate
+namespace ChesApi.Services.Services.CheckCheckmateFolder
 {
     public static class CoveringMoveFigures
     {

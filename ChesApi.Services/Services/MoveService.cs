@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using Chess.Core.Repo.Game;
 using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using ChesApi.Services.Services.FiguresMovement.Rock;
-using ChesApi.Services.Services.EnumDirection;
 using ChesApi.Services.Services.AttackedFiels;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain;
 using System.Collections;
+using ChesApi.Services.Services.CheckCheckmateFolder;
+using ChesApi.Services.Services.EnumFiguresDirection;
 
 namespace ChesApi.Services.Services
 {
@@ -31,7 +32,7 @@ namespace ChesApi.Services.Services
             _rockMovement = rockMovement;
         }
 
-        public GameStatus Move(int x, int y, Guid userId, Guid figureId)
+        public GameStatus Move(int x, int y, Guid userId, Guid figureId)  //userId from JWT
         {
             GameStatus gameStatus = GameStatus.IsGaming;
             if (x <= Board.X || x > 1 || y <= Board.Y || y > 1)
@@ -97,22 +98,22 @@ namespace ChesApi.Services.Services
                         var direction = Rock.RockDirection(oldX, oldY, newX, newY);
                         switch(direction)
                         {
-                            case EnumRockDirection.up:
+                            case EnumDirection.Up:
                                 {
                                     _rockMovement.RockUpMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case EnumRockDirection.down:
+                            case EnumDirection.Down:
                                 {
                                     _rockMovement.RockDownMovement(oldY, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case EnumRockDirection.left:
+                            case EnumDirection.Left:
                                 {
                                     _rockMovement.RockLeftMovement(oldX, newX, newY, figure, liveGame);
                                     break;
                                 }
-                            case EnumRockDirection.right:
+                            case EnumDirection.Right:
                                 {
                                     _rockMovement.RockRightMovement(oldX, newX, newY, figure, liveGame);
                                     break;
@@ -171,11 +172,44 @@ namespace ChesApi.Services.Services
             var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, figureColor);
             if(attackingFigures.Count() > 1)
             {
-                if(attackingFigures.FirstOrDefault(x => x.FigureType == FigureType.Knight) is not null)
+                if(attackingFigures.Any(x => x.FigureType == FigureType.Knight))
                 {
                     return true;
                 }
-
+                if(attackingFigures.Any(x => x.FigureType == FigureType.Rock) && attackingFigures
+                    .Any(x => x.FigureType == FigureType.Bishop))
+                {
+                    return true;
+                }
+                List<EnumDirection> attackDirections = new();
+                foreach(var f in attackingFigures)
+                {
+                    switch (f.FigureType)
+                    {
+                        case FigureType.Queen:
+                            {
+                                break;
+                            }
+                        case FigureType.Pown:
+                            {
+                                break;
+                            }
+                        case FigureType.Bishop:
+                            {
+                                break;
+                            }
+                        case FigureType.Rock:
+                            {
+                                attackDirections.Add(Rock.RockDirection(f.X, f.Y, king.X, king.Y));
+                                break;
+                            }
+                    }
+                }
+                if(!attackDirections.All(x => x == attackDirections.First()))
+                {
+                    return true;
+                }
+                // sprawdzenie najbliższej atakujacej figury w lini ataku
             }
             var color = king.Colour;
             var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, color);
@@ -210,25 +244,25 @@ namespace ChesApi.Services.Services
                         }
                     case FigureType.Rock:
                         {
-                            var direction = Rock.RockDirection(x, y, xKing, yKing);
+                            var direction = Rock.RockDirection(xKing, yKing, x, y);
                             switch (direction)
                             {
-                                case EnumRockDirection.up:
+                                case EnumDirection.Up:
+                                    {
+                                        CheckCheckmateFigures.RockUp();
+                                        break;
+                                    }
+                                case EnumDirection.Down:
                                     {
 
                                         break;
                                     }
-                                case EnumRockDirection.down:
+                                case EnumDirection.Left:
                                     {
 
                                         break;
                                     }
-                                case EnumRockDirection.left:
-                                    {
-
-                                        break;
-                                    }
-                                case EnumRockDirection.right:
+                                case EnumDirection.Right:
                                     {
 
                                         break;

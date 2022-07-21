@@ -1,4 +1,4 @@
-﻿using ChesApi.Services.Services.EnumDirection;
+﻿using ChesApi.Services.Services.EnumFiguresDirection;
 using ChesApi.Services.Services.FiguresMovement.Rock.@static;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.CheckChechmate.RockCheckCheckmate
+namespace ChesApi.Services.Services.CheckCheckmateFolder.FiguresCheckCheckmate
 {
     public static class RockCheckCheckmate
     {
@@ -50,20 +50,20 @@ namespace ChesApi.Services.Services.CheckChechmate.RockCheckCheckmate
                             var direction = Rock.RockDirection(figureX, figureY, x, y);
                             switch(direction)
                             {
-                                case EnumRockDirection.up:
+                                case EnumDirection.Up:
                                     {
-                                        //CoveringMoveFigures.Rock
+                                        CoveringMoveFigures.RockUp();
                                         break;
                                     }
-                                case EnumRockDirection.down:
-                                    {
-                                        break;
-                                    }
-                                case EnumRockDirection.left:
+                                case EnumDirection.Down:
                                     {
                                         break;
                                     }
-                                case EnumRockDirection.right:
+                                case EnumDirection.Left:
+                                    {
+                                        break;
+                                    }
+                                case EnumDirection.Right:
                                     {
                                         break;
                                     }

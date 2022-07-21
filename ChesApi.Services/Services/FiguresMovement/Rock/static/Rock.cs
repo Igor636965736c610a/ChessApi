@@ -1,4 +1,4 @@
-﻿using ChesApi.Services.Services.EnumDirection;
+﻿using ChesApi.Services.Services.EnumFiguresDirection;
 using Chess.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -10,23 +10,23 @@ namespace ChesApi.Services.Services.FiguresMovement.Rock.@static
 {
     public static class Rock
     {
-        public static EnumRockDirection RockDirection(int oldX, int oldY, int x, int y)
+        public static EnumDirection RockDirection(int oldX, int oldY, int x, int y)
         {
             if (oldX < x && oldY == y)
             {
-                return EnumRockDirection.down;
+                return EnumDirection.Down;
             }
             if (oldX > x && oldY == y)
             {
-                return EnumRockDirection.up;
+                return EnumDirection.Up;
             }
             if (oldY < y && oldX == x)
             {
-                return EnumRockDirection.right;
+                return EnumDirection.Right;
             }
             if (oldY > y && oldX == x)
             {
-                return EnumRockDirection.left;
+                return EnumDirection.Left;
             }
             else
             {

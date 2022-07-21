@@ -25,8 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\CheckChechmate\BischopCheckCheckmate\" />
-    <Folder Include="Services\CheckChechmate\KnightCheckCheckmate\" />
+    <Folder Include="Services\CheckCheckmateFolder\BischopCheckCheckmate\" />
+    <Folder Include="Services\CheckCheckmateFolder\KnightCheckCheckmate\" />
   </ItemGroup>
 
 </Project>

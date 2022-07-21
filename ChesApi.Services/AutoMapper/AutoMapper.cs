@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ChesApi.Services.PrivateDto;
 using Chess.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ namespace ChesApi.Services.AutoMapper
         public static IMapper Initialize()
             => new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<LiveGame, PrivateLiveGameDto>();
+                
             })
             .CreateMapper();
     }
