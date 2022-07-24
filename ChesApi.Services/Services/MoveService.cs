@@ -15,6 +15,7 @@ using Chess.Core.Domain;
 using System.Collections;
 using ChesApi.Services.Services.CheckCheckmateFolder;
 using ChesApi.Services.Services.EnumFiguresDirection;
+using ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.Core;
 
 namespace ChesApi.Services.Services
 {
@@ -23,13 +24,15 @@ namespace ChesApi.Services.Services
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
         private readonly IRockMovement _rockMovement;
+        private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
         public MoveService
             (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
-            IRockMovement rockMovement)
+            IRockMovement rockMovement, FigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
             _rockMovement = rockMovement;
+            _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
         }
 
         public GameStatus Move(int x, int y, Guid userId, Guid figureId)  //userId from JWT
@@ -70,6 +73,9 @@ namespace ChesApi.Services.Services
             {
                 throw new InvalidOperationException();
             }
+
+            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure);
+            figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY);
 
             switch (figure.FigureType)
             {
