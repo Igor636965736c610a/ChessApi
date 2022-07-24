@@ -15,7 +15,7 @@ using Chess.Core.Domain;
 using System.Collections;
 using ChesApi.Services.Services.CheckCheckmateFolder;
 using ChesApi.Services.Services.EnumFiguresDirection;
-using ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.Core;
+using ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 
 namespace ChesApi.Services.Services
 {
