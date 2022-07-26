@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sIbhXuJMn4muf9lJBHhAXg+iNptxYPBCekeNvHNEN4LHykeLsJCLeSP+20NdDcYZWiSu78Ixdk3/dreRuW857A==",
+  "dgSpecHash": "b9ML4CWgFSDuBUs1zW4KH6Tb8kbKVZisQ9FlAzX5+NcQNvT/dintXNbp7XZn2q6m583PVUDlugFWVP3/Gopmzg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Services.csproj",
+  "projectFilePath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Igor\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",

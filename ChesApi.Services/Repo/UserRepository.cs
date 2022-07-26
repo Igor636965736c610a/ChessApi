@@ -1,4 +1,4 @@
-﻿using ChesApi.Services.MyContext;
+﻿using ChesApi.Infrastructure.MyContext;
 using Chess.Core.Domain;
 using Chess.Core.Repo.UserRepository;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Repo
+namespace ChesApi.Infrastructure.Repo
 {
     public class UserRepository : IUserRepository
     {

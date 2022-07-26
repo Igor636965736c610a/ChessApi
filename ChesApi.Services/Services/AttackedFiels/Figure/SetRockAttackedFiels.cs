@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.AttackedFiels.Figure
+namespace ChesApi.Infrastructure.Services.AttackedFiels.Figure
 {
     public static class SetRockAttackedFiels
     {

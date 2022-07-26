@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services
+namespace ChesApi.Infrastructure.Services
 {
     public class GameService
     {

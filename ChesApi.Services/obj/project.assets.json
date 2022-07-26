@@ -1915,9 +1915,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Services.csproj",
-      "projectName": "ChesApi.Services",
-      "projectPath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Services.csproj",
+      "projectUniqueName": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Infrastructure.csproj",
+      "projectName": "ChesApi.Infrastructure",
+      "projectPath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\ChesApi.Infrastructure.csproj",
       "packagesPath": "C:\\Users\\Igor\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Igor\\ChessApi\\ChessApi\\ChesApi.Services\\obj\\",
       "projectStyle": "PackageReference",

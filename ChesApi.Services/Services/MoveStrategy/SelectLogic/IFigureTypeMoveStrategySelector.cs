@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic
+namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic
 {
     public interface IFigureTypeMoveStrategySelector
     {

@@ -1,4 +1,4 @@
-﻿using ChesApi.Services.Services.CheckCheckmateFolder.FiguresCheckCheckmate;
+﻿using ChesApi.Infrastructure.Services.CheckCheckmateFolder.FiguresCheckCheckmate;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.CheckCheckmateFolder
+namespace ChesApi.Infrastructure.Services.CheckCheckmateFolder
 {
     public static class CheckCheckmateFigures
     {

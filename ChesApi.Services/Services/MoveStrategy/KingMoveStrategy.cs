@@ -1,5 +1,5 @@
-﻿using ChesApi.Services.Services.EnumFiguresDirection;
-using ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
+﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
+using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.MoveStrategy
+namespace ChesApi.Infrastructure.Services.MoveStrategy
 {
     public class KingMoveStrategy : IFigureTypeMoveStrategy
     {

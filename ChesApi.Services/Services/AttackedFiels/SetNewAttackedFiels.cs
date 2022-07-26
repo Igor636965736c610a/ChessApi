@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Domain.EnumsAndStructs;
-using ChesApi.Services.Services.AttackedFiels.Figure;
+using ChesApi.Infrastructure.Services.AttackedFiels.Figure;
 
-namespace ChesApi.Services.Services.AttackedFiels
+namespace ChesApi.Infrastructure.Services.AttackedFiels
 {
     public static class SetNewAttackedFiels
     {

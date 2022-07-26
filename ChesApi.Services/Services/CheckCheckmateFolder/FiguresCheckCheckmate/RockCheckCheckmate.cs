@@ -1,5 +1,5 @@
-﻿using ChesApi.Services.Services.EnumFiguresDirection;
-using ChesApi.Services.Services.FiguresMovement.Rock.@static;
+﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
+using ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.CheckCheckmateFolder.FiguresCheckCheckmate
+namespace ChesApi.Infrastructure.Services.CheckCheckmateFolder.FiguresCheckCheckmate
 {
     public static class RockCheckCheckmate
     {

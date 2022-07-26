@@ -5,7 +5,7 @@ VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chess.Core", "Chess.Domain\Chess.Core.csproj", "{AABCC9CB-51C0-4282-BCFE-09C6D13A8964}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChesApi.Services", "ChesApi.Services\ChesApi.Services.csproj", "{6EC1617E-9B63-4395-A011-28865FE71019}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChesApi.Infrastructure", "ChesApi.Services\ChesApi.Infrastructure.csproj", "{6EC1617E-9B63-4395-A011-28865FE71019}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

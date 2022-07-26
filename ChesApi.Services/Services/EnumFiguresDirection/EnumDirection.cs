@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.EnumFiguresDirection
+namespace ChesApi.Infrastructure.Services.EnumFiguresDirection
 {
     public enum EnumDirection
     {

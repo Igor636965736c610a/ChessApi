@@ -1,4 +1,4 @@
-﻿using ChesApi.Services.Services.EnumFiguresDirection;
+﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
 using Chess.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.FiguresMovement.Rock.@static
+namespace ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static
 {
     public static class Rock
     {

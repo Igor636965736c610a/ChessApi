@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.FiguresMovement.Rock
+namespace ChesApi.Infrastructure.Services.FiguresMovement.Rock
 {
     public interface IRockMovement
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.AutoMapper
+namespace ChesApi.Infrastructure.AutoMapper
 {
     public static class AutoMapperConfig
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ChesApi.Services.Services.AttackedFiels;
+using ChesApi.Infrastructure.Services.AttackedFiels;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Repo.Game;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Services.FiguresMovement.Rock
+namespace ChesApi.Infrastructure.Services.FiguresMovement.Rock
 {
     public class RockMovement : IRockMovement
     {

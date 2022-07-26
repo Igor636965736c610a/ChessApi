@@ -7,17 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Repo.Game;
-using ChesApi.Services.Services.FiguresMovement.Rock.@static;
-using ChesApi.Services.Services.FiguresMovement.Rock;
-using ChesApi.Services.Services.AttackedFiels;
+using ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static;
+using ChesApi.Infrastructure.Services.FiguresMovement.Rock;
+using ChesApi.Infrastructure.Services.AttackedFiels;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain;
 using System.Collections;
-using ChesApi.Services.Services.CheckCheckmateFolder;
-using ChesApi.Services.Services.EnumFiguresDirection;
-using ChesApi.Services.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
+using ChesApi.Infrastructure.Services.CheckCheckmateFolder;
+using ChesApi.Infrastructure.Services.EnumFiguresDirection;
+using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 
-namespace ChesApi.Services.Services
+namespace ChesApi.Infrastructure.Services
 {
     public class MoveService
     {

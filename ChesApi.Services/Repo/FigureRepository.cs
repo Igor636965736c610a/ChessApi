@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChesApi.Services.Repo
+namespace ChesApi.Infrastructure.Repo
 {
     public class FigureRepository : IFigureRepository
     {
