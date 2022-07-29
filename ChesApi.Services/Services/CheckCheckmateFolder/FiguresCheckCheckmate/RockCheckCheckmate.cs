@@ -1,5 +1,4 @@
 ﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;

@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Repo.Game;
-using ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static;
-using ChesApi.Infrastructure.Services.FiguresMovement.Rock;
 using ChesApi.Infrastructure.Services.AttackedFiels;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain;
@@ -23,16 +21,16 @@ namespace ChesApi.Infrastructure.Services
     {
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
-        private readonly IRockMovement _rockMovement;
         private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
+        private readonly ISetNewAttackFieles _setNewAttackFieles;
         public MoveService
             (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
-            IRockMovement rockMovement, FigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+            FigureTypeMoveStrategySelector figureTypeMoveStrategySelector, ISetNewAttackFieles setNewAttackFieles)
         {
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
-            _rockMovement = rockMovement;
             _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
+            _setNewAttackFieles = setNewAttackFieles;
         }
 
         public GameStatus Move(int x, int y, Guid userId, Guid figureId)  //userId from JWT
@@ -74,66 +72,17 @@ namespace ChesApi.Infrastructure.Services
                 throw new InvalidOperationException();
             }
 
-            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure);
-            figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY);
+            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository, _setNewAttackFieles);
+            var direction = figureMoveStrategy.SetDirection(oldX, oldY, newX, newY);
+            figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
 
-            switch (figure.FigureType)
-            {
-                case FigureType.Queen:
-                    {
-                        break;
-                    }
-                case FigureType.Knight:
-                    {
-                        break;
-                    }
-                case FigureType.Pown:
-                    {
-                        break;
-                    }
-                case FigureType.King:
-                    {
-                        break;
-                    }
-                case FigureType.Bishop:
-                    {
-                        break;
-                    }
-                case FigureType.Rock:
-                    {
-                        var direction = Rock.RockDirection(oldX, oldY, newX, newY);
-                        switch(direction)
-                        {
-                            case EnumDirection.Up:
-                                {
-                                    _rockMovement.RockUpMovement(oldY, newX, newY, figure, liveGame);
-                                    break;
-                                }
-                            case EnumDirection.Down:
-                                {
-                                    _rockMovement.RockDownMovement(oldY, newX, newY, figure, liveGame);
-                                    break;
-                                }
-                            case EnumDirection.Left:
-                                {
-                                    _rockMovement.RockLeftMovement(oldX, newX, newY, figure, liveGame);
-                                    break;
-                                }
-                            case EnumDirection.Right:
-                                {
-                                    _rockMovement.RockRightMovement(oldX, newX, newY, figure, liveGame);
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-            }
+
             switch(figure.Colour)
             {
                 case FigureColour.white:
                     {
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
-                        SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, king);
+                        SetNewAttackedFieles.SetNewAttackFieles(liveGame, king);
                         if (liveGame.FielsStatus[king.Y, king.X].AttackedWhiteFiels)
                         {
 
@@ -147,7 +96,7 @@ namespace ChesApi.Infrastructure.Services
                 case FigureColour.black:
                     {
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
-                        SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, king);
+                        SetNewAttackedFieles.SetNewAttackedBlackFiels(liveGame, king);
                         if (liveGame.FielsStatus[king.Y, king.X].AttackedBlackFiels)
                         {
 

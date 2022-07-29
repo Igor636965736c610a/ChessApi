@@ -7,55 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Domain.EnumsAndStructs;
-using ChesApi.Infrastructure.Services.AttackedFiels.Figure;
+using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 
 namespace ChesApi.Infrastructure.Services.AttackedFiels
 {
-    public static class SetNewAttackedFiels
+    public class SetNewAttackedFieles : ISetNewAttackFieles
     {
-        public static bool[,] SetNewAttackedBlackFiels(LiveGame liveGame, Chess.Core.Domain.Figure king)
+        private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
+        public SetNewAttackedFieles(IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
-            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
-            var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.black);
-            bool[,] newAttackedBlackFiels = new bool[Board.Y,Board.X];
-            foreach (var f in figures)
-            {
-                switch(f.FigureType)
-                {
-                    case FigureType.Queen:
-                        {
-                            break;
-                        }
-                    case FigureType.Pown:
-                        {
-                            break;
-                        }
-                    case FigureType.Bishop:
-                        {
-                            break;
-                        }
-                    case FigureType.Knight:
-                        {
-                            break;
-                        }
-                    case FigureType.Rock:
-                        {
-                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedBlackFiels, f, king);
-                            break;
-                        }
-                    case FigureType.King:
-                        {
-                            break;
-                        }
-                }
-            }
-            return newAttackedBlackFiels;
+            _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
         }
-        public static bool[,] SetNewAttackedWhiteFiels(LiveGame liveGame, Chess.Core.Domain.Figure king)
+        public bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColour figureColor, Figure? king)
         {
-            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
-            var figures = liveGame.Figures.Where(x => x.Colour == FigureColour.white);
-            bool[,] newAttackedWhiteFiels = new bool[Board.Y, Board.X];
+            var figures = liveGame.Figures.Where(x => x.Colour == figureColor);
+            bool[,] newAttackFieles = new bool[Board.Y, Board.X];
             foreach (var f in figures)
             {
                 switch (f.FigureType)
@@ -78,7 +44,9 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            SetRockAttackedFiels.RockAttakedFiels(fielsStatus, newAttackedWhiteFiels, f, king);
+                            //strategy
+                            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
+                            figureMoveStrategy.SetAttackFieles(liveGame.FielsStatus, newAttackFieles, f, king);
                             break;
                         }
                     case FigureType.King:
@@ -87,7 +55,7 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
                         }
                 }
             }
-            return newAttackedWhiteFiels;
+            return newAttackFieles;
         }
     }
 }

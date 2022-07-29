@@ -1,4 +1,6 @@
-﻿using Chess.Core.Domain;
+﻿using ChesApi.Infrastructure.Services.AttackedFiels;
+using Chess.Core.Domain;
+using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,6 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
 {
     public interface IFigureTypeMoveStrategySelector
     {
-        IFigureTypeMoveStrategy SelectMoveStrategy(Figure figure);
+        IFigureTypeMoveStrategy SelectMoveStrategy(Figure figure, IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFieles);
     }
 }

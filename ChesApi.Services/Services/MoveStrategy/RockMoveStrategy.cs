@@ -1,9 +1,9 @@
 ﻿using ChesApi.Infrastructure.Services.AttackedFiels;
 using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using ChesApi.Infrastructure.Services.FiguresMovement.Rock.@static;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
@@ -15,10 +15,12 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
 {
     public class RockMoveStrategy : IFigureTypeMoveStrategy
     {
-        private readonly IFigureRepository _figureRepository;
-        public RockMoveStrategy(IFigureRepository figureRepository)
+        private readonly IFigureRepository? _figureRepository;
+        private readonly ISetNewAttackFieles? _setNewAttackFieles;
+        public RockMoveStrategy(IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFieles)
         {
             _figureRepository = figureRepository;
+            _setNewAttackFieles = setNewAttackFieles;
         }
         public void Move(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
         {
@@ -68,6 +70,15 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             {
                 throw new InvalidOperationException();
             }
+        }
+        public void SetAttackFieles(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, Figure figure, Figure? king)
+        {
+            int y = figure.Y;
+            int x = figure.X;
+            Up(fielsStatus, newAttackedFiels, y, x, king, figure);
+            Down(fielsStatus, newAttackedFiels, y, x, king, figure);
+            Left(fielsStatus, newAttackedFiels, y, x, king, figure);
+            Right(fielsStatus, newAttackedFiels, y, x, king, figure);
         }
         private void RockUpMovement(int oldY, int x, int y, Figure figure, LiveGame liveGame)
         {
@@ -124,7 +135,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
-                        var newAttackedBlackFiels = SetNewAttackedFiels.SetNewAttackedBlackFiels(liveGame, null);
+                        var newAttackedBlackFiels = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, null);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.white);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
@@ -154,7 +165,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = false;
-                        var newAttackedWhiteFiels = SetNewAttackedFiels.SetNewAttackedWhiteFiels(liveGame, null);
+                        var newAttackedWhiteFiels = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, null);
                         var king = _figureRepository.GetKing(liveGame, FigureColour.black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {
@@ -177,6 +188,68 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                         }
                         break;
                     }
+            }
+        }
+        private static void Up(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x, Figure? king,
+            Figure figure)
+        {
+            for (int i = y - 1; i >= 0; i--)
+            {
+                newAttackedFiels[i, x] = true;
+                if (fielsStatus[i, x].OccupiedBlackFiels || fielsStatus[i, x].OccupiedWhiteFiels)
+                {
+                    KingAttacking(king, figure, i, x);
+                    break;
+                }
+            }
+        }
+        private static void Down(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x, Figure? king,
+            Figure figure)
+        {
+            for (int i = y + 1; i <= 7; i++)
+            {
+                newAttackedFiels[i, x] = true;
+                if (fielsStatus[i, x].OccupiedBlackFiels || fielsStatus[i, x].OccupiedWhiteFiels)
+                {
+                    KingAttacking(king, figure, i, x);
+                    break;
+                }
+            }
+        }
+        private static void Left(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x, Figure? king,
+            Figure figure)
+        {
+            for (int i = x - 1; i >= 0; i--)
+            {
+                newAttackedFiels[y, i] = true;
+                if (fielsStatus[y, i].OccupiedBlackFiels || fielsStatus[y, i].OccupiedWhiteFiels)
+                {
+                    KingAttacking(king, figure, y, i);
+                    break;
+                }
+            }
+        }
+        private static void Right(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x, Figure? king,
+            Figure figure)
+        {
+            for (int i = x + 1; i <= 7; i++)
+            {
+                newAttackedFiels[y, i] = true;
+                if (fielsStatus[y, i].OccupiedBlackFiels || fielsStatus[y, i].OccupiedWhiteFiels)
+                {
+                    KingAttacking(king, figure, y, i);
+                    break;
+                }
+            }
+        }
+        private static void KingAttacking(Figure? king, Figure figure, int y, int x)
+        {
+            if (king is not null)
+            {
+                if (king.X == x && king.Y == y && figure.Colour != king.Colour)
+                {
+                    figure.IsAttacking = true;
+                }
             }
         }
     }
