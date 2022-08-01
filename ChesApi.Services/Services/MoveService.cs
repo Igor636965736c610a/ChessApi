@@ -75,6 +75,7 @@ namespace ChesApi.Infrastructure.Services
             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository, _setNewAttackFieles);
             var direction = figureMoveStrategy.SetDirection(oldX, oldY, newX, newY);
             figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
+            _setNewAttackFieles.SetNewAttackFieles(liveGame, )
 
 
             switch(figure.Colour)
