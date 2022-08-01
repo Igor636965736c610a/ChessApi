@@ -155,6 +155,7 @@ namespace ChesApi.Infrastructure.Services
                             }
                         case FigureType.Rock:
                             {
+                                //strategia direction
                                 attackDirections.Add(Rock.RockDirection(f.X, f.Y, king.X, king.Y));
                                 break;
                             }
@@ -167,10 +168,10 @@ namespace ChesApi.Infrastructure.Services
                 attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y));
                 // sprawdzenie najbliższej atakujacej figury w lini ataku
             }
-            var color = king.Colour;
-            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, color);
-            FielsStatus[,] fielsStatus = liveGame.FielsStatus;
+            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, king.Colour);
             var figures = attackingFigures.First();
+
+            //strategia
             switch (figures.FigureType)
             {
                 case FigureType.Queen:
@@ -200,6 +201,7 @@ namespace ChesApi.Infrastructure.Services
                         {
                             case EnumDirection.Up:
                                 {
+                                    //to do strategii
                                     CheckCheckmateFigures.RockUp();
                                     break;
                                 }

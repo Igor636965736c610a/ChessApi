@@ -44,7 +44,6 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
                         }
                     case FigureType.Rock:
                         {
-                            //strategy
                             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
                             figureMoveStrategy.SetAttackFieles(liveGame.FielsStatus, newAttackFieles, f, king);
                             break;
