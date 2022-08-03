@@ -75,51 +75,37 @@ namespace ChesApi.Infrastructure.Services
             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository, _setNewAttackFieles);
             var direction = figureMoveStrategy.SetDirection(oldX, oldY, newX, newY);
             figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
-            _setNewAttackFieles.SetNewAttackFieles(liveGame, )
+            var whiteKing = _figureRepository.GetKing(liveGame, FigureColour.White);
+            var blackKing = _figureRepository.GetKing(liveGame, FigureColour.black);
+            bool[,] newWhiteAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.White, whiteKing);
+            bool[,] newBlackAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, blackKing);
+            UpdateWhiteAttackFielsStatus(liveGame.FielsStatus, newWhiteAttackFieles);
+            UpdateBlackAttackFielsStatus(liveGame.FielsStatus, newBlackAttackFieles);
 
-
-            switch(figure.Colour)
+            if (figure.Colour == FigureColour.White)
             {
-                case FigureColour.white:
-                    {
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.black);
-                        SetNewAttackedFieles.SetNewAttackFieles(liveGame, king);
-                        if (liveGame.FielsStatus[king.Y, king.X].AttackedWhiteFiels)
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
-                        break;
-                    }
-                case FigureColour.black:
-                    {
-                        var king = _figureRepository.GetKing(liveGame, FigureColour.white);
-                        SetNewAttackedFieles.SetNewAttackedBlackFiels(liveGame, king);
-                        if (liveGame.FielsStatus[king.Y, king.X].AttackedBlackFiels)
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
-                        break;
-                    }
-            }
-            if (liveGame.FigureColour == FigureColour.white)
-            {
+                if (liveGame.FielsStatus[blackKing.Y, blackKing.X].AttackedWhiteFiels)
+                {
+                    //check checkmate
+                    //set gameStatus
+                }
                 liveGame.FigureColour = FigureColour.black;
                 user.FigureColour = FigureColour.black;
             }
-            else
+            if (figure.Colour == FigureColour.black)
             {
-                liveGame.FigureColour = FigureColour.white;
-                user.FigureColour = FigureColour.white;
+                if (liveGame.FielsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFiels)
+                {
+                    //check checkmate
+                    //set gameStatus
+                }
+                liveGame.FigureColour = FigureColour.White;
+                user.FigureColour = FigureColour.White;
             }
+            //foreach reset property Figure.isGaming
+            return gameStatus;
         }
+
         private bool CheckCheckmate(LiveGame liveGame, FigureColour figureColor, Figure king)
         {
             //sprawdzenie legalności ruchow krola
@@ -224,6 +210,26 @@ namespace ChesApi.Infrastructure.Services
                         }
                         break;
                     }
+            }
+        }
+        private void UpdateWhiteAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        {
+            for (int i = 0; i < fielsStatus.GetLength(0); i++)
+            {
+                for (int y = 0; y < fielsStatus.GetLength(1); y++)
+                {
+                    fielsStatus[i, y].AttackedWhiteFiels = newFielsStatusProperty[i, y];
+                }
+            }
+        }
+        private void UpdateBlackAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        {
+            for (int i = 0; i < fielsStatus.GetLength(0); i++)
+            {
+                for (int y = 0; y < fielsStatus.GetLength(1); y++)
+                {
+                    fielsStatus[i, y].AttackedBlackFiels = newFielsStatusProperty[i, y];
+                }
             }
         }
     }

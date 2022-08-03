@@ -13,7 +13,6 @@ namespace Chess.Core.Domain
         public int X { get; set; }
         public int Y { get; set; }
         public bool IsAttacking { get; set; } = false;
-        public bool IsDeleted { get; set; } = false;
         public FigureType FigureType { get; set; }
         public Value Value { get; set; }
         public FigureColour Colour { get; set; }
@@ -22,15 +21,6 @@ namespace Chess.Core.Domain
         {
             X = x;
             Y = y;
-            FigureType = figureType;
-            Value = value;
-            Colour = colour;
-        }
-        public Figure(int x, int y, bool isDeleted, FigureType figureType, Value value, FigureColour colour)
-        {
-            X = x;
-            Y = y;
-            IsDeleted = isDeleted;
             FigureType = figureType;
             Value = value;
             Colour = colour;

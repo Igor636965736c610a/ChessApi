@@ -8,7 +8,7 @@ namespace Chess.Core.Domain.Enums
 {
     public enum FigureColour
     {
-        white = 0,
+        White = 0,
         black = 1
     }
 }

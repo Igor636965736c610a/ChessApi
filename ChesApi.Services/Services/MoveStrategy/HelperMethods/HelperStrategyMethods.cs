@@ -120,7 +120,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
             }
             switch (figure.Colour)
             {
-                case FigureColour.white:
+                case FigureColour.White:
                     {
                         if (liveGame.FielsStatus[y, x].OccupiedWhiteFiels)
                         {
@@ -128,7 +128,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
                         var newAttackedBlackFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, null);
-                        var king = figureRepository.GetKing(liveGame, FigureColour.white);
+                        var king = figureRepository.GetKing(liveGame, FigureColour.White);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
                             liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = true;
@@ -158,7 +158,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = false;
-                        var newAttackedWhiteFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.white, null);
+                        var newAttackedWhiteFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.White, null);
                         var king = figureRepository.GetKing(liveGame, FigureColour.black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {

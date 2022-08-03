@@ -58,13 +58,13 @@ namespace ChesApi.Infrastructure.Services
             }
             liveGame.User2 = user;
             user.LiveGame = liveGame;
-            if(liveGame.HostUser.FigureColour is FigureColour.white)
+            if(liveGame.HostUser.FigureColour is FigureColour.White)
             {
                 user.FigureColour = FigureColour.black;
             }
             else
             {
-                user.FigureColour = FigureColour.white;
+                user.FigureColour = FigureColour.White;
             }
             _userInGameRepository.AddUser(user);
             liveGame.IsGaming = true;
