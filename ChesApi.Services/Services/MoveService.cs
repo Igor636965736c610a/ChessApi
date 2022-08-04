@@ -87,7 +87,7 @@ namespace ChesApi.Infrastructure.Services
                 if (liveGame.FielsStatus[blackKing.Y, blackKing.X].AttackedWhiteFiels)
                 {
                     //check checkmate
-                    //set gameStatus
+                    //if chackmate => set gameStatus
                 }
                 liveGame.FigureColour = FigureColour.black;
                 user.FigureColour = FigureColour.black;
@@ -97,12 +97,15 @@ namespace ChesApi.Infrastructure.Services
                 if (liveGame.FielsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFiels)
                 {
                     //check checkmate
-                    //set gameStatus
+                    //if chackmate => set gameStatus
                 }
                 liveGame.FigureColour = FigureColour.White;
                 user.FigureColour = FigureColour.White;
             }
-            //foreach reset property Figure.isGaming
+            foreach(var f in liveGame.Figures)
+            {
+                f.IsAttacking = false;
+            }
             return gameStatus;
         }
 
@@ -126,40 +129,19 @@ namespace ChesApi.Infrastructure.Services
                 List<EnumDirection> attackDirections = new();
                 foreach(var f in attackingFigures)
                 {
-                    switch (f.FigureType)
-                    {
-                        case FigureType.Queen:
-                            {
-                                break;
-                            }
-                        case FigureType.Pown:
-                            {
-                                break;
-                            }
-                        case FigureType.Bishop:
-                            {
-                                break;
-                            }
-                        case FigureType.Rock:
-                            {
-                                //strategia direction
-                                attackDirections.Add(Rock.RockDirection(f.X, f.Y, king.X, king.Y));
-                                break;
-                            }
-                    }
+                    var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
+                    attackDirections.Add(figureMoveStrategy.SetDirection(f.X, f.Y, king.X, king.Y));
                 }
                 if(!attackDirections.All(x => x == attackDirections.First()))
                 {
                     return true;
                 }
-                attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y));
-                // sprawdzenie najbliższej atakujacej figury w lini ataku
             }
             var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, king.Colour);
-            var figures = attackingFigures.First();
+            var figure = attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y)).First();
 
             //strategia
-            switch (figures.FigureType)
+            switch (figure.FigureType)
             {
                 case FigureType.Queen:
                     {
@@ -183,7 +165,7 @@ namespace ChesApi.Infrastructure.Services
                     }
                 case FigureType.Rock:
                     {
-                        var direction = Rock.RockDirection(king.X, king.Y, figures.X, figures.Y);
+                        var direction = Rock.RockDirection(king.X, king.Y, figure.X, figure.Y);
                         switch (direction)
                         {
                             case EnumDirection.Up:
