@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Chess.Core.Domain.Enums
 {
-    public enum FigureColour
+    public enum FigureColor
     {
         White = 0,
-        black = 1
+        Black = 1
     }
 }

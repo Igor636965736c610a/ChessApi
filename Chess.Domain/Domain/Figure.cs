@@ -15,15 +15,15 @@ namespace Chess.Core.Domain
         public bool IsAttacking { get; set; } = false;
         public FigureType FigureType { get; set; }
         public Value Value { get; set; }
-        public FigureColour Colour { get; set; }
+        public FigureColor Color { get; set; }
 
-        public Figure(int x, int y, FigureType figureType, Value value, FigureColour colour)
+        public Figure(int x, int y, FigureType figureType, Value value, FigureColor color)
         {
             X = x;
             Y = y;
             FigureType = figureType;
             Value = value;
-            Colour = colour;
+            Color = color;
         }
     }
 }

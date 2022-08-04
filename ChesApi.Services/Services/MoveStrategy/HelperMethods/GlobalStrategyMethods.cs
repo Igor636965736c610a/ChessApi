@@ -1,4 +1,5 @@
 ﻿using ChesApi.Infrastructure.Services.AttackedFiels;
+using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
 {
-    public static class HelperStrategyMethods
+    internal static class GlobalStrategyMethods
     {
         public static void UpSetAttackFieles(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, int y, int x, Figure? king,
             Figure figure)
@@ -118,17 +119,17 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
             {
                 throw new Exception("Tego bledu tu nie powinno byc");
             }
-            switch (figure.Colour)
+            switch (figure.Color)
             {
-                case FigureColour.White:
+                case FigureColor.White:
                     {
                         if (liveGame.FielsStatus[y, x].OccupiedWhiteFiels)
                         {
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = false;
-                        var newAttackedBlackFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, null);
-                        var king = figureRepository.GetKing(liveGame, FigureColour.White);
+                        var newAttackedBlackFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.Black, null);
+                        var king = figureRepository.GetKing(liveGame, FigureColor.White);
                         if (newAttackedBlackFiels[king.Y, king.X])
                         {
                             liveGame.FielsStatus[oldY, oldX].OccupiedWhiteFiels = true;
@@ -142,24 +143,17 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                         liveGame.FielsStatus[y, x].OccupiedWhiteFiels = true;
                         figure.X = x;
                         figure.Y = y;
-                        // for (int i = 0; i < liveGame.FielsStatus.GetLength(0); i++)
-                        // {
-                        //     for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
-                        //     {
-                        //         liveGame.FielsStatus[i, z].AttackedBlackFiels = newAttackedBlackFiels[i, z];
-                        //     }
-                        // }
                         break;
                     }
-                case FigureColour.black:
+                case FigureColor.Black:
                     {
                         if (liveGame.FielsStatus[y, x].OccupiedBlackFiels)
                         {
                             throw new InvalidOperationException();
                         }
                         liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = false;
-                        var newAttackedWhiteFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.White, null);
-                        var king = figureRepository.GetKing(liveGame, FigureColour.black);
+                        var newAttackedWhiteFiels = setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.White, null);
+                        var king = figureRepository.GetKing(liveGame, FigureColor.Black);
                         if (newAttackedWhiteFiels[king.Y, king.X])
                         {
                             liveGame.FielsStatus[oldY, oldX].OccupiedBlackFiels = true;
@@ -173,22 +167,86 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                         liveGame.FielsStatus[y, x].OccupiedBlackFiels = true;
                         figure.X = x;
                         figure.Y = y;
-                        // for (int i = 0; i < liveGame.FielsStatus.GetLength(0); i++)
-                        // {
-                        //     for (int z = 0; z < liveGame.FielsStatus.GetLength(1); z++)
-                        //     {
-                        //         liveGame.FielsStatus[i, z].AttackedWhiteFiels = newAttackedWhiteFiels[i, z];
-                        //     }
-                        // }
                         break;
                     }
             }
         }
+        public static bool UpAttack(int x, int y, int kingY, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        {
+            for (int i = y; i > kingY; i--)
+            {
+                bool canCover = CheckCover(x, i, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                if (canCover)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool DownAttack(int x, int y, int kingY, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        {
+            for (int i = y; i < kingY; i++)
+            {
+                bool canCover = CheckCover(x, i, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                if (canCover)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool LeftAttack(int x, int y, int kingX, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        {
+            for (int i = x; i > kingX; i--)
+            {
+                bool canCover = CheckCover(i, y, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                if (canCover)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool RightAttack(int x, int y, int kingX, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        {
+            for (int i = x; i < kingX; i++)
+            {
+                bool canCover = CheckCover(i, y, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                if (canCover)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        // UpDefend
+        // DownDefend ...
+        private static bool CheckCover(int x, int y, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        {
+            foreach(var f in defendingFigures)
+            {
+                var figureMoveStrategy = figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
+                var legalMove = figureMoveStrategy.CheckLegalMoveDirection(f.X, f.Y, x, y);
+                if(legalMove)
+                {
+                    var direction = figureMoveStrategy.SetDirection(f.X, f.Y, x, y);
+                    //bool test = coverMove(direction)
+                    //if test jest git return true
+                }
+            }
+            //return false
+        }
+
         private static void KingAttacking(Figure? king, Figure figure, int y, int x)
         {
             if (king is not null)
             {
-                if (king.X == x && king.Y == y && figure.Colour != king.Colour)
+                if (king.X == x && king.Y == y && figure.Color != king.Color)
                 {
                     figure.IsAttacking = true;
                 }

@@ -26,13 +26,13 @@ namespace ChesApi.Infrastructure.Repo
         public async Task<IEnumerable<User>> GetUsersByName(string name)
             => await Task.FromResult(_context.Users.Where(user => user.Name == name));
 
-        public async Task<User> GetUserByUsername(string username)
+        public async Task<User?> GetUserByUsername(string username)
             => await _context.Users.FirstOrDefaultAsync(x => x.UserName == username);
 
-        public async Task<User> GetUserByEmail(string email)
+        public async Task<User?> GetUserByEmail(string email)
             => await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
 
-        public async Task<User> GetUserById(Guid id)
+        public async Task<User?> GetUserById(Guid id)
             => await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
 
         public async Task<IEnumerable<User>> GetAllUsers()

@@ -29,29 +29,29 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             {
                 case EnumDirection.Up:
                     {
-                        HelperStrategyMethods.UpMovement(oldY, newX, newY, figure, liveGame);
-                        HelperStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, oldY, newX, 
+                        GlobalStrategyMethods.UpMovement(oldY, newX, newY, figure, liveGame);
+                        GlobalStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, oldY, newX, 
                             _setNewAttackFieles, _figureRepository);
                         break;
                     }
                 case EnumDirection.Down:
                     {
-                        HelperStrategyMethods.DownMovement(oldY, newX, newY, figure, liveGame);
-                        HelperStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, oldY, newX, 
+                        GlobalStrategyMethods.DownMovement(oldY, newX, newY, figure, liveGame);
+                        GlobalStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, oldY, newX, 
                             _setNewAttackFieles, _figureRepository);
                         break;
                     }
                 case EnumDirection.Left:
                     {
-                        HelperStrategyMethods.LeftMovement(oldX, newX, newY, figure, liveGame);
-                        HelperStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, newY, oldX, 
+                        GlobalStrategyMethods.LeftMovement(oldX, newX, newY, figure, liveGame);
+                        GlobalStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, newY, oldX, 
                             _setNewAttackFieles, _figureRepository);
                         break;
                     }
                 case EnumDirection.Right:
                     {
-                        HelperStrategyMethods.RightMovement(oldX, newX, newY, figure, liveGame);
-                        HelperStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, newY, oldX, 
+                        GlobalStrategyMethods.RightMovement(oldX, newX, newY, figure, liveGame);
+                        GlobalStrategyMethods.SetNewPosition(figure, liveGame, newX, newY, newY, oldX, 
                             _setNewAttackFieles, _figureRepository);
                         break;
                     }
@@ -82,10 +82,53 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
         }
         public void SetAttackFieles(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, Figure figure, Figure? king)
         {
-            HelperStrategyMethods.UpSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
-            HelperStrategyMethods.DownSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
-            HelperStrategyMethods.LeftSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
-            HelperStrategyMethods.RightSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.UpSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.DownSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.LeftSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.RightSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
+        }
+        public bool CheckCheckMate(int x, int y, int kingX, int kingY, IEnumerable<Figure> defendingFigures, 
+            FielsStatus[,] fielsStatus, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector) 
+        {
+            switch(direction)
+            {
+                case EnumDirection.Up:
+                    {
+                        return GlobalStrategyMethods.UpAttack
+                            (x, y, kingY, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                    }
+                case EnumDirection.Down:
+                    {
+                        return GlobalStrategyMethods.DownAttack
+                            (x, y, kingY, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                    }
+                case EnumDirection.Left:
+                    {
+                        return GlobalStrategyMethods.LeftAttack
+                            (x, y, kingX, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                    }
+                case EnumDirection.Right:
+                    {
+                        return GlobalStrategyMethods.RightAttack
+                            (x, y, kingX, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                    }
+                default:
+                    {
+                        throw new InvalidOperationException();
+                    }
+            }
+        }
+
+        public bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY)
+        {
+            if (oldX != newX || oldY != newY)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

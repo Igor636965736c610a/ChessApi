@@ -18,9 +18,9 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
         {
             _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
         }
-        public bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColour figureColor, Figure? king)
+        public bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColor figureColor, Figure? king)
         {
-            var figures = liveGame.Figures.Where(x => x.Colour == figureColor);
+            var figures = liveGame.Figures.Where(x => x.Color == figureColor);
             bool[,] newAttackFieles = new bool[Board.Y, Board.X];
             foreach (var f in figures)
             {

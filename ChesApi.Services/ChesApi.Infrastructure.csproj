@@ -24,9 +24,4 @@
     <ProjectReference Include="..\Chess.Domain\Chess.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\CheckCheckmateFolder\BischopCheckCheckmate\" />
-    <Folder Include="Services\CheckCheckmateFolder\KnightCheckCheckmate\" />
-  </ItemGroup>
-
 </Project>

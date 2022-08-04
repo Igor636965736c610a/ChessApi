@@ -17,17 +17,17 @@ namespace ChesApi.Infrastructure.Repo
         public Figure GetFigure(LiveGame liveGame, int y, int x)
             => liveGame.Figures.FirstOrDefault(z => z.X == x && z.Y == y);
 
-        public Figure GetKing(LiveGame liveGmae, FigureColour color)
-            => liveGmae.Figures.First(x => x.FigureType == FigureType.King && x.Colour == color);
+        public Figure GetKing(LiveGame liveGmae, FigureColor color)
+            => liveGmae.Figures.First(x => x.FigureType == FigureType.King && x.Color == color);
  
         public void RemoveFigure(LiveGame liveGame, Figure figure)
         {
             liveGame.Figures.Remove(figure);
         }
-        public IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColour figureColor)
-            => liveGame.Figures.Where(x => x.IsAttacking == true && x.Colour == figureColor);
+        public IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColor figureColor)
+            => liveGame.Figures.Where(x => x.IsAttacking == true && x.Color == figureColor);
 
-        public IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColour figureColor)
-            => liveGame.Figures.Where(x => x.Colour == figureColor);
+        public IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColor figureColor)
+            => liveGame.Figures.Where(x => x.Color == figureColor);
     }
 }

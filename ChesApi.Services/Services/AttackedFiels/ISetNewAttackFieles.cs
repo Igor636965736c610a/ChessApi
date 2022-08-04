@@ -10,6 +10,6 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
 {
     public interface ISetNewAttackFieles
     {
-        bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColour figureColor, Figure? king);
+        bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColor figureColor, Figure? king);
     }
 }

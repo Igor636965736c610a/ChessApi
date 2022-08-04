@@ -11,7 +11,6 @@ using ChesApi.Infrastructure.Services.AttackedFiels;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain;
 using System.Collections;
-using ChesApi.Infrastructure.Services.CheckCheckmateFolder;
 using ChesApi.Infrastructure.Services.EnumFiguresDirection;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 
@@ -59,7 +58,7 @@ namespace ChesApi.Infrastructure.Services
             {
                 throw new NullReferenceException();
             }
-            if (user.FigureColour != liveGame.FigureColour)
+            if (user.FigureColor != liveGame.FigureColour)
             {
                 throw new InvalidOperationException();
             }
@@ -75,32 +74,32 @@ namespace ChesApi.Infrastructure.Services
             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository, _setNewAttackFieles);
             var direction = figureMoveStrategy.SetDirection(oldX, oldY, newX, newY);
             figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
-            var whiteKing = _figureRepository.GetKing(liveGame, FigureColour.White);
-            var blackKing = _figureRepository.GetKing(liveGame, FigureColour.black);
-            bool[,] newWhiteAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.White, whiteKing);
-            bool[,] newBlackAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColour.black, blackKing);
+            var whiteKing = _figureRepository.GetKing(liveGame, FigureColor.White);
+            var blackKing = _figureRepository.GetKing(liveGame, FigureColor.Black);
+            bool[,] newWhiteAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.White, whiteKing);
+            bool[,] newBlackAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.Black, blackKing);
             UpdateWhiteAttackFielsStatus(liveGame.FielsStatus, newWhiteAttackFieles);
             UpdateBlackAttackFielsStatus(liveGame.FielsStatus, newBlackAttackFieles);
 
-            if (figure.Colour == FigureColour.White)
+            if (figure.Color == FigureColor.White)
             {
                 if (liveGame.FielsStatus[blackKing.Y, blackKing.X].AttackedWhiteFiels)
                 {
                     //check checkmate
                     //if chackmate => set gameStatus
                 }
-                liveGame.FigureColour = FigureColour.black;
-                user.FigureColour = FigureColour.black;
+                liveGame.FigureColour = FigureColor.Black;
+                user.FigureColor = FigureColor.Black;
             }
-            if (figure.Colour == FigureColour.black)
+            if (figure.Color == FigureColor.Black)
             {
                 if (liveGame.FielsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFiels)
                 {
                     //check checkmate
                     //if chackmate => set gameStatus
                 }
-                liveGame.FigureColour = FigureColour.White;
-                user.FigureColour = FigureColour.White;
+                liveGame.FigureColour = FigureColor.White;
+                user.FigureColor = FigureColor.White;
             }
             foreach(var f in liveGame.Figures)
             {
@@ -109,7 +108,7 @@ namespace ChesApi.Infrastructure.Services
             return gameStatus;
         }
 
-        private bool CheckCheckmate(LiveGame liveGame, FigureColour figureColor, Figure king)
+        private bool CheckCheckmate(LiveGame liveGame, FigureColor figureColor, Figure king)
         {
             //sprawdzenie legalności ruchow krola
 
@@ -129,72 +128,25 @@ namespace ChesApi.Infrastructure.Services
                 List<EnumDirection> attackDirections = new();
                 foreach(var f in attackingFigures)
                 {
-                    var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
-                    attackDirections.Add(figureMoveStrategy.SetDirection(f.X, f.Y, king.X, king.Y));
+                    var localFigureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
+                    attackDirections.Add(localFigureMoveStrategy.SetDirection(f.X, f.Y, king.X, king.Y));
                 }
                 if(!attackDirections.All(x => x == attackDirections.First()))
                 {
                     return true;
                 }
             }
-            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, king.Colour);
+            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, king.Color)
+                .SkipWhile(x => x.FigureType == FigureType.King);
             var figure = attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y)).First();
+            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, null, null);
+            var direction = figureMoveStrategy.SetDirection(king.X, king.Y, figure.X, figure.Y);
 
-            //strategia
-            switch (figure.FigureType)
-            {
-                case FigureType.Queen:
-                    {
-                        break;
-                    }
-                case FigureType.Knight:
-                    {
-                        break;
-                    }
-                case FigureType.Pown:
-                    {
-                        break;
-                    }
-                case FigureType.King:
-                    {
-                        break;
-                    }
-                case FigureType.Bishop:
-                    {
-                        break;
-                    }
-                case FigureType.Rock:
-                    {
-                        var direction = Rock.RockDirection(king.X, king.Y, figure.X, figure.Y);
-                        switch (direction)
-                        {
-                            case EnumDirection.Up:
-                                {
-                                    //to do strategii
-                                    CheckCheckmateFigures.RockUp();
-                                    break;
-                                }
-                            case EnumDirection.Down:
-                                {
 
-                                    break;
-                                }
-                            case EnumDirection.Left:
-                                {
 
-                                    break;
-                                }
-                            case EnumDirection.Right:
-                                {
 
-                                    break;
-                                }
-                        }
-                        break;
-                    }
-            }
         }
-        private void UpdateWhiteAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        private static void UpdateWhiteAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
         {
             for (int i = 0; i < fielsStatus.GetLength(0); i++)
             {
@@ -204,7 +156,7 @@ namespace ChesApi.Infrastructure.Services
                 }
             }
         }
-        private void UpdateBlackAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        private static void UpdateBlackAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
         {
             for (int i = 0; i < fielsStatus.GetLength(0); i++)
             {

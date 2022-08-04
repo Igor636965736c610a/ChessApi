@@ -12,9 +12,9 @@ namespace Chess.Core.Repo.Game
     {
         Figure GetFigure(LiveGame liveGame, Guid figureId);
         Figure GetFigure(LiveGame liveGame, int y, int x);
-        Figure GetKing(LiveGame liveGmae, FigureColour color);
+        Figure GetKing(LiveGame liveGmae, FigureColor color);
         void RemoveFigure(LiveGame liveGame, Figure figure);
-        IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColour figureColor);
-        IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColour figureColor);
+        IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColor figureColor);
+        IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColor figureColor);
     }
 }
