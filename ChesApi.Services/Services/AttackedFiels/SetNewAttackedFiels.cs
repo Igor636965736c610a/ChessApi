@@ -24,35 +24,8 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
             bool[,] newAttackFieles = new bool[Board.Y, Board.X];
             foreach (var f in figures)
             {
-                switch (f.FigureType)
-                {
-                    case FigureType.Queen:
-                        {
-                            break;
-                        }
-                    case FigureType.Pown:
-                        {
-                            break;
-                        }
-                    case FigureType.Bishop:
-                        {
-                            break;
-                        }
-                    case FigureType.Knight:
-                        {
-                            break;
-                        }
-                    case FigureType.Rock:
-                        {
-                            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
-                            figureMoveStrategy.SetAttackFieles(liveGame.FielsStatus, newAttackFieles, f, king);
-                            break;
-                        }
-                    case FigureType.King:
-                        {
-                            break;
-                        }
-                }
+                var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
+                figureMoveStrategy.SetAttackFieles(liveGame.FielsStatus, newAttackFieles, f, king);
             }
             return newAttackFieles;
         }
