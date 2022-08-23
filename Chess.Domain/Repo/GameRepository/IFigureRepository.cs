@@ -10,8 +10,8 @@ namespace Chess.Core.Repo.Game
 {
     public interface IFigureRepository
     {
-        Figure GetFigure(LiveGame liveGame, Guid figureId);
-        Figure GetFigure(LiveGame liveGame, int y, int x);
+        Figure? GetFigure(LiveGame liveGame, Guid figureId);
+        Figure? GetFigure(LiveGame liveGame, int y, int x);
         Figure GetKing(LiveGame liveGmae, FigureColor color);
         void RemoveFigure(LiveGame liveGame, Figure figure);
         IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColor figureColor);
