@@ -11,6 +11,6 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
 {
     public interface IFigureTypeMoveStrategySelector
     {
-        IFigureTypeMoveStrategy SelectMoveStrategy(Figure figure, IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFieles);
+        IFigureTypeMoveStrategy SelectMoveStrategy(Figure figure, IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFields);
     }
 }

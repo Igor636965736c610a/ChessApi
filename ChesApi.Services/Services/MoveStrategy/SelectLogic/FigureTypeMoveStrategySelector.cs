@@ -13,14 +13,14 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
     public class FigureTypeMoveStrategySelector : IFigureTypeMoveStrategySelector
     {
         public IFigureTypeMoveStrategy SelectMoveStrategy
-            (Figure figure, IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFieles) => figure.FigureType switch
+            (Figure figure, IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFields) => figure.FigureType switch
         {
             FigureType.Queen => new QueenMoveStrategy(),
             FigureType.King => new KingMoveStrategy(),
             FigureType.Knight => new KnightMoveStrategy(),
             FigureType.Bishop => new BishopMoveStrategy(),
             FigureType.Pown => new PownMoveStrategy(),
-            FigureType.Rock => new RockMoveStrategy(figureRepository, setNewAttackFieles),
+            FigureType.Rock => new RockMoveStrategy(figureRepository, setNewAttackFields),
             _ => throw new InvalidOperationException(),
         };
     }

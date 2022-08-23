@@ -10,7 +10,7 @@ namespace Chess.Core.Domain.DefaultConst
 {
     public class Default
     {
-        public static FielsStatus[,] DefaultFielsStatus { get; set; } = new FielsStatus[Board.Y, Board.X]
+        public static FieldsStatus[,] DefaultFielsStatus { get; set; } = new FieldsStatus[Board.Y, Board.X]
         {
             
         };

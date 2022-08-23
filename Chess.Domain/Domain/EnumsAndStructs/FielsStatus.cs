@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Chess.Core.Domain.EnumsAndStructs
 {
-    public struct FielsStatus
+    public struct FieldsStatus
     {
-        public bool AttackedWhiteFiels { get; set; }
-        public bool AttackedBlackFiels { get; set; }
-        public bool OccupiedWhiteFiels { get; set; }
-        public bool OccupiedBlackFiels { get; set; }
+        public bool AttackedWhiteFields { get; set; }
+        public bool AttackedBlackFields { get; set; }
+        public bool OccupiedWhiteFields { get; set; }
+        public bool OccupiedBlackFields { get; set; }
     }
 }

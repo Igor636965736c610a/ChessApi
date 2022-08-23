@@ -13,7 +13,7 @@ namespace Chess.Core.Domain
     {
         public List<Figure> Figures = new List<Figure>();
         public bool IsGaming { get; set; } = false;
-        public FielsStatus[,] FielsStatus { get; set; }
+        public FieldsStatus[,] FieldsStatus { get; set; }
 
         //public bool[,] AttackedWhiteFiels { get; set; }
         //public bool[,] AttackedBlackFiels { get; set; }
@@ -24,10 +24,10 @@ namespace Chess.Core.Domain
         public User HostUser { get; set; }
         public User? User2 { get; set; }
         public FigureColor FigureColour { get; set; } = FigureColor.White;
-        public LiveGame(List<Figure> figures, FielsStatus[,] fielsStatus, User userHost)
+        public LiveGame(List<Figure> figures, FieldsStatus[,] fielsStatus, User userHost)
         {
             Figures = figures;
-            FielsStatus = fielsStatus;
+            FieldsStatus = fielsStatus;
             HostUser = userHost;
         }
     }

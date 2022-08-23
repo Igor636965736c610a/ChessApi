@@ -25,7 +25,7 @@ namespace ChesApi.Infrastructure.Services.AttackedFiels
             foreach (var f in figures)
             {
                 var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
-                figureMoveStrategy.SetAttackFieles(liveGame.FielsStatus, newAttackFieles, f, king);
+                figureMoveStrategy.SetAttackFieles(liveGame.FieldsStatus, newAttackFieles, f, king);
             }
             return newAttackFieles;
         }

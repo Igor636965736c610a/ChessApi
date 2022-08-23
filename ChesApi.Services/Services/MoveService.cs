@@ -76,27 +76,27 @@ namespace ChesApi.Infrastructure.Services
             figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
             var whiteKing = _figureRepository.GetKing(liveGame, FigureColor.White);
             var blackKing = _figureRepository.GetKing(liveGame, FigureColor.Black);
-            bool[,] newWhiteAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.White, whiteKing);
-            bool[,] newBlackAttackFieles = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.Black, blackKing);
-            UpdateWhiteAttackFielsStatus(liveGame.FielsStatus, newWhiteAttackFieles);
-            UpdateBlackAttackFielsStatus(liveGame.FielsStatus, newBlackAttackFieles);
+            bool[,] newWhiteAttackFields = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.White, whiteKing);
+            bool[,] newBlackAttackFields = _setNewAttackFieles.SetNewAttackFieles(liveGame, FigureColor.Black, blackKing);
+            UpdateWhiteAttackFieldsStatus(liveGame.FieldsStatus, newWhiteAttackFields);
+            UpdateBlackAttackFielsStatus(liveGame.FieldsStatus, newBlackAttackFields);
 
             if (figure.Color == FigureColor.White)
             {
-                if (liveGame.FielsStatus[blackKing.Y, blackKing.X].AttackedWhiteFiels)
+                if (liveGame.FieldsStatus[blackKing.Y, blackKing.X].AttackedWhiteFields)
                 {
-                    //check checkmate
-                    //if chackmate => set gameStatus
+                    if (CheckCheckmate(liveGame, FigureColor.White, blackKing))
+                        gameStatus = GameStatus.WhiteMat;
                 }
                 liveGame.FigureColour = FigureColor.Black;
                 user.FigureColor = FigureColor.Black;
             }
             if (figure.Color == FigureColor.Black)
             {
-                if (liveGame.FielsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFiels)
+                if (liveGame.FieldsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFields)
                 {
-                    //check checkmate
-                    //if chackmate => set gameStatus
+                    if (CheckCheckmate(liveGame, FigureColor.Black, whiteKing))
+                        gameStatus = GameStatus.BlackMat;
                 }
                 liveGame.FigureColour = FigureColor.White;
                 user.FigureColor = FigureColor.White;
@@ -141,30 +141,27 @@ namespace ChesApi.Infrastructure.Services
             var figure = attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y)).First();
             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, null, null);
             var direction = figureMoveStrategy.SetDirection(king.X, king.Y, figure.X, figure.Y);
-            if(figureMoveStrategy.CheckCheckMate(figure.X, figure.Y, king, defendingFigures, liveGame, direction, _figureTypeMoveStrategySelector))
-            {
-                return false;
-            }
-            return true;
+            return !figureMoveStrategy.CheckCheckMate
+                (figure.X, figure.Y, king, defendingFigures, liveGame, direction, _figureTypeMoveStrategySelector);
         }
 
-        private static void UpdateWhiteAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        private static void UpdateWhiteAttackFieldsStatus(FieldsStatus[,] fieldsStatus, bool[,] newFieldsStatusProperty)
         {
-            for (int i = 0; i < fielsStatus.GetLength(0); i++)
+            for (int i = 0; i < fieldsStatus.GetLength(0); i++)
             {
-                for (int y = 0; y < fielsStatus.GetLength(1); y++)
+                for (int y = 0; y < fieldsStatus.GetLength(1); y++)
                 {
-                    fielsStatus[i, y].AttackedWhiteFiels = newFielsStatusProperty[i, y];
+                    fieldsStatus[i, y].AttackedWhiteFields = newFieldsStatusProperty[i, y];
                 }
             }
         }
-        private static void UpdateBlackAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
+        private static void UpdateBlackAttackFielsStatus(FieldsStatus[,] fieldsStatus, bool[,] newFieldsStatusProperty)
         {
-            for (int i = 0; i < fielsStatus.GetLength(0); i++)
+            for (int i = 0; i < fieldsStatus.GetLength(0); i++)
             {
-                for (int y = 0; y < fielsStatus.GetLength(1); y++)
+                for (int y = 0; y < fieldsStatus.GetLength(1); y++)
                 {
-                    fielsStatus[i, y].AttackedBlackFiels = newFielsStatusProperty[i, y];
+                    fieldsStatus[i, y].AttackedBlackFields = newFieldsStatusProperty[i, y];
                 }
             }
         }
