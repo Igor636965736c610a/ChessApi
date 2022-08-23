@@ -141,11 +141,13 @@ namespace ChesApi.Infrastructure.Services
             var figure = attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y)).First();
             var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, null, null);
             var direction = figureMoveStrategy.SetDirection(king.X, king.Y, figure.X, figure.Y);
-
-
-
-
+            if(figureMoveStrategy.CheckCheckMate(figure.X, figure.Y, king, defendingFigures, liveGame, direction, _figureTypeMoveStrategySelector))
+            {
+                return false;
+            }
+            return true;
         }
+
         private static void UpdateWhiteAttackFielsStatus(FielsStatus[,] fielsStatus, bool[,] newFielsStatusProperty)
         {
             for (int i = 0; i < fielsStatus.GetLength(0); i++)

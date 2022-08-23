@@ -18,5 +18,6 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
         bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, 
             LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector);
         bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY);
+        bool ChcekLegalMovement(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection);
     }
 }
