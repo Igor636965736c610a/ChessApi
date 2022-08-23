@@ -113,7 +113,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         // UpRight
         // ...
         public static bool CheckSetNewPosition(Figure figure, LiveGame liveGame, int x, int y, int oldY, int oldX,
-            ISetNewAttackFieles? setNewAttackFieles, IFigureRepository? figureRepository)
+            ISetNewAttackFieles setNewAttackFieles, IFigureRepository? figureRepository)
         {
             if (setNewAttackFieles is null || figureRepository is null)
             {
@@ -184,48 +184,48 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                 figure.Y = y;
             }
         }
-        public static bool UpAttack(int x, int y, int targetY, Figure king, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+        public static bool UpAttack(int x, int y, int targetY, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             for (int i = y; i > targetY; i--)
             {
-                if (CheckCover(x, i, defendingFigures, fielsStatus, king, figureTypeMoveStrategySelector))
+                if (CheckCover(x, i, defendingFigures, liveGame, king, figureTypeMoveStrategySelector))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public static bool DownAttack(int x, int y, int targetY, Figure king, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+        public static bool DownAttack(int x, int y, int targetY, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             for (int i = y; i < targetY; i++)
             {
-                if (CheckCover(x, i, defendingFigures, fielsStatus, king, figureTypeMoveStrategySelector))
+                if (CheckCover(x, i, defendingFigures, liveGame, king, figureTypeMoveStrategySelector))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public static bool LeftAttack(int x, int y, int targetX, Figure king, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+        public static bool LeftAttack(int x, int y, int targetX, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             for (int i = x; i > targetX; i--)
             {
-                if (CheckCover(i, y, defendingFigures, fielsStatus, king, figureTypeMoveStrategySelector))
+                if (CheckCover(i, y, defendingFigures, liveGame, king, figureTypeMoveStrategySelector))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public static bool RightAttack(int x, int y, int targetX, Figure king, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
+        public static bool RightAttack(int x, int y, int targetX, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             for (int i = x; i < targetX; i++)
             {
-                if (CheckCover(i, y, defendingFigures, fielsStatus, king, figureTypeMoveStrategySelector))
+                if (CheckCover(i, y, defendingFigures, liveGame, king, figureTypeMoveStrategySelector))
                 {
                     return true;
                 }
@@ -234,8 +234,8 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         }
         // UpDefend
         // DownDefend ...
-        private static bool CheckCover(int x, int y, IEnumerable<Figure> defendingFigures, FielsStatus[,] fielsStatus,
-            Figure king, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        private static bool CheckCover(int x, int y, IEnumerable<Figure> defendingFigures, LiveGame liveGame, Figure king, 
+            IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             foreach(var f in defendingFigures)
             {
@@ -243,6 +243,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                 if(figureMoveStrategy.CheckLegalMoveDirection(f.X, f.Y, x, y))
                 {
                     var direction = figureMoveStrategy.SetDirection(f.X, f.Y, x, y);
+                    CheckSetNewPosition(f, )
                     //bool test = UpMoveemnt(direction, fielsStatus, king, f.x, f.y, x, y)
                             //try new position bez set, clone tablicyniezbedny, oddanie clona tablicy,
                             //i sprawdzenie czy po zaslonie ejst kolejny atak

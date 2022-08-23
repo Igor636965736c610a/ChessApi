@@ -16,7 +16,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
         EnumDirection SetDirection(int oldX, int oldY, int newX, int newY);
         void SetAttackFieles(FielsStatus[,] fielsStatus, bool[,] newAttackedFiels, Figure figure, Figure? king);
         bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, 
-            FielsStatus[,] fielsStatus, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector);
+            LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector);
         bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY);
     }
 }

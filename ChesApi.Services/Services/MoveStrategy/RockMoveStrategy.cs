@@ -17,8 +17,8 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
     public class RockMoveStrategy : IFigureTypeMoveStrategy
     {
         private readonly IFigureRepository? _figureRepository;
-        private readonly ISetNewAttackFieles? _setNewAttackFieles;
-        public RockMoveStrategy(IFigureRepository? figureRepository, ISetNewAttackFieles? setNewAttackFieles)
+        private readonly ISetNewAttackFieles _setNewAttackFieles;
+        public RockMoveStrategy(IFigureRepository? figureRepository, ISetNewAttackFieles setNewAttackFieles)
         {
             _figureRepository = figureRepository;
             _setNewAttackFieles = setNewAttackFieles;
@@ -104,29 +104,29 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             GlobalStrategyMethods.RightSetAttackFieles(fielsStatus, newAttackedFiels, figure.Y, figure.X, king, figure);
         }
         public bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, 
-            FielsStatus[,] fielsStatus, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector) 
+            LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector) 
         {
             switch(direction)
             {
                 case EnumDirection.Up:
                     {
                         return GlobalStrategyMethods.UpAttack
-                            (x, y, king.Y, king, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                            (x, y, king.Y, king, defendingFigures, liveGame, figureTypeMoveStrategySelector);
                     }
                 case EnumDirection.Down:
                     {
                         return GlobalStrategyMethods.DownAttack
-                            (x, y, king.Y, king, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                            (x, y, king.Y, king, defendingFigures, liveGame, figureTypeMoveStrategySelector);
                     }
                 case EnumDirection.Left:
                     {
                         return GlobalStrategyMethods.LeftAttack
-                            (x, y, king.X, king, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                            (x, y, king.X, king, defendingFigures, liveGame, figureTypeMoveStrategySelector);
                     }
                 case EnumDirection.Right:
                     {
                         return GlobalStrategyMethods.RightAttack
-                            (x, y, king.X, king, defendingFigures, fielsStatus, figureTypeMoveStrategySelector);
+                            (x, y, king.X, king, defendingFigures, liveGame, figureTypeMoveStrategySelector);
                     }
                 default:
                     {
