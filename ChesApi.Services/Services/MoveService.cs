@@ -83,20 +83,18 @@ namespace ChesApi.Infrastructure.Services
 
             if (figure.Color == FigureColor.White)
             {
-                if (liveGame.FieldsStatus[blackKing.Y, blackKing.X].AttackedWhiteFields)
+                if (liveGame.FieldsStatus[blackKing.X, blackKing.Y].AttackedWhiteFields && CheckCheckmate(liveGame, FigureColor.White, blackKing))
                 {
-                    if (CheckCheckmate(liveGame, FigureColor.White, blackKing))
-                        gameStatus = GameStatus.WhiteMat;
+                    gameStatus = GameStatus.WhiteMat;
                 }
                 liveGame.FigureColour = FigureColor.Black;
                 user.FigureColor = FigureColor.Black;
             }
             if (figure.Color == FigureColor.Black)
             {
-                if (liveGame.FieldsStatus[whiteKing.Y, whiteKing.X].AttackedBlackFields)
+                if (liveGame.FieldsStatus[whiteKing.X, whiteKing.Y].AttackedBlackFields && CheckCheckmate(liveGame, FigureColor.Black, whiteKing))
                 {
-                    if (CheckCheckmate(liveGame, FigureColor.Black, whiteKing))
-                        gameStatus = GameStatus.BlackMat;
+                    gameStatus = GameStatus.BlackMat;
                 }
                 liveGame.FigureColour = FigureColor.White;
                 user.FigureColor = FigureColor.White;

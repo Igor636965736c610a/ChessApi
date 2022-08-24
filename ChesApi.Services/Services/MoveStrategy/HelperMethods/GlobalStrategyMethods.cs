@@ -18,10 +18,10 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         public static void UpSetAttackFieles(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields, int y, int x, Figure? king,
             Figure figure)
         {
-            for (int i = y - 1; i >= 0; i--)
+            for (int i = y + 1; i < 8; i++)
             {
-                newAttackedFields[i, x] = true;
-                if (fieldsStatus[i, x].OccupiedBlackFields || fieldsStatus[i, x].OccupiedWhiteFields)
+                newAttackedFields[x, i] = true;
+                if (fieldsStatus[x, i].OccupiedBlackFields || fieldsStatus[x, i].OccupiedWhiteFields)
                 {
                     KingAttacking(king, figure, i, x);
                     break;
@@ -31,10 +31,10 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         public static void DownSetAttackFieles(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields, int y, int x, Figure? king,
             Figure figure)
         {
-            for (int i = y + 1; i < 8; i++)
+            for (int i = y - 1; i >= 0; i--)
             {
-                newAttackedFields[i, x] = true;
-                if (fieldsStatus[i, x].OccupiedBlackFields || fieldsStatus[i, x].OccupiedWhiteFields)
+                newAttackedFields[x, i] = true;
+                if (fieldsStatus[x, i].OccupiedBlackFields || fieldsStatus[x, i].OccupiedWhiteFields)
                 {
                     KingAttacking(king, figure, i, x);
                     break;
@@ -46,8 +46,8 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         {
             for (int i = x - 1; i >= 0; i--)
             {
-                newAttackedFields[y, i] = true;
-                if (fieldsStatus[y, i].OccupiedBlackFields || fieldsStatus[y, i].OccupiedWhiteFields)
+                newAttackedFields[i, y] = true;
+                if (fieldsStatus[i, y].OccupiedBlackFields || fieldsStatus[i, y].OccupiedWhiteFields)
                 {
                     KingAttacking(king, figure, y, i);
                     break;
@@ -59,8 +59,8 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         {
             for (int i = x + 1; i < 8; i++)
             {
-                newAttackedFields[y, i] = true;
-                if (fieldsStatus[y, i].OccupiedBlackFields || fieldsStatus[y, i].OccupiedWhiteFields)
+                newAttackedFields[i, y] = true;
+                if (fieldsStatus[i, y].OccupiedBlackFields || fieldsStatus[i, y].OccupiedWhiteFields)
                 {
                     KingAttacking(king, figure, y, i);
                     break;
@@ -72,9 +72,9 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         // ...
         public static bool UpMovement(int oldY, int x, int y, LiveGame liveGame)
         {
-            for (int i = oldY - 1; i > y; i--)
+            for (int i = oldY + 1; i < y; i++)
             {
-                if (liveGame.FieldsStatus[i, x].OccupiedBlackFields || liveGame.FieldsStatus[i, x].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[x, i].OccupiedBlackFields || liveGame.FieldsStatus[x, i].OccupiedWhiteFields)
                 {
                     return false;
                 }
@@ -83,9 +83,9 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         }
         public static bool DownMovement(int oldY, int x, int y, LiveGame liveGame)
         {
-            for (int i = oldY + 1; i < y; i++)
+            for (int i = oldY - 1; i > y; i--)
             {
-                if (liveGame.FieldsStatus[i, x].OccupiedBlackFields || liveGame.FieldsStatus[i, x].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[x, i].OccupiedBlackFields || liveGame.FieldsStatus[x, i].OccupiedWhiteFields)
                 {
                     return false;
                 }
@@ -96,7 +96,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         {
             for (int i = oldX - 1; i > x; i--)
             {
-                if (liveGame.FieldsStatus[y, i].OccupiedBlackFields || liveGame.FieldsStatus[y, i].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[i, y].OccupiedBlackFields || liveGame.FieldsStatus[i, y].OccupiedWhiteFields)
                 {
                     return false;
                 }
@@ -107,7 +107,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         {
             for (int i = oldX + 1; i < x; i++)
             {
-                if (liveGame.FieldsStatus[y, i].OccupiedBlackFields || liveGame.FieldsStatus[y, i].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[i, y].OccupiedBlackFields || liveGame.FieldsStatus[i, y].OccupiedWhiteFields)
                 {
                     return false;
                 }
@@ -126,37 +126,37 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
             }
             if(figure.Color == FigureColor.White)
             { 
-                if (liveGame.FieldsStatus[y, x].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
                 {
                     throw new InvalidOperationException();
                 }
-                liveGame.FieldsStatus[oldY, oldX].OccupiedWhiteFields = false;
+                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = false;
                 var newAttackedBlackFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.Black, null);
                 var king = figureRepository.GetKing(liveGame, FigureColor.White);
-                if (newAttackedBlackFields[king.Y, king.X])
+                if (newAttackedBlackFields[king.X, king.Y])
                 {
-                    liveGame.FieldsStatus[oldY, oldX].OccupiedWhiteFields = true;
+                    liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
                     return false;
                 }
-                liveGame.FieldsStatus[oldY, oldX].OccupiedWhiteFields = true;
+                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
                 return true;
                 
             }
             else
             { 
-                if (liveGame.FieldsStatus[y, x].OccupiedBlackFields)
+                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
                 {
                     throw new InvalidOperationException();
                 }
-                liveGame.FieldsStatus[oldY, oldX].OccupiedBlackFields = false;
+                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = false;
                 var newAttackedWhiteFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.White, null);
                 var king = figureRepository.GetKing(liveGame, FigureColor.Black);
-                if (newAttackedWhiteFields[king.Y, king.X])
+                if (newAttackedWhiteFields[king.X, king.Y])
                 {
-                    liveGame.FieldsStatus[oldY, oldX].OccupiedBlackFields = true;
+                    liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
                     return false;
                 }
-                liveGame.FieldsStatus[oldY, oldX].OccupiedBlackFields = true;
+                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
                 return true;
             }
         }
@@ -168,23 +168,23 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
             }
             if (figure.Color == FigureColor.White)
             {
-                if (liveGame.FieldsStatus[y, x].OccupiedBlackFields)
+                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
                 {
                     var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
                     figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                 }
-                liveGame.FieldsStatus[y, x].OccupiedWhiteFields = true;
+                liveGame.FieldsStatus[x, y].OccupiedWhiteFields = true;
                 figure.X = x;
                 figure.Y = y;
             }
             else
             {
-                if (liveGame.FieldsStatus[y, x].OccupiedWhiteFields)
+                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
                 {
                     var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
                     figureRepository.RemoveFigure(liveGame, toDeleteFigure);
                 }
-                liveGame.FieldsStatus[y, x].OccupiedBlackFields = true;
+                liveGame.FieldsStatus[x, y].OccupiedBlackFields = true;
                 figure.X = x;
                 figure.Y = y;
             }
@@ -192,7 +192,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         public static bool UpAttack(int x, int y, int targetY, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector, IFigureRepository figureRepository, ISetNewAttackFieles setNewAttackFields)
         {
-            for (int i = y; i > targetY; i--)
+            for (int i = y; i < targetY; i++)
             {
                 if (CheckCover(x, i, defendingFigures, liveGame, figureTypeMoveStrategySelector, 
                     figureRepository, setNewAttackFields))
@@ -205,7 +205,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         public static bool DownAttack(int x, int y, int targetY, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector, IFigureRepository figureRepository, ISetNewAttackFieles setNewAttackFields)
         {
-            for (int i = y; i < targetY; i++)
+            for (int i = y; i > targetY; i--)
             {
                 if (CheckCover(x, i, defendingFigures, liveGame, figureTypeMoveStrategySelector, 
                     figureRepository, setNewAttackFields))
@@ -241,8 +241,6 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
             }
             return false;
         }
-        // UpDefend
-        // DownDefend ...
         private static bool CheckCover(int x, int y, IEnumerable<Figure> defendingFigures, LiveGame liveGame, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector, IFigureRepository figureRepository, ISetNewAttackFieles setNewAttackFields)
         {
             foreach(var f in defendingFigures)

@@ -24,7 +24,9 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
 
         public bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY)
         {
-            throw new NotImplementedException();
+            if (Math.Abs(oldX - newX) == Math.Abs(oldY - newY))
+                return true;
+            return false;
         }
 
         public void Move(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)

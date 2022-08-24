@@ -83,19 +83,19 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
         }
         public EnumDirection SetDirection(int oldX, int oldY, int newX, int newY)
         {
-            if (oldX < newX && oldY == newY)
+            if (oldY > newY && oldX == newX)
             {
                 return EnumDirection.Down;
             }
-            if (oldX > newX && oldY == newY)
+            if (oldY < newY && oldX == newX)
             {
                 return EnumDirection.Up;
             }
-            if (oldY < newY && oldX == newX)
+            if (oldX < newX && oldY == newY)
             {
                 return EnumDirection.Right;
             }
-            if (oldY > newY && oldX == newX)
+            if (oldX > newX && oldY == newY)
             {
                 return EnumDirection.Left;
             }
@@ -150,10 +150,9 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                     }
             }
         }
-
         public bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY)
         {
-            if (oldX != newX || oldY != newY)
+            if (oldX != newX && oldY == newY || oldY != newY && oldX == newX)
             {
                 return true;
             }
