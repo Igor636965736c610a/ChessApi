@@ -33,7 +33,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             {
                 case EnumDirection.Up:
                     {
-                        if (GlobalStrategyMethods.UpMovement(oldY, newX, newY, liveGame))
+                        if (!GlobalStrategyMethods.UpMovement(oldY, newX, newY, liveGame.FieldsStatus))
                             throw new InvalidOperationException();
                         if (GlobalStrategyMethods.CheckSetNewPosition(figure, liveGame, newX, newY, oldY, oldX,
                             _setNewAttackFieles, _figureRepository))
@@ -45,7 +45,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                     }
                 case EnumDirection.Down:
                     {
-                        if(GlobalStrategyMethods.DownMovement(oldY, newX, newY, liveGame))
+                        if(!GlobalStrategyMethods.DownMovement(oldY, newX, newY, liveGame.FieldsStatus))
                             throw new InvalidOperationException();
                         if (GlobalStrategyMethods.CheckSetNewPosition(figure, liveGame, newX, newY, oldY, oldX,
                             _setNewAttackFieles, _figureRepository))
@@ -57,7 +57,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                     }
                 case EnumDirection.Left:
                     {
-                        if(GlobalStrategyMethods.LeftMovement(oldX, newX, newY, liveGame))
+                        if(!GlobalStrategyMethods.LeftMovement(oldX, newX, newY, liveGame.FieldsStatus))
                             throw new InvalidOperationException();
                         if (GlobalStrategyMethods.CheckSetNewPosition(figure, liveGame, newX, newY, oldY, oldX,
                             _setNewAttackFieles, _figureRepository))
@@ -69,7 +69,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
                     }
                 case EnumDirection.Right:
                     {
-                        if(GlobalStrategyMethods.RightMovement(oldX, newX, newY, liveGame))
+                        if(!GlobalStrategyMethods.RightMovement(oldX, newX, newY, liveGame.FieldsStatus))
                             throw new InvalidOperationException();
                         if (GlobalStrategyMethods.CheckSetNewPosition(figure, liveGame, newX, newY, oldY, oldX,
                             _setNewAttackFieles, _figureRepository))
@@ -84,32 +84,25 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
         public EnumDirection SetDirection(int oldX, int oldY, int newX, int newY)
         {
             if (oldY > newY && oldX == newX)
-            {
                 return EnumDirection.Down;
-            }
+
             if (oldY < newY && oldX == newX)
-            {
                 return EnumDirection.Up;
-            }
+
             if (oldX < newX && oldY == newY)
-            {
                 return EnumDirection.Right;
-            }
+
             if (oldX > newX && oldY == newY)
-            {
                 return EnumDirection.Left;
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
+
+            throw new InvalidOperationException();
         }
         public void SetAttackFieles(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields, Figure figure, Figure? king)
         {
-            GlobalStrategyMethods.UpSetAttackFieles(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
-            GlobalStrategyMethods.DownSetAttackFieles(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
-            GlobalStrategyMethods.LeftSetAttackFieles(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
-            GlobalStrategyMethods.RightSetAttackFieles(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.UpSetAttackFields(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.DownSetAttackFields(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.LeftSetAttackFields(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
+            GlobalStrategyMethods.RightSetAttackFields(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
         }
         public bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, 
             LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector) 
@@ -158,29 +151,29 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             }
             return false;
         }
-        public bool ChcekLegalMovement(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
         {
             switch (enumDirection)
             {
                 case EnumDirection.Up:
                     {
-                        return GlobalStrategyMethods.UpMovement(oldY, newX, newY, liveGame);
+                        return GlobalStrategyMethods.UpMovement(oldY, newX, newY, fieldsStatus);
                     }
                 case EnumDirection.Down:
                     {
-                        return GlobalStrategyMethods.DownMovement(oldY, newX, newY, liveGame);
+                        return GlobalStrategyMethods.DownMovement(oldY, newX, newY, fieldsStatus);
                     }
                 case EnumDirection.Left:
                     {
-                        return GlobalStrategyMethods.LeftMovement(oldX, newX, newY, liveGame);
+                        return GlobalStrategyMethods.LeftMovement(oldX, newX, newY, fieldsStatus);
                     }
                 case EnumDirection.Right:
                     {
-                        return GlobalStrategyMethods.RightMovement(oldX, newX, newY, liveGame);
+                        return GlobalStrategyMethods.RightMovement(oldX, newX, newY, fieldsStatus);
                     }
                 default:
                     {
-                        throw new Exception("Tego bledu nie moze tu byc");
+                        throw new InvalidOperationException();
                     }
             }
         }

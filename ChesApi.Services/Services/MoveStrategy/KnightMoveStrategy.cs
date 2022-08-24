@@ -12,7 +12,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
 {
     public class KnightMoveStrategy : IFigureTypeMoveStrategy
     {
-        public bool ChcekLegalMovement(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
         {
             throw new NotImplementedException();
         }
