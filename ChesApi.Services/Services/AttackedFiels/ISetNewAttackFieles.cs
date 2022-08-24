@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.Services.AttackedFiels
 {
-    public interface ISetNewAttackFieles
+    public interface ISetNewAttackFields
     {
         bool[,] SetNewAttackFieles(LiveGame liveGame, FigureColor figureColor, Figure? king);
     }

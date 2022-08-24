@@ -11,7 +11,7 @@ using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectL
 
 namespace ChesApi.Infrastructure.Services.AttackedFiels
 {
-    public class SetNewAttackedFieles : ISetNewAttackFieles
+    public class SetNewAttackedFieles : ISetNewAttackFields
     {
         private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
         public SetNewAttackedFieles(IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
