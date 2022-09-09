@@ -1,9 +1,9 @@
 ﻿using ChesApi.Infrastructure.Services.AttackedFiels;
-using ChesApi.Infrastructure.Services.EnumFiguresDirection;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
@@ -219,75 +219,6 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
         }
         // BishopMoves
         // KingMoves 
-        public static bool CheckSetNewPosition(Figure figure, LiveGame liveGame, int x, int y, int oldY, int oldX,
-            ISetNewAttackFields setNewAttackFields, IFigureRepository figureRepository)
-        {
-            if (setNewAttackFields is null || figureRepository is null)
-                return false;
-
-            if(figure.Color == FigureColor.White)
-            { 
-                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
-                    return false;
-
-                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = false;
-                var newAttackedBlackFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.Black, null);
-                var king = figureRepository.GetKing(liveGame, FigureColor.White);
-                if (newAttackedBlackFields[king.X, king.Y])
-                {
-                    liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
-                    return false;
-                }
-                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
-                return true;
-                
-            }
-            else
-            { 
-                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
-                    return false;
-
-                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = false;
-                var newAttackedWhiteFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.White, null);
-                var king = figureRepository.GetKing(liveGame, FigureColor.Black);
-                if (newAttackedWhiteFields[king.X, king.Y])
-                {
-                    liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
-                    return false;
-                }
-                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
-                return true;
-            }
-        }
-        public static void SetNewPosition(Figure figure, LiveGame liveGame, int x, int y, IFigureRepository? figureRepository)
-        {
-            if (figureRepository is null)
-            {
-                throw new Exception("Tego bledu tu nie powinno byc");
-            }
-            if (figure.Color == FigureColor.White)
-            {
-                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
-                {
-                    var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
-                    figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                }
-                liveGame.FieldsStatus[x, y].OccupiedWhiteFields = true;
-                figure.X = x;
-                figure.Y = y;
-            }
-            else
-            {
-                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
-                {
-                    var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
-                    figureRepository.RemoveFigure(liveGame, toDeleteFigure);
-                }
-                liveGame.FieldsStatus[x, y].OccupiedBlackFields = true;
-                figure.X = x;
-                figure.Y = y;
-            }
-        }
         public static bool UpAttack(int x, int y, int targetY, IEnumerable<Figure> defendingFigures, LiveGame liveGame,
             IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector, IFigureRepository figureRepository, ISetNewAttackFields setNewAttackFields)
         {
@@ -387,6 +318,75 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods
                 }
             }
             return false;
+        }
+        public static bool CheckSetNewPosition(Figure figure, LiveGame liveGame, int x, int y, int oldY, int oldX,
+            ISetNewAttackFields setNewAttackFields, IFigureRepository figureRepository)
+        {
+            if (setNewAttackFields is null || figureRepository is null)
+                return false;
+
+            if(figure.Color == FigureColor.White)
+            { 
+                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
+                    return false;
+
+                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = false;
+                var newAttackedBlackFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.Black, null);
+                var king = figureRepository.GetKing(liveGame, FigureColor.White);
+                if (newAttackedBlackFields[king.X, king.Y])
+                {
+                    liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
+                    return false;
+                }
+                liveGame.FieldsStatus[oldX, oldY].OccupiedWhiteFields = true;
+                return true;
+                
+            }
+            else
+            { 
+                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
+                    return false;
+
+                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = false;
+                var newAttackedWhiteFields = setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.White, null);
+                var king = figureRepository.GetKing(liveGame, FigureColor.Black);
+                if (newAttackedWhiteFields[king.X, king.Y])
+                {
+                    liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
+                    return false;
+                }
+                liveGame.FieldsStatus[oldX, oldY].OccupiedBlackFields = true;
+                return true;
+            }
+        }
+        public static void SetNewPosition(Figure figure, LiveGame liveGame, int x, int y, IFigureRepository? figureRepository)
+        {
+            if (figureRepository is null)
+            {
+                throw new Exception("Tego bledu tu nie powinno byc");
+            }
+            if (figure.Color == FigureColor.White)
+            {
+                if (liveGame.FieldsStatus[x, y].OccupiedBlackFields)
+                {
+                    var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
+                    figureRepository.RemoveFigure(liveGame, toDeleteFigure);
+                }
+                liveGame.FieldsStatus[x, y].OccupiedWhiteFields = true;
+                figure.X = x;
+                figure.Y = y;
+            }
+            else
+            {
+                if (liveGame.FieldsStatus[x, y].OccupiedWhiteFields)
+                {
+                    var toDeleteFigure = figureRepository.GetFigure(liveGame, y, x);
+                    figureRepository.RemoveFigure(liveGame, toDeleteFigure);
+                }
+                liveGame.FieldsStatus[x, y].OccupiedBlackFields = true;
+                figure.X = x;
+                figure.Y = y;
+            }
         }
         private static bool CheckCover(int x, int y, IEnumerable<Figure> defendingFigures, LiveGame liveGame, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector, IFigureRepository figureRepository, ISetNewAttackFields setNewAttackFields)
         {

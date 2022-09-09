@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Chess.Core.Domain.EnumsAndStructs;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
+using Chess.Core.Domain.Figures;
 
 namespace ChesApi.Infrastructure.Services.AttackedFiels
 {

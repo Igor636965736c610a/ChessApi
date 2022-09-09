@@ -1,6 +1,7 @@
 ﻿using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace Chess.Core.Domain
 {
     public class LiveGame
     {
-        public List<Figure> Figures = new List<Figure>();
+        public List<Figure> Figures = new();
         public bool IsGaming { get; set; } = false;
         public FieldsStatus[,] FieldsStatus { get; set; }
 

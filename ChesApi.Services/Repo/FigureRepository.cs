@@ -1,5 +1,7 @@
 ﻿using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
@@ -11,11 +13,8 @@ namespace ChesApi.Infrastructure.Repo
 {
     public class FigureRepository : IFigureRepository
     {
-        public Figure? GetFigure(LiveGame liveGame, Guid figureId)
-           => liveGame.Figures.FirstOrDefault(x => x.Id == figureId);
-
-        public Figure? GetFigure(LiveGame liveGame, int y, int x)
-            => liveGame.Figures.FirstOrDefault(z => z.X == x && z.Y == y);
+        public Figure? GetFigure(LiveGame liveGame, Vector2 vector2)
+            => liveGame.FieldsStatus[vector2.X, vector2.Y].Figure;
 
         public Figure GetKing(LiveGame liveGmae, FigureColor color)
             => liveGmae.Figures.First(x => x.FigureType == FigureType.King && x.Color == color);

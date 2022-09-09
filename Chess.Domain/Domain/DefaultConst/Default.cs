@@ -1,5 +1,6 @@
 ﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,8 +62,8 @@ namespace Chess.Core.Domain.DefaultConst
         };
         public static List<Figure> Figures = new List<Figure>()
         {
-            new Figure(0, 0, FigureType.Rock, Value.five, FigureColor.Black),
-            new Figure(0, 7, FigureType.Rock, Value.five, FigureColor.Black),
+            new Figure(0, 0, FigureType.Rook, Value.five, FigureColor.Black),
+            new Figure(0, 7, FigureType.Rook, Value.five, FigureColor.Black),
             new Figure(0, 1, FigureType.Knight, Value.three, FigureColor.Black),
             new Figure(0, 6, FigureType.Knight, Value.three, FigureColor.Black),
             new Figure(0, 2, FigureType.Bishop, Value.three, FigureColor.Black),
@@ -77,8 +78,8 @@ namespace Chess.Core.Domain.DefaultConst
             new Figure(1, 5, FigureType.Pown, Value.one, FigureColor.Black),
             new Figure(1, 6, FigureType.Pown, Value.one, FigureColor.Black),
             new Figure(1, 7, FigureType.Pown, Value.one, FigureColor.Black),
-            new Figure(7, 0, FigureType.Rock, Value.five, FigureColor.White),
-            new Figure(7, 7, FigureType.Rock, Value.five, FigureColor.White),
+            new Figure(7, 0, FigureType.Rook, Value.five, FigureColor.White),
+            new Figure(7, 7, FigureType.Rook, Value.five, FigureColor.White),
             new Figure(7, 1, FigureType.Knight, Value.three, FigureColor.White),
             new Figure(7, 6, FigureType.Knight, Value.three, FigureColor.White),
             new Figure(7, 2, FigureType.Bishop, Value.three, FigureColor.White),

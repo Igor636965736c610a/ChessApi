@@ -13,6 +13,8 @@ using Chess.Core.Domain;
 using System.Collections;
 using ChesApi.Infrastructure.Services.EnumFiguresDirection;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
+using Chess.Core.Domain.Figures;
+using Chess.Core.Domain.static_methods;
 
 namespace ChesApi.Infrastructure.Services
 {
@@ -21,7 +23,6 @@ namespace ChesApi.Infrastructure.Services
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
         private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
-        private readonly ISetNewAttackFields _setNewAttackFields;
         public MoveService
             (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
             FigureTypeMoveStrategySelector figureTypeMoveStrategySelector, ISetNewAttackFields setNewAttackFields)
@@ -29,14 +30,13 @@ namespace ChesApi.Infrastructure.Services
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
             _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
-            _setNewAttackFields = setNewAttackFields;
         }
 
-        public GameStatus Move(int x, int y, Guid userId, Guid figureId)  //userId from JWT
+        public GameStatus Move(Vector2 newVector2, Vector2 oldVector2, Guid userId)  //userId from JWT
         {
             GameStatus gameStatus = GameStatus.IsGaming;
-            if (x <= Board.X || x > 1 || y <= Board.Y || y > 1)
-                throw new Exception("X and Y must be bigger than 0 and lower than 9");
+            if (newVector2.X < Board.X && newVector2.X >= 0 && newVector2.Y < Board.Y && newVector2.Y >= 0)
+                throw new Exception("X and Y must be 0 - 7");
 
             var user = _userInGameRepository.GetUserById(userId);
             if (user is null)
@@ -49,29 +49,59 @@ namespace ChesApi.Infrastructure.Services
             if(liveGame.IsGaming == false)
                 throw new InvalidOperationException();
 
-            var figure = _figureRepository.GetFigure(liveGame, figureId);
+            var figure = _figureRepository.GetFigure(liveGame, oldVector2);
             if(figure is null)
                 throw new NullReferenceException();
 
             if (user.FigureColor != liveGame.FigureColour)
                 throw new InvalidOperationException();
 
-            int oldX = figure.X;
-            int oldY = figure.Y;
-            int newX = x - 1;
-            int newY = y - 1;
-            if (oldX == newX && oldY == newY)
+            if (oldVector2.X == newVector2.X && oldVector2.Y == newVector2.Y)
                 throw new InvalidOperationException();
 
-            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository, _setNewAttackFields);
-            var direction = figureMoveStrategy.SetDirection(oldX, oldY, newX, newY);
-            figureMoveStrategy.Move(figure, liveGame, oldX, oldY, newX, newY, direction);
+            if(!figure.CheckLegalMoveDirection(newVector2))
+                throw new InvalidOperationException();
+            var direction = figure.SetDirection(newVector2);
+
+            IEnumerable<Figure> enemyFigures;
+            IEnumerable<Figure> figures;
+            Figure king;
+            Figure enemyKing;
+            if (figure.Color == FigureColor.White)
+            {
+                enemyFigures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.Black);
+                figures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.White);
+                king = _figureRepository.GetKing(liveGame, FigureColor.White);
+                enemyKing = _figureRepository.GetKing(liveGame, FigureColor.Black);
+            }
+            else
+            {
+                enemyFigures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.White);
+                figures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.Black);
+                king = _figureRepository.GetKing(liveGame, FigureColor.Black);
+                enemyKing = _figureRepository.GetKing(liveGame, FigureColor.White);
+            }
+            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository);
+            figureMoveStrategy.Move(figure, liveGame, newVector2, direction, enemyFigures);
+            Figure? toRemoveFigure = enemyFigures.FirstOrDefault(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
+            if (toRemoveFigure is not null)
+            {
+                if(figure.Color == FigureColor.White)
+                    liveGame.FieldsStatus[newVector2.X, newVector2.Y].OccupiedWhiteFields = false;
+                else
+                    liveGame.FieldsStatus[newVector2.X, newVector2.Y].OccupiedBlackFields = false;
+                _figureRepository.RemoveFigure(liveGame, toRemoveFigure);
+            }
+            UpdateFieldsStatus(figure, liveGame.FieldsStatus, newVector2);
             var whiteKing = _figureRepository.GetKing(liveGame, FigureColor.White);
             var blackKing = _figureRepository.GetKing(liveGame, FigureColor.Black);
-            bool[,] newWhiteAttackFields = _setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.White, whiteKing);
-            bool[,] newBlackAttackFields = _setNewAttackFields.SetNewAttackFieles(liveGame, FigureColor.Black, blackKing);
+            var blackFigures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.Black);
+            var whiteFigures = _figureRepository.GetFiguresByColor(liveGame, FigureColor.White);
+            bool[,] newWhiteAttackFields = StaticMoveLogicMethods.SetNewAttackFields(whiteFigures, liveGame.FieldsStatus);
+            bool[,] newBlackAttackFields = StaticMoveLogicMethods.SetNewAttackFields(blackFigures, liveGame.FieldsStatus);
             UpdateWhiteAttackFieldsStatus(liveGame.FieldsStatus, newWhiteAttackFields);
             UpdateBlackAttackFielsStatus(liveGame.FieldsStatus, newBlackAttackFields);
+            StaticMoveLogicMethods.SetAttackingFigures(figures, liveGame.FieldsStatus, enemyKing.Vector2);
 
             if (figure.Color == FigureColor.White)
             {
@@ -96,7 +126,7 @@ namespace ChesApi.Infrastructure.Services
             return gameStatus;
         }
 
-        private bool CheckCheckmate(LiveGame liveGame, FigureColor figureColor, Figure king)
+        private bool CheckCheckmate(LiveGame liveGame, FigureColor figureColor, Figure enemyKing, Figure king)
         {
             //sprawdzenie legalności ruchow krola
 
@@ -107,27 +137,25 @@ namespace ChesApi.Infrastructure.Services
                 if(attackingFigures.Any(x => x.FigureType == FigureType.Knight))
                     return true;
 
-                if(attackingFigures.Any(x => x.FigureType == FigureType.Rock) && attackingFigures
+                if(attackingFigures.Any(x => x.FigureType == FigureType.Rook) && attackingFigures
                     .Any(x => x.FigureType == FigureType.Bishop))
                     return true;
 
                 List<EnumDirection> attackDirections = new();
                 foreach(var f in attackingFigures)
                 {
-                    var localFigureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(f, null, null);
-                    attackDirections.Add(localFigureMoveStrategy.SetDirection(f.X, f.Y, king.X, king.Y));
+                    attackDirections.Add(f.SetDirection(enemyKing.Vector2));
                 }
                 if(!attackDirections.All(x => x == attackDirections.First()))
                     return true;
 
             }
-            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, king.Color)
+            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, enemyKing.Color)
                 .SkipWhile(x => x.FigureType == FigureType.King);
-            var figure = attackingFigures.OrderBy(x => Math.Abs(king.X + king.Y - x.X + x.Y)).First();
-            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, null, null);
-            var direction = figureMoveStrategy.SetDirection(king.X, king.Y, figure.X, figure.Y);
-            return !figureMoveStrategy.CheckCheckMate
-                (figure.X, figure.Y, king, defendingFigures, liveGame, direction, _figureTypeMoveStrategySelector);
+            var figure = attackingFigures.OrderBy(x => Math.Abs(enemyKing.Vector2.X + enemyKing.Vector2.Y - x.Vector2.X + x.Vector2.Y)).First();
+            var direction = figure.SetDirection(enemyKing.Vector2);
+            return !figure.CheckCheckamte(enemyKing.Vector2, defendingFigures, attackingFigures, liveGame.FieldsStatus,
+                king.Vector2, direction);
         }
 
         private static void UpdateWhiteAttackFieldsStatus(FieldsStatus[,] fieldsStatus, bool[,] newFieldsStatusProperty)
@@ -149,6 +177,21 @@ namespace ChesApi.Infrastructure.Services
                     fieldsStatus[i, y].AttackedBlackFields = newFieldsStatusProperty[i, y];
                 }
             }
+        }
+        private static void UpdateFieldsStatus(Figure figure, FieldsStatus[,] fieldsStatus, Vector2 newVector2)
+        {
+            if(figure.Color == FigureColor.Black)
+            {
+                fieldsStatus[figure.Vector2.X, figure.Vector2.Y].OccupiedBlackFields = false;
+                fieldsStatus[newVector2.X, newVector2.Y].OccupiedBlackFields = true;
+            }
+            else
+            {
+                fieldsStatus[figure.Vector2.X, figure.Vector2.Y].OccupiedWhiteFields = false;
+                fieldsStatus[newVector2.X, newVector2.Y].OccupiedWhiteFields = true;
+            }
+            fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure = null;
+            fieldsStatus[newVector2.X, newVector2.Y].Figure = figure;
         }
     }
 }

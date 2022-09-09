@@ -1,5 +1,6 @@
 ﻿using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.Figures;
 using System;
 using System.Collections.Generic;
 using System.Linq;

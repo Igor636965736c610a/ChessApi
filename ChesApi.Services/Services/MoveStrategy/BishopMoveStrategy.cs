@@ -4,6 +4,7 @@ using ChesApi.Infrastructure.Services.MoveStrategy.HelperMethods;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using Chess.Core.Repo.Game;
 using System;
 using System.Collections.Generic;
@@ -22,24 +23,18 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             _figureRepository = figureRepository;
             _setNewAttackFields = setNewAttackFields;
         }
-        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, Vector2 oldVector2, Vector2 newVector2, EnumDirection enumDirection)
+            => enumDirection switch
         {
-            switch (enumDirection)
-            {
-                case EnumDirection.UpLeft:
-                        return GlobalStrategyMethods.UpLeftMovement(oldY, oldX, newX, newY, fieldsStatus);
-                case EnumDirection.UpRight:
-                        return GlobalStrategyMethods.UpRightMovement(oldY, oldX, newX, newY, fieldsStatus);
-                case EnumDirection.DownLeft:
-                        return GlobalStrategyMethods.DownLeftMovement(oldY, oldX, newX, newY, fieldsStatus);
-                case EnumDirection.DownRight:
-                        return GlobalStrategyMethods.DownRightMovement(oldY, oldX, newX, newY, fieldsStatus);
-                default:
-                        throw new InvalidOperationException();
-            }
-        }
+            EnumDirection.UpLeft => GlobalStrategyMethods.UpLeftMovement(oldY, oldX, newX, newY, fieldsStatus),
+            EnumDirection.UpRight => GlobalStrategyMethods.UpRightMovement(oldY, oldX, newX, newY, fieldsStatus),
+            EnumDirection.DownLeft => GlobalStrategyMethods.DownLeftMovement(oldY, oldX, newX, newY, fieldsStatus),
+            EnumDirection.DownRight => GlobalStrategyMethods.DownRightMovement(oldY, oldX, newX, newY, fieldsStatus),
+            _ => throw new InvalidOperationException(),
+        };
 
-        public bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        public bool CheckCheckMate(Vector2 Vector2, Figure king, IEnumerable<Figure> defendingFigures,
+            LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             if (_figureRepository is null || _setNewAttackFields is null)
                 throw new InvalidOperationException();
@@ -67,14 +62,14 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             }
         }
 
-        public bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY)
+        public bool CheckLegalMoveDirection(Vector2 oldVector2, Vector2 newVector2)
         {
             if (Math.Abs(oldX - newX) == Math.Abs(oldY - newY))
                 return true;
             return false;
         }
 
-        public void Move(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public void Move(Figure figure, LiveGame liveGame, Vector2 oldVector2, Vector2 newVector2, EnumDirection enumDirection)
         {
             if (_figureRepository is null || _setNewAttackFields is null)
                 throw new InvalidOperationException();
@@ -140,7 +135,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             GlobalStrategyMethods.DownLeftSetAttackFields(fieldsStatus, newAttackedFields, figure.Y, figure.X, king, figure);
         }
 
-        public EnumDirection SetDirection(int oldX, int oldY, int newX, int newY)
+        public EnumDirection SetDirection(Vector2 oldVector2, Vector2 newVector2)
         {
             if (oldX > newX && oldY < newY)
                 return EnumDirection.UpLeft;

@@ -9,7 +9,7 @@ namespace Chess.Core.Domain.Enums
     public enum FigureType
     {
         Pown = 0,
-        Rock = 1,
+        Rook = 1,
         Knight = 2,
         Bishop = 3,
         Queen = 4,

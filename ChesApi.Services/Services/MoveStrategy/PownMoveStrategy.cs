@@ -2,6 +2,7 @@
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Figures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,22 +13,23 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
 {
     public class PownMoveStrategy : IFigureTypeMoveStrategy
     {
-        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public bool ChcekLegalMovement(Figure figure, FieldsStatus[,] fieldsStatus, Vector2 oldVector2, Vector2 newVector2, EnumDirection enumDirection)
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckCheckMate(int x, int y, Figure king, IEnumerable<Figure> defendingFigures, LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+        public bool CheckCheckMate(Vector2 Vector2, Figure king, IEnumerable<Figure> defendingFigures,
+            LiveGame liveGame, EnumDirection direction, IFigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             throw new NotImplementedException();
         }
 
-        public bool CheckLegalMoveDirection(int oldX, int oldY, int newX, int newY)
+        public bool CheckLegalMoveDirection(Vector2 oldVector2, Vector2 newVector2)
         {
             throw new NotImplementedException();
         }
 
-        public void Move(Figure figure, LiveGame liveGame, int oldX, int oldY, int newX, int newY, EnumDirection enumDirection)
+        public void Move(Figure figure, LiveGame liveGame, Vector2 oldVector2, Vector2 newVector2, EnumDirection enumDirection)
         {
             throw new NotImplementedException();
         }
@@ -37,7 +39,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy
             throw new NotImplementedException();
         }
 
-        public EnumDirection SetDirection(int oldX, int oldY, int newX, int newY)
+        public EnumDirection SetDirection(Vector2 oldVector2, Vector2 newVector2)
         {
             throw new NotImplementedException();
         }
