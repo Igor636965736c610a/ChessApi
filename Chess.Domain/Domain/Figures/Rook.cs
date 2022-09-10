@@ -48,15 +48,8 @@ namespace Chess.Core.Domain.Figures
             _ => throw new InvalidOperationException(),
         };
         public override bool CheckLegalMoveDirection(Vector2 newVector2)
-        {
-            if ((Vector2.X != newVector2.X && Vector2.Y == newVector2.Y) || (Vector2.Y != newVector2.Y && Vector2.X == newVector2.X))
-                return true;
-            return false;
-        }
-        public override void SetNewPosition(Vector2 newVector2)
-        {
-            Vector2 = new Vector2(newVector2.X, newVector2.Y);
-        }
+            => (Vector2.X != newVector2.X && Vector2.Y == newVector2.Y) || (Vector2.Y != newVector2.Y && Vector2.X == newVector2.X);
+
         public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
             IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)
             => direction switch

@@ -20,7 +20,7 @@ namespace ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.Sel
             FigureType.Knight => new KnightMoveStrategy(),
             FigureType.Bishop => new BishopMoveStrategy(figureRepository),
             FigureType.Pown => new PownMoveStrategy(),
-            FigureType.Rook => new RockMoveStrategy(figureRepository),
+            FigureType.Rook => new RookMoveStrategy(figureRepository),
             _ => throw new InvalidOperationException(),
         };
     }

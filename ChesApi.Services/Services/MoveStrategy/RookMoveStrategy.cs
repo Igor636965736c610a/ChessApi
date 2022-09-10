@@ -16,25 +16,17 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.Services.MoveStrategy
 {
-    public class RockMoveStrategy : IFigureTypeMoveStrategy
+    public class RookMoveStrategy : IFigureTypeMoveStrategy
     {
         private readonly IFigureRepository _figureRepository;
-        public RockMoveStrategy(IFigureRepository figureRepository)
+        public RookMoveStrategy(IFigureRepository figureRepository)
         {
             _figureRepository = figureRepository;
         }
         public void Move(Figure figure, LiveGame liveGame, Vector2 newVector2, EnumDirection enumDirection, 
             IEnumerable<Figure> enemyFigures)
         {
-            Figure king;
-            if (figure.Color == FigureColor.White)
-            {
-                king = _figureRepository.GetKing(liveGame, FigureColor.White);
-            }
-            else
-            {
-                king = _figureRepository.GetKing(liveGame, FigureColor.Black); 
-            }
+            Figure king = _figureRepository.GetKing(liveGame, figure.Color);
 
             var attackingFigures = enemyFigures.Where(x => x.Vector2.X != newVector2.X && x.Vector2.Y != newVector2.Y);
             var attackFieldsAftreMove = StaticMoveLogicMethods.SceneAttackCheck(figure, liveGame.FieldsStatus, attackingFigures);

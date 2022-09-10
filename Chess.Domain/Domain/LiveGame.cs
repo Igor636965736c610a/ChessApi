@@ -24,7 +24,7 @@ namespace Chess.Core.Domain
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User? User2 { get; set; }
-        public FigureColor FigureColour { get; set; } = FigureColor.White;
+        public FigureColor FigureColor { get; set; } = FigureColor.White;
         public LiveGame(List<Figure> figures, FieldsStatus[,] fielsStatus, User userHost)
         {
             Figures = figures;

@@ -1,20 +1,13 @@
-﻿using Chess.Core.Domain.Enums;
-using Chess.Core.Domain.DefaultConst;
-using Chess.Core.Repo.UserRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chess.Core.Repo.Game;
-using ChesApi.Infrastructure.Services.AttackedFiels;
-using Chess.Core.Domain.EnumsAndStructs;
-using Chess.Core.Domain;
-using System.Collections;
-using ChesApi.Infrastructure.Services.EnumFiguresDirection;
+﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
 using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
+using Chess.Core.Domain;
+using Chess.Core.Domain.DefaultConst;
+using Chess.Core.Domain.Enums;
+using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using Chess.Core.Domain.static_methods;
+using Chess.Core.Repo.Game;
+using Chess.Core.Repo.UserRepository;
 
 namespace ChesApi.Infrastructure.Services
 {
@@ -25,7 +18,7 @@ namespace ChesApi.Infrastructure.Services
         private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
         public MoveService
             (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
-            FigureTypeMoveStrategySelector figureTypeMoveStrategySelector, ISetNewAttackFields setNewAttackFields)
+            FigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
         {
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
@@ -53,7 +46,7 @@ namespace ChesApi.Infrastructure.Services
             if(figure is null)
                 throw new NullReferenceException();
 
-            if (user.FigureColor != liveGame.FigureColour)
+            if (user.FigureColor != liveGame.FigureColor)
                 throw new InvalidOperationException();
 
             if (oldVector2.X == newVector2.X && oldVector2.Y == newVector2.Y)
@@ -105,18 +98,18 @@ namespace ChesApi.Infrastructure.Services
 
             if (figure.Color == FigureColor.White)
             {
-                if (liveGame.FieldsStatus[blackKing.X, blackKing.Y].AttackedWhiteFields && CheckCheckmate(liveGame, FigureColor.White, blackKing))
+                if (liveGame.FieldsStatus[blackKing.Vector2.X, blackKing.Vector2.Y].AttackedWhiteFields && CheckCheckmate(liveGame, FigureColor.White, whiteKing, blackKing))
                     gameStatus = GameStatus.WhiteMat;
 
-                liveGame.FigureColour = FigureColor.Black;
+                liveGame.FigureColor = FigureColor.Black;
                 user.FigureColor = FigureColor.Black;
             }
             if (figure.Color == FigureColor.Black)
             {
-                if (liveGame.FieldsStatus[whiteKing.X, whiteKing.Y].AttackedBlackFields && CheckCheckmate(liveGame, FigureColor.Black, whiteKing))
+                if (liveGame.FieldsStatus[whiteKing.Vector2.X, whiteKing.Vector2.Y].AttackedBlackFields && CheckCheckmate(liveGame, FigureColor.Black, blackKing, whiteKing))
                     gameStatus = GameStatus.BlackMat;
 
-                liveGame.FigureColour = FigureColor.White;
+                liveGame.FigureColor = FigureColor.White;
                 user.FigureColor = FigureColor.White;
             }
             foreach(var f in liveGame.Figures)
