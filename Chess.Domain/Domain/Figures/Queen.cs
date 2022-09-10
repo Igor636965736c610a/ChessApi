@@ -65,8 +65,17 @@ namespace Chess.Core.Domain.Figures
 
         public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
             IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)
+            => direction switch
         {
-            throw new InvalidOperationException();
-        }
+            EnumDirection.Up => StaticMoveLogicMethods.UpAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Down => StaticMoveLogicMethods.DownAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Left => StaticMoveLogicMethods.LeftAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Right => StaticMoveLogicMethods.RightAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.UpLeft => StaticMoveLogicMethods.UpLeftAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.UpRight => StaticMoveLogicMethods.UpRightAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.DownLeft => StaticMoveLogicMethods.DownLeftAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.DownRight => StaticMoveLogicMethods.DownRightAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            _ => throw new InvalidOperationException(),
+        };
     }
 }

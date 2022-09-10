@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.Services
 {
-    public class GameService
+    public class GameService : IGameService
     {
         private readonly IGameRepository _gameRepository;
         private readonly IUserRepository _userRepostitory;

@@ -26,29 +26,19 @@ namespace Chess.Core.Domain.Figures
             Id = id;
         }
 
-        public virtual void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
-        {
-        }
-        public virtual EnumDirection SetDirection(Vector2 newVector2)
-        {
-            throw new InvalidOperationException();
-        }
-        public virtual bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2, EnumDirection enumDirection)
-        {
-            return false;
-        }
-        public virtual bool CheckLegalMoveDirection(Vector2 newVector2)
-        {
-            return false;
-        }
-        public void SetNewPosition(Vector2 newVector2)
+        public abstract void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields);
+
+        public abstract EnumDirection SetDirection(Vector2 newVector2);
+
+        public abstract bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2, EnumDirection enumDirection);
+
+        public abstract bool CheckLegalMoveDirection(Vector2 newVector2);
+
+        public virtual void SetNewPosition(Vector2 newVector2)
         {
             Vector2 = new Vector2(newVector2.X, newVector2.Y);
         }
-        public virtual bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
-            IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)
-        {
-            throw new InvalidOperationException();
-        }
+        public abstract bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
+            IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction);
     }   
 }

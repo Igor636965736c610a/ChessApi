@@ -15,12 +15,6 @@ namespace Chess.Core.Domain
         public List<Figure> Figures = new();
         public bool IsGaming { get; set; } = false;
         public FieldsStatus[,] FieldsStatus { get; set; }
-
-        //public bool[,] AttackedWhiteFiels { get; set; }
-        //public bool[,] AttackedBlackFiels { get; set; }
-        //public bool[,] OccupiedWhiteFiels { get; set; }
-        //public bool[,] OccupiedBlackFiels { get; set; }
-
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User? User2 { get; set; }

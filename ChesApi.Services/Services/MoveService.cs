@@ -11,7 +11,7 @@ using Chess.Core.Repo.UserRepository;
 
 namespace ChesApi.Infrastructure.Services
 {
-    public class MoveService
+    public class MoveService : IMoveService
     {
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
@@ -98,7 +98,7 @@ namespace ChesApi.Infrastructure.Services
 
             if (figure.Color == FigureColor.White)
             {
-                if (liveGame.FieldsStatus[blackKing.Vector2.X, blackKing.Vector2.Y].AttackedWhiteFields && CheckCheckmate(liveGame, FigureColor.White, whiteKing, blackKing))
+                if (liveGame.FieldsStatus[blackKing.Vector2.X, blackKing.Vector2.Y].AttackedWhiteFields && CheckCheckmate(liveGame, blackKing, whiteKing))
                     gameStatus = GameStatus.WhiteMat;
 
                 liveGame.FigureColor = FigureColor.Black;
@@ -106,7 +106,7 @@ namespace ChesApi.Infrastructure.Services
             }
             if (figure.Color == FigureColor.Black)
             {
-                if (liveGame.FieldsStatus[whiteKing.Vector2.X, whiteKing.Vector2.Y].AttackedBlackFields && CheckCheckmate(liveGame, FigureColor.Black, blackKing, whiteKing))
+                if (liveGame.FieldsStatus[whiteKing.Vector2.X, whiteKing.Vector2.Y].AttackedBlackFields && CheckCheckmate(liveGame, whiteKing, blackKing))
                     gameStatus = GameStatus.BlackMat;
 
                 liveGame.FigureColor = FigureColor.White;
@@ -119,12 +119,12 @@ namespace ChesApi.Infrastructure.Services
             return gameStatus;
         }
 
-        private bool CheckCheckmate(LiveGame liveGame, FigureColor figureColor, Figure enemyKing, Figure king)
+        private bool CheckCheckmate(LiveGame liveGame, Figure enemyKing, Figure king)
         {
             //sprawdzenie legalności ruchow krola
 
 
-            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, figureColor);
+            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, king.Color);
             if(attackingFigures.Count() > 1)
             {
                 if(attackingFigures.Any(x => x.FigureType == FigureType.Knight))

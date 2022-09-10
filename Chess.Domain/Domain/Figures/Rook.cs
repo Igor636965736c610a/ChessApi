@@ -53,12 +53,17 @@ namespace Chess.Core.Domain.Figures
         public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
             IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)
             => direction switch
-            {
+        {
             EnumDirection.Up => StaticMoveLogicMethods.UpAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
-            EnumDirection.Down => StaticMoveLogicMethods.UpAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
-            EnumDirection.Left => StaticMoveLogicMethods.UpAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
-            EnumDirection.Right => StaticMoveLogicMethods.UpAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Down => StaticMoveLogicMethods.DownAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Left => StaticMoveLogicMethods.LeftAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
+            EnumDirection.Right => StaticMoveLogicMethods.RightAttack(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2),
             _ => throw new InvalidOperationException(),
-            };
+        };
+        public override void SetNewPosition(Vector2 newVector2)
+        {
+            Vector2 = new Vector2(newVector2.X, newVector2.Y);
+            FirstMove = false;
+        }
     }
 }
