@@ -24,18 +24,8 @@ namespace Chess.Core.Domain.Figures
             StaticMoveLogicMethods.DownLeftSetAttackFields(fieldsStatus, newAttackedFields, Vector2);
         }
         public override EnumDirection SetDirection(Vector2 newVector2)
-        {
-            if (Vector2.X > newVector2.X && Vector2.Y < newVector2.Y)
-                return EnumDirection.UpLeft;
-            if (Vector2.X < newVector2.X && Vector2.Y < newVector2.Y)
-                return EnumDirection.UpRight;
-            if (Vector2.X > newVector2.X && Vector2.Y > newVector2.Y)
-                return EnumDirection.DownLeft;
-            if (Vector2.X < newVector2.X && Vector2.Y > newVector2.Y)
-                return EnumDirection.DownRight;
+            => (EnumDirection)(Vector2.Y > newVector2.Y ? 0 : 1) + ((Vector2.X > newVector2.X ? 0 : 1) << 1) + 4;
 
-            throw new InvalidOperationException();
-        }
         public override bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2, EnumDirection enumDirection)
            => enumDirection switch
         {
@@ -46,7 +36,7 @@ namespace Chess.Core.Domain.Figures
             _ => throw new InvalidOperationException(),
         };
         public override bool CheckLegalMoveDirection(Vector2 newVector2)
-            => (Math.Abs(Vector2.X - newVector2.X) == Math.Abs(Vector2.Y - newVector2.Y));
+            => Math.Abs(Vector2.X - newVector2.X) == Math.Abs(Vector2.Y - newVector2.Y);
 
         public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
             IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)

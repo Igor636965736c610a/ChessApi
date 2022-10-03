@@ -11,8 +11,8 @@ namespace Chess.Core.Domain.EnumsAndStructs
     {
         public bool AttackedWhiteFields { get; set; }
         public bool AttackedBlackFields { get; set; }
-        public bool OccupiedWhiteFields { get; set; }
-        public bool OccupiedBlackFields { get; set; }
+        public bool OccupiedWhiteFields { get; set; }     // wyjebać
+        public bool OccupiedBlackFields { get; set; }     // wyjebać
         public Figure? Figure { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace Chess.Core.Domain.EnumsAndStructs
             X = x;
             Y = y;
         }
-        public readonly int X;
-        public readonly int Y;
+        public int X;
+        public int Y;
     }
 }

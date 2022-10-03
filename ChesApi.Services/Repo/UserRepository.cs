@@ -42,8 +42,6 @@ namespace ChesApi.Infrastructure.Repo
             => await Task.FromResult(_context.Users.Update(user));
 
         public async Task RemoveUser(User user)
-        {
-            await Task.FromResult(_context.Users.Remove(user));
-        }
+            => await Task.FromResult(_context.Users.Remove(user));
     }
 }

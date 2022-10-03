@@ -1,11 +1,9 @@
 ﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using ChesApi.Infrastructure.Services.MoveStrategy.MoveDirectionStrategy.SelectLogic;
 using Chess.Core.Domain;
 using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
-using Chess.Core.Domain.static_methods;
 using Chess.Core.Repo.Game;
 using Chess.Core.Repo.UserRepository;
 
@@ -15,18 +13,16 @@ namespace ChesApi.Infrastructure.Services
     {
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
-        private readonly IFigureTypeMoveStrategySelector _figureTypeMoveStrategySelector;
         public MoveService
-            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository,
-            FigureTypeMoveStrategySelector figureTypeMoveStrategySelector)
+            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository)
         {
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
-            _figureTypeMoveStrategySelector = figureTypeMoveStrategySelector;
         }
 
         public GameStatus Move(Vector2 newVector2, Vector2 oldVector2, Guid userId)  //userId from JWT
         {
+            //validations and needed properties
             GameStatus gameStatus = GameStatus.IsGaming;
             if (newVector2.X < Board.X && newVector2.X >= 0 && newVector2.Y < Board.Y && newVector2.Y >= 0)
                 throw new Exception("X and Y must be 0 - 7");
@@ -74,8 +70,17 @@ namespace ChesApi.Infrastructure.Services
                 king = _figureRepository.GetKing(liveGame, FigureColor.Black);
                 enemyKing = _figureRepository.GetKing(liveGame, FigureColor.White);
             }
-            var figureMoveStrategy = _figureTypeMoveStrategySelector.SelectMoveStrategy(figure, _figureRepository);
-            figureMoveStrategy.Move(figure, liveGame, newVector2, direction, enemyFigures);
+
+            //Move
+            Figure figureColorKing = _figureRepository.GetKing(liveGame, figure.Color);
+            var attackingFigures = enemyFigures.SkipWhile(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
+            var attackFieldsAftreMove = StaticMoveLogicMethods.CheckDiscoveredAttack(figure, liveGame.FieldsStatus, attackingFigures);
+            if(!figure.ChcekLegalMovement(liveGame.FieldsStatus, newVector2, direction))
+                throw new InvalidOperationException();
+            if (StaticMoveLogicMethods.CheckSetNewPosition(figure.Color, liveGame.FieldsStatus, newVector2, king.Vector2, attackFieldsAftreMove))
+                figure.SetNewPosition(newVector2);
+            else
+                throw new InvalidOperationException();
             Figure? toRemoveFigure = enemyFigures.FirstOrDefault(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
             if (toRemoveFigure is not null)
             {
@@ -85,6 +90,8 @@ namespace ChesApi.Infrastructure.Services
                     liveGame.FieldsStatus[newVector2.X, newVector2.Y].OccupiedBlackFields = false;
                 _figureRepository.RemoveFigure(liveGame, toRemoveFigure);
             }
+
+            //AfterMoveActions
             UpdateFieldsStatus(figure, liveGame.FieldsStatus, newVector2);
             var whiteKing = _figureRepository.GetKing(liveGame, FigureColor.White);
             var blackKing = _figureRepository.GetKing(liveGame, FigureColor.Black);
