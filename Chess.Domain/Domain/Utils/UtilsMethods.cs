@@ -40,22 +40,6 @@ namespace Chess.Core.Domain.Utils
                     break;
             }
         }
-        public static bool AttackLineIteration(Vector2 current, Vector2 newVector2, IEnumerable<Figure> defendingFigures,
-            IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2)
-        {
-            var direction = new Vector2(newVector2.X - current.X, newVector2.Y - current.Y);
-            var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
-
-            while ((current.X != newVector2.X) && (current.Y != newVector2.Y))
-            {
-                current.X += step.X;
-                current.Y += step.Y;
-
-                if (CheckCover(current, defendingFigures, attackingFigures, fieldsStatus, kingVector2))
-                    return true;
-            }
-            return false;
-        }
         public static bool[,] SetNewAttackFields(IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus)
         {
             bool[,] newAttackFields = new bool[Board.X, Board.Y];
@@ -75,7 +59,7 @@ namespace Chess.Core.Domain.Utils
                     f.IsAttacking = true;
             }
         }
-        private static bool CheckRevealAttack(Figure figure, FieldsStatus[,] fieldsStatus, 
+        public static bool CheckRevealAttack(Figure figure, FieldsStatus[,] fieldsStatus, 
             IEnumerable<Figure> attackingFigures, Vector2 kingVector2)
         {
             var _figure = fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure;
@@ -89,7 +73,7 @@ namespace Chess.Core.Domain.Utils
             newAttackedFields[vector2.X, vector2.Y] = true;
             return fieldsStatus[vector2.X, vector2.Y].Figure is not null;
         }
-        private static bool CheckCover(Vector2 vector2, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures,
+        public static bool CheckCover(Vector2 vector2, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures,
             FieldsStatus[,] fieldsStatus, Vector2 kingVector2)
         {
             foreach (var f in defendingFigures)
@@ -101,7 +85,7 @@ namespace Chess.Core.Domain.Utils
             }
             return false;
         }
-        private static bool CheckOccupied(FieldsStatus[,] fieldsStatus, Vector2 current)
+        internal static bool CheckOccupied(FieldsStatus[,] fieldsStatus, Vector2 current)
             => fieldsStatus[current.X, current.Y].Figure is null;
     }
 }

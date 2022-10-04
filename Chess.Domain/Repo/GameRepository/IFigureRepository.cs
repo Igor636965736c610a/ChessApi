@@ -13,9 +13,9 @@ namespace Chess.Core.Repo.Game
     public interface IFigureRepository
     {
         Figure? GetFigure(LiveGame liveGame, Vector2 vector2);
-        Figure GetKing(LiveGame liveGmae, FigureColor color);
+        Figure GetKing(LiveGame liveGmae, bool color);
         void RemoveFigure(LiveGame liveGame, Figure figure);
-        IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, FigureColor figureColor);
-        IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, FigureColor figureColor);
+        IEnumerable<Figure> GetFiguresIsAttacking(LiveGame liveGame, bool figureColor);
+        IEnumerable<Figure> GetFiguresByColor(LiveGame liveGame, bool figureColor);
     }
 }

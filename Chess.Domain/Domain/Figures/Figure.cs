@@ -34,7 +34,5 @@ namespace Chess.Core.Domain.Figures
         {
             Vector2 = new Vector2(newVector2.X, newVector2.Y);
         }
-        public abstract bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
-            IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2);
     }   
 }

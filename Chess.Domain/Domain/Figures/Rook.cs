@@ -33,10 +33,6 @@ namespace Chess.Core.Domain.Figures
 
             return UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor);
         }
-        public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures,
-            IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2)
-            => UtilsMethods.AttackLineIteration(Vector2, newVector2, defendingFigures, attackingFigures, fieldsStatus, kingVector2);
-
         public override void SetNewPosition(Vector2 newVector2)
         {
             Vector2 = new Vector2(newVector2.X, newVector2.Y);

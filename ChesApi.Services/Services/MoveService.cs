@@ -4,6 +4,7 @@ using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
+using Chess.Core.Domain.Utils;
 using Chess.Core.Repo.Game;
 using Chess.Core.Repo.UserRepository;
 
@@ -47,10 +48,6 @@ namespace ChesApi.Infrastructure.Services
 
             if (oldVector2.X == newVector2.X && oldVector2.Y == newVector2.Y)
                 throw new InvalidOperationException();
-
-            if(!figure.CheckLegalMoveDirection(newVector2))
-                throw new InvalidOperationException();
-            var direction = figure.SetDirection(newVector2);
 
             IEnumerable<Figure> enemyFigures;
             IEnumerable<Figure> figures;
@@ -131,7 +128,7 @@ namespace ChesApi.Infrastructure.Services
             //sprawdzenie legalności ruchow krola
 
 
-            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, king.Color);
+            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, king.WhiteColor);
             if(attackingFigures.Count() > 1)
             {
                 if(attackingFigures.Any(x => x.FigureType == FigureType.Knight))
@@ -141,21 +138,32 @@ namespace ChesApi.Infrastructure.Services
                     .Any(x => x.FigureType == FigureType.Bishop))
                     return true;
 
-                List<EnumDirection> attackDirections = new();
+                List<Vector2> attackDirections = new();
                 foreach(var f in attackingFigures)
                 {
-                    attackDirections.Add(f.SetDirection(enemyKing.Vector2));
+                    attackDirections.Add(new Vector2(Math.Sign(enemyKing.Vector2.X - f.Vector2.X), Math.Sign(enemyKing.Vector2.Y - f.Vector2.Y)));
                 }
-                if(!attackDirections.All(x => x == attackDirections.First()))
+                if (!attackDirections.All(x => x.X == attackDirections.First().X && x.Y == attackDirections.First().Y))
                     return true;
 
             }
-            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, enemyKing.Color)
+            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, enemyKing.WhiteColor)
                 .SkipWhile(x => x.FigureType == FigureType.King);
             var figure = attackingFigures.OrderBy(x => Math.Abs(enemyKing.Vector2.X + enemyKing.Vector2.Y - x.Vector2.X + x.Vector2.Y)).First();
-            var direction = figure.SetDirection(enemyKing.Vector2);
-            return !figure.CheckCheckamte(enemyKing.Vector2, defendingFigures, attackingFigures, liveGame.FieldsStatus,
-                king.Vector2, direction);
+            var enemyFigures = _figureRepository.GetFiguresByColor(liveGame, !king.WhiteColor).SkipWhile(x => x.IsAttacking == true);
+            var direction = new Vector2(enemyKing.Vector2.X - figure.Vector2.X, enemyKing.Vector2.Y - figure.Vector2.Y);
+            var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
+            var current = figure.Vector2;
+
+            while ((current.X != enemyKing.Vector2.X) && (current.Y != enemyKing.Vector2.Y))
+            {
+                current.X += step.X;
+                current.Y += step.Y;
+
+                if (UtilsMethods.CheckCover(current, defendingFigures, attackingFigures, liveGame.FieldsStatus, king.Vector2))
+                    return true;
+            }
+            return false;
         }
 
         private static void UpdateWhiteAttackFieldsStatus(FieldsStatus[,] fieldsStatus, bool[,] newFieldsStatusProperty)
