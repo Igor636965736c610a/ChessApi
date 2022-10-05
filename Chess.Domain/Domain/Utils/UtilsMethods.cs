@@ -31,7 +31,7 @@ namespace Chess.Core.Domain.Utils
         {
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
-            while (current.X > 8 || current.X < 0 || current.Y > 8 || current.Y < 0)
+            while (current.X < 8 || current.X > 0 || current.Y < 8 || current.Y > 0)
             {
                 current.X += step.X;
                 current.Y += step.Y;

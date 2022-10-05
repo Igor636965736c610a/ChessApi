@@ -10,8 +10,9 @@ namespace Chess.Core.Domain.Figures
             FigureType = FigureType.Knight;
         }
 
-        public override bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2)
+        public override bool ChcekLegalMovement(LiveGame liveGame, Vector2 newVector2)
         {
+            var fieldsStatus = liveGame.FieldsStatus;
             if (!CheckDirectionValid(newVector2))
                 return false;
             return !(fieldsStatus[newVector2.X, newVector2.Y].Figure?.WhiteColor == WhiteColor);

@@ -15,7 +15,7 @@ namespace Chess.Core.Domain
         public string Password { get; set; }
         public Guid Id { get; set; }
         public LiveGame LiveGame { get; set; }
-        public FigureColor FigureColor { get; set; }
+        public bool WhiteColor { get; set; }
         public User(string name, string email, string password, Guid id)
         {
             Name = name;
@@ -23,14 +23,14 @@ namespace Chess.Core.Domain
             Password = password;
             Id = id;
         }
-        public User(string name, string email, string password, Guid id, LiveGame liveGame, FigureColor figureColour)
+        public User(string name, string email, string password, Guid id, LiveGame liveGame, bool whiteColor)
         {
             Name = name;
             Email = email;
             Password = password;
             Id = id;
             LiveGame = liveGame;
-            FigureColor = figureColour;
+            whiteColor = WhiteColor;
         }
     }
 }

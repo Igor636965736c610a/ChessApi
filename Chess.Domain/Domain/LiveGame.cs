@@ -14,11 +14,12 @@ namespace Chess.Core.Domain
     {
         public List<Figure> Figures = new();
         public bool IsGaming { get; set; } = false;
+        public EnPassant EnPassant { get; set; }
         public FieldsStatus[,] FieldsStatus { get; set; }
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User? User2 { get; set; }
-        public FigureColor FigureColor { get; set; } = FigureColor.White;
+        public bool WhiteColor { get; set; } = true;
         public LiveGame(List<Figure> figures, FieldsStatus[,] fielsStatus, User userHost)
         {
             Figures = figures;

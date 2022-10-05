@@ -20,14 +20,15 @@ namespace Chess.Core.Domain.Figures
 
         public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
         {
-            UtilsMethods.AttackFields(fieldsStatus, Vector2, new Vector2(1, 0), newAttackedFields);
-            UtilsMethods.AttackFields(fieldsStatus, Vector2, new Vector2(-1, 0), newAttackedFields);
-            UtilsMethods.AttackFields(fieldsStatus, Vector2, new Vector2(0, 1), newAttackedFields);
-            UtilsMethods.AttackFields(fieldsStatus, Vector2, new Vector2(0, -1), newAttackedFields);
+            UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir1, newAttackedFields);
+            UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir2, newAttackedFields);
+            UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir3, newAttackedFields);
+            UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir4, newAttackedFields);
         }
-        public override bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2)
+        public override bool ChcekLegalMovement(LiveGame liveGame, Vector2 newVector2)
         {
-            if(!CheckDirectionValid(newVector2))
+            var fieldsStatus = liveGame.FieldsStatus;
+            if (!CheckDirectionValid(newVector2))
                 return false;
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
 
@@ -40,5 +41,10 @@ namespace Chess.Core.Domain.Figures
         }
         private bool CheckDirectionValid(Vector2 newVector2)
             => (Vector2.X != newVector2.X && Vector2.Y == newVector2.Y) || (Vector2.Y != newVector2.Y && Vector2.X == newVector2.X);
+
+        private readonly Vector2 Dir1 = new Vector2(1, 0);
+        private readonly Vector2 Dir2 = new Vector2(-1, 0);
+        private readonly Vector2 Dir3 = new Vector2(0, 1);
+        private readonly Vector2 Dir4 = new Vector2(0, -1);
     }
 }

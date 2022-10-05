@@ -28,7 +28,7 @@ namespace Chess.Core.Domain.Figures
 
         public abstract void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields);
 
-        public abstract bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2);
+        public abstract bool ChcekLegalMovement(LiveGame liveGame, Vector2 newVector2);
 
         public virtual void SetNewPosition(Vector2 newVector2)
         {
