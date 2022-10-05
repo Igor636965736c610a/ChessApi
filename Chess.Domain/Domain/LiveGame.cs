@@ -14,7 +14,7 @@ namespace Chess.Core.Domain
     {
         public List<Figure> Figures = new();
         public bool IsGaming { get; set; } = false;
-        public EnPassant EnPassant { get; set; }
+        public EnPassant EnPassant { get; set; } 
         public FieldsStatus[,] FieldsStatus { get; set; }
         public Guid Id { get; set; }
         public User HostUser { get; set; }

@@ -61,12 +61,12 @@ namespace ChesApi.Infrastructure.Services
             if(!figure.ChcekLegalMovement(liveGame, newVector2))
                 throw new InvalidOperationException();
             figure.SetNewPosition(newVector2);
-            
+            liveGame.EnPassant = new EnPassant();
+            if (figure.FigureType == FigureType.Pown && Math.Abs(newVector2.Y - figure.Vector2.Y) == 2)
+                liveGame.EnPassant = new EnPassant(true, new Vector2(newVector2.Y - Math.Sign(newVector2.Y - figure.Vector2.Y), newVector2.X));
             Figure? toRemoveFigure = enemyFigures.FirstOrDefault(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
             if (toRemoveFigure is not null)
-            {
                 _figureRepository.RemoveFigure(liveGame, toRemoveFigure);
-            }
             UtilsMethods.SetAttackingFigures(figures, liveGame.FieldsStatus, enemyKing.Vector2);
             if (liveGame.Figures.Any(x => x.IsAttacking == true) && CheckCheckmate(liveGame, enemyKing, king))
             {
