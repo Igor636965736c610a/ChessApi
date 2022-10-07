@@ -1,5 +1,4 @@
-﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using Chess.Core.Domain;
+﻿using Chess.Core.Domain;
 using Chess.Core.Domain.DefaultConst;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;

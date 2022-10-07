@@ -31,7 +31,7 @@ namespace Chess.Core.Domain.Utils
         {
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
-            while (current.X < 8 || current.X > 0 || current.Y < 8 || current.Y > 0)
+            while (current.X < 8 || current.X >= 0 || current.Y < 8 || current.Y >= 0)
             {
                 current.X += step.X;
                 current.Y += step.Y;
@@ -62,7 +62,7 @@ namespace Chess.Core.Domain.Utils
         public static bool CheckRevealAttack(Figure figure, FieldsStatus[,] fieldsStatus, 
             IEnumerable<Figure> attackingFigures, Vector2 kingVector2)
         {
-            var _figure = fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure;
+            var _figure = figure;
             fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure = null;
             var newAttackFields = SetNewAttackFields(attackingFigures, fieldsStatus);
             fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure = _figure;
@@ -74,13 +74,14 @@ namespace Chess.Core.Domain.Utils
             return fieldsStatus[vector2.X, vector2.Y].Figure is not null;
         }
         public static bool CheckCover(Vector2 vector2, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures,
-            FieldsStatus[,] fieldsStatus, Vector2 kingVector2)
+            LiveGame liveGame, Vector2 kingVector2)
         {
+            var fieldsStatus = liveGame.FieldsStatus;
             foreach (var f in defendingFigures)
             {
                 if (CheckRevealAttack(f, fieldsStatus, attackingFigures, kingVector2))
                     return false;
-                if (f.ChcekLegalMovement(fieldsStatus, vector2))
+                if (f.ChcekLegalMovement(liveGame, vector2))
                     return true;
             }
             return false;

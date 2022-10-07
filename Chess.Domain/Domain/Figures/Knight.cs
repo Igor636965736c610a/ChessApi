@@ -34,7 +34,8 @@ namespace Chess.Core.Domain.Figures
         {
             vector2.X += vector2.X + dir.X;
             vector2.Y += vector2.Y + dir.Y;
-            newAttakFields[vector2.X, vector2.Y] = true;
+            if(vector2.X < 8 && vector2.X >= 0 && vector2.Y < 8 && vector2.Y >= 0)
+                newAttakFields[vector2.X, vector2.Y] = true;
         }
         private readonly Vector2 Dir1 = new Vector2(2, 1);
         private readonly Vector2 Dir2 = new Vector2(2, -1);
