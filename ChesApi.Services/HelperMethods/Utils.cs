@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chess.Core.Domain.DefaultConst
+namespace ChesApi.Infrastructure.HelperMethods
 {
-    public static class Board
+    public class Utils
     {
-        public const int X = 8;
-        public const int Y = 8;
     }
 }

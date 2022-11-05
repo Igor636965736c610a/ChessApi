@@ -10,6 +10,7 @@ namespace Chess.Core.Domain.EnumsAndStructs
     {
         WhiteMat = 0,
         BlackMat = 1,
-        IsGaming = 2
+        IsGaming = 2,
+        IllegalMove = 3,
     }
 }

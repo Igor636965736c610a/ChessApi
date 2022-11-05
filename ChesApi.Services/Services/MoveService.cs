@@ -1,5 +1,6 @@
-﻿using Chess.Core.Domain;
-using Chess.Core.Domain.DefaultConst;
+﻿using ChesApi.Infrastructure.MoveTypeStrategy;
+using ChesApi.Infrastructure.MoveTypeStrategy.Enum;
+using Chess.Core.Domain;
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
@@ -13,82 +14,88 @@ namespace ChesApi.Infrastructure.Services
     {
         private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
+        private readonly IStrategyFactory<IStrategy> _strategyFactor;
         public MoveService
-            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository)
+            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository, IStrategyFactory<IStrategy> strategyFactory)
         {
             _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
+            _strategyFactor = strategyFactory;
         }
 
-        public GameStatus Move(Vector2 newVector2, Vector2 oldVector2, Guid userId)  //userId from JWT
+        public GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, Guid userId)  //userId from JWT
         {
             //validations and needed properties
-            GameStatus gameStatus = GameStatus.IsGaming;
-            if (newVector2.X < Board.X && newVector2.X >= 0 && newVector2.Y < Board.Y && newVector2.Y >= 0)
-                throw new Exception("X and Y must be 0 - 7");
 
             var user = _userInGameRepository.GetUserById(userId);
             if (user is null)
                 throw new NullReferenceException();
 
-            var liveGame = user.LiveGame;
-            if(liveGame is null)
+            if(user.LiveGame is null)
                 throw new Exception("404 sesion");
 
-            if(liveGame.IsGaming == false)
+            if(user.LiveGame.IsGaming == false)
                 throw new InvalidOperationException();
 
-            var figure = _figureRepository.GetFigure(liveGame, oldVector2);
+            if(user.WhiteColor != user.LiveGame.WhiteColor)
+                throw new InvalidOperationException();
+
+            var figure = _figureRepository.GetFigure(user.LiveGame.Board, oldVector2);
             if(figure is null)
                 throw new NullReferenceException();
 
-            if (user.WhiteColor != liveGame.WhiteColor)
+            var board = user.LiveGame.Board;
+            if (newVector2.X < board.XMin && newVector2.X >= board.XMax && newVector2.Y < board.YMin && newVector2.Y >= board.YMax)
                 throw new InvalidOperationException();
 
             if (oldVector2.X == newVector2.X && oldVector2.Y == newVector2.Y)
                 throw new InvalidOperationException();
 
-            IEnumerable<Figure> enemyFigures = _figureRepository.GetFiguresByColor(liveGame, !figure.WhiteColor);
-            IEnumerable<Figure> figures = _figureRepository.GetFiguresByColor(liveGame, figure.WhiteColor);
-            Figure king = _figureRepository.GetKing(liveGame, figure.WhiteColor);
-            Figure enemyKing = _figureRepository.GetKing(liveGame, !figure.WhiteColor);
+            var strategy = _strategyFactor.GetStrategy(moveType.ToString());
+            Figure? figureToDelete;
 
-            //Move
-            var attackingFigures = enemyFigures.SkipWhile(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
-            if (UtilsMethods.CheckRevealAttack(figure, liveGame.FieldsStatus, attackingFigures, king.Vector2))
-                throw new InvalidOperationException();
-            if(!figure.ChcekLegalMovement(liveGame, newVector2))
+            var gameStatus = strategy.Move(newVector2, figure, board, out figureToDelete);
+            if(gameStatus == GameStatus.IllegalMove)
                 throw new InvalidOperationException();
             figure.SetNewPosition(newVector2);
-            liveGame.EnPassant = new EnPassant();
+            board.EnPassant = new EnPassant();
             if (figure.FigureType == FigureType.Pown && Math.Abs(newVector2.Y - figure.Vector2.Y) == 2)
-                liveGame.EnPassant = new EnPassant(true, new Vector2(newVector2.Y - Math.Sign(newVector2.Y - figure.Vector2.Y), newVector2.X));
-            Figure? toRemoveFigure = enemyFigures.FirstOrDefault(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y);
-            if (toRemoveFigure is not null)
-                _figureRepository.RemoveFigure(liveGame, toRemoveFigure);
-            UtilsMethods.SetAttackingFigures(figures, liveGame.FieldsStatus, enemyKing.Vector2);
-            if (liveGame.Figures.Any(x => x.IsAttacking == true) && CheckCheckmate(liveGame, enemyKing, king))
+                board.EnPassant = new EnPassant(true, new Vector2(newVector2.Y - Math.Sign(newVector2.Y - figure.Vector2.Y), newVector2.X));
+    
+            if (figureToDelete is not null)
+                _figureRepository.RemoveFigure(board, figureToDelete);
+
+            List<Figure> enemyFigures = _figureRepository.GetFiguresByColor(board, !figure.WhiteColor).ToList();
+            var enemyKing = _figureRepository.GetKing(board, !figure.WhiteColor);
+            var king = _figureRepository.GetKing(board, figure.WhiteColor);
+            List<Figure> figures = board.Figures.Where(x => x.WhiteColor == figure.WhiteColor && x.FigureType != FigureType.King)
+                .ToList();
+            List<Figure> attackingFigures = new List<Figure>();
+            foreach(var f in figures)
             {
-                if (figure.WhiteColor)
-                    gameStatus = GameStatus.WhiteMat;
-                else
-                    gameStatus = GameStatus.BlackMat;
+                if(f.ChcekLegalMovement(board, enemyKing.Vector2, enemyFigures))
+                    attackingFigures.Add(f);
             }
-            liveGame.WhiteColor = !figure.WhiteColor;
-            user.WhiteColor = !figure.WhiteColor;
-            foreach(var f in liveGame.Figures)
+            if(CheckCheckmate(board, enemyKing, king, attackingFigures))
             {
-                f.IsAttacking = false;
+                return figure.WhiteColor ? GameStatus.WhiteMat : GameStatus.BlackMat;
             }
-            return gameStatus;
+            user.LiveGame.WhiteColor = !figure.WhiteColor;
+            user.LiveGame.HostUser.WhiteColor = !figure.WhiteColor;
+            user.LiveGame.User2.WhiteColor = !figure.WhiteColor;
+
+            return GameStatus.IsGaming;
         }
 
-        private bool CheckCheckmate(LiveGame liveGame, Figure enemyKing, Figure king)
+        private bool CheckCheckmate(Board board, Figure enemyKing, Figure king, List<Figure> attackingFigures)
         {
-            //sprawdzenie legalności ruchow krola
+            var kingLegalMovement = king.ShowLegalMovement(board, attackingFigures);
+            foreach(var k in kingLegalMovement)
+            {
+                if(k == true)
+                    return false;
+            }
 
-
-            var attackingFigures = _figureRepository.GetFiguresIsAttacking(liveGame, king.WhiteColor);
             if(attackingFigures.Count() > 1)
             {
                 if(attackingFigures.Any(x => x.FigureType == FigureType.Knight))
@@ -105,12 +112,12 @@ namespace ChesApi.Infrastructure.Services
                 }
                 if (!attackDirections.All(x => x.X == attackDirections.First().X && x.Y == attackDirections.First().Y))
                     return true;
-
             }
-            var defendingFigures = _figureRepository.GetFiguresByColor(liveGame, enemyKing.WhiteColor)
+            var defendingFigures = _figureRepository.GetFiguresByColor(board, enemyKing.WhiteColor)
                 .SkipWhile(x => x.FigureType == FigureType.King);
             var figure = attackingFigures.OrderBy(x => Math.Abs(enemyKing.Vector2.X + enemyKing.Vector2.Y - x.Vector2.X + x.Vector2.Y)).First();
-            var enemyFigures = _figureRepository.GetFiguresByColor(liveGame, !king.WhiteColor).SkipWhile(x => x.IsAttacking == true);
+            var enemyFigures = _figureRepository.GetFiguresByColor(board, !king.WhiteColor)
+                .Where(x => !attackingFigures.Contains(x));
             var direction = new Vector2(enemyKing.Vector2.X - figure.Vector2.X, enemyKing.Vector2.Y - figure.Vector2.Y);
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
             var current = figure.Vector2;
@@ -120,7 +127,7 @@ namespace ChesApi.Infrastructure.Services
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (UtilsMethods.CheckCover(current, defendingFigures, attackingFigures, liveGame.FieldsStatus, king.Vector2))
+                if (UtilsMethods.CheckCover(current, defendingFigures, attackingFigures, board))
                     return true;
             }
             return false;

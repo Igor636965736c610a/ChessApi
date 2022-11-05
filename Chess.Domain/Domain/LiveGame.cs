@@ -12,19 +12,16 @@ namespace Chess.Core.Domain
 {
     public class LiveGame
     {
-        public List<Figure> Figures = new();
+        public Board Board { get; set; }
         public bool IsGaming { get; set; } = false;
-        public EnPassant EnPassant { get; set; } 
-        public FieldsStatus[,] FieldsStatus { get; set; }
         public Guid Id { get; set; }
         public User HostUser { get; set; }
         public User? User2 { get; set; }
         public bool WhiteColor { get; set; } = true;
-        public LiveGame(List<Figure> figures, FieldsStatus[,] fielsStatus, User userHost)
+        public LiveGame(User userHost, Board board)
         {
-            Figures = figures;
-            FieldsStatus = fielsStatus;
             HostUser = userHost;
+            Board = board;
         }
     }
 }

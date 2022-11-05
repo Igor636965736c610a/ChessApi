@@ -1,11 +1,10 @@
-﻿using Chess.Core.Domain.EnumsAndStructs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chess.Core.Domain.Figures
+namespace Chess.Core.Domain.EnumsAndStructs
 {
     public struct EnPassant
     {

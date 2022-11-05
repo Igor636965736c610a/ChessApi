@@ -1,5 +1,4 @@
-﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using Chess.Core.Domain.Enums;
+﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Utils;
 using System;
@@ -13,32 +12,35 @@ namespace Chess.Core.Domain.Figures
     public class Pown : Figure
     {
         private bool FirstMove { get; set; } = true;
-        public Pown(Value value, bool color, Vector2 vector2, Guid id) : base(value, color, vector2, id)
+        public Pown(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
         {
             FigureType = FigureType.Pown;
         }
 
-        public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
+        //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> attackingFigures)
         {
-            throw new NotImplementedException();
-        }
-        public override bool ChcekLegalMovement(LiveGame liveGame, Vector2 newVector2)
-        {
-            var fieldsStatus = liveGame.FieldsStatus;
+            var fieldsStatus = board.FieldsStatus;
+            var king = UtilsMethods.GetKing(board.Figures, WhiteColor);
             Vector2 movement;
             Vector2 direction;
             if(!CheckDirectionValid(newVector2, out movement, out direction))
                 return false;
-            if(Math.Abs(movement.Y) == 2 && FirstMove == false)
+            if (!UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, attackingFigures))
                 return false;
-            if(Math.Abs(direction.X) == 1 && ((fieldsStatus[newVector2.X, newVector2.Y].Figure?.WhiteColor == WhiteColor)
-                || (liveGame.EnPassant.CanEnPassant == true 
-                && liveGame.EnPassant.Vector2.X == newVector2.X 
-                && liveGame.EnPassant.Vector2.Y == newVector2.Y)))
+            if (Math.Abs(movement.Y) == 2 && FirstMove == false)
+                return false;
+            if(Math.Abs(direction.X) == 1 && ((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == WhiteColor)
+                || (board.EnPassant.CanEnPassant == true 
+                && board.EnPassant.Vector2.X == newVector2.X 
+                && board.EnPassant.Vector2.Y == newVector2.Y)))
                 return false; 
             if(Math.Abs(movement.Y) == 2 && !UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor))
                 return false;
-            return !(direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y].Figure?.WhiteColor != WhiteColor);
+            return !(direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor);
         }
         public override void SetNewPosition(Vector2 newVector2)
         {
@@ -58,5 +60,9 @@ namespace Chess.Core.Domain.Figures
             return WhiteColor ? dir.Y > 0 : dir.Y < 0;
         }
 
+        public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

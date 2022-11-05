@@ -1,6 +1,6 @@
-﻿using ChesApi.Infrastructure.Services.EnumFiguresDirection;
-using Chess.Core.Domain.Enums;
+﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,34 +11,62 @@ namespace Chess.Core.Domain.Figures
 {
     public class King : Figure
     {
-        public King(Value value, FigureColor color, Vector2 vector2, Guid id) : base(value, color, vector2, id)
+        public King(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
         {
             FigureType = FigureType.King;
         }
 
-        public override bool ChcekLegalMovement(FieldsStatus[,] fieldsStatus, Vector2 newVector2, EnumDirection enumDirection)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> attackingFigures)
         {
-            throw new NotImplementedException();
+            if (!ChechDirectionValid(newVector2))
+                return false;
+            foreach (var f in attackingFigures)
+            {
+                if (f.ChcekLegalMovement(board, newVector2, new List<Figure>()))
+                    return false;
+            }
+            var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
+
+            return UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, newVector2, direction, WhiteColor);
         }
 
-        public override bool CheckCheckamte(Vector2 newVector2, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 kingVector2, EnumDirection direction)
+        public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
         {
-            throw new NotImplementedException();
+            var CanOccupied = new bool[board.XMax, board.YMax];
+            for (int i = 0; i < Dirs.Length; i++)
+            {
+                var direction = new Vector2(Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y);
+                bool checkedField = false;
+                foreach (var f in attackingFigures)
+                {
+                    if(f.ChcekLegalMovement(board, direction, new List<Figure>()))
+                        checkedField = true;
+                }
+                if (checkedField == false 
+                    && UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, direction, direction, WhiteColor))
+                    CanOccupied[Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y] = true;
+            }
+            return CanOccupied;
         }
 
-        public override bool CheckLegalMoveDirection(Vector2 newVector2)
-        {
-            throw new NotImplementedException();
-        }
+        private bool ChechDirectionValid(Vector2 newVector2)
+            => !(Vector2.X - newVector2.X > 1 || Vector2.Y - newVector2.Y > 1);
 
-        public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
-        {
-            throw new NotImplementedException();
-        }
+        //public override bool CheckLegalMoveDirection(Vector2 newVector2)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override EnumDirection SetDirection(Vector2 newVector2)
-        {
-            throw new NotImplementedException();
-        }
+        private readonly Vector2[] Dirs = 
+        { 
+            new Vector2(1, 0), 
+            new Vector2(-1, 0), 
+            new Vector2(0, 1), 
+            new Vector2(0, -1),
+            new Vector2(1, 1),
+            new Vector2(-1, -1),
+            new Vector2(-1, 1),
+            new Vector2(1, -1)
+        };
     }
 }

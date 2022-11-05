@@ -9,7 +9,7 @@ namespace ChesApi.Infrastructure.Services
 {
     public interface IGameService
     {
-        Task CreateGame(FigureColor figureColour, Guid userId);
+        Task CreateGame(bool whiteColor, Guid userId);
         Task JoinToTheGame(Guid gameId, Guid userId);
     }
 }

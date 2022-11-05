@@ -21,7 +21,7 @@ namespace ChesApi.Infrastructure.Services
             _userRepostitory = userRepository;
             _userInGameRepository = userInGameRepository;
         }
-        public async Task CreateGame(FigureColor figureColour, Guid userId)
+        public async Task CreateGame(bool whiteColor, Guid userId)
         {
             var user = await _userRepostitory.GetUserById(userId);
             if(user is null)
@@ -32,7 +32,7 @@ namespace ChesApi.Infrastructure.Services
             {
                 throw new InvalidOperationException();
             }
-            user.FigureColor = figureColour;
+            user.WhiteColor = whiteColor;
             _gameRepository.CreategGame(user);
             _userInGameRepository.AddUser(user);
         }
@@ -58,13 +58,13 @@ namespace ChesApi.Infrastructure.Services
             }
             liveGame.User2 = user;
             user.LiveGame = liveGame;
-            if(liveGame.HostUser.FigureColor is FigureColor.White)
+            if(liveGame.HostUser.WhiteColor)
             {
-                user.FigureColor = FigureColor.Black;
+                user.WhiteColor = false;
             }
             else
             {
-                user.FigureColor = FigureColor.White;
+                user.WhiteColor = true;
             }
             _userInGameRepository.AddUser(user);
             liveGame.IsGaming = true;

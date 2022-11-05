@@ -1,5 +1,4 @@
-﻿using Chess.Core.Domain.DefaultConst;
-using Chess.Core.Domain.Enums;
+﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using System;
@@ -12,7 +11,7 @@ namespace Chess.Core.Domain.Utils
 {
     public static class UtilsMethods
     {
-        public static bool LegalMovement(FieldsStatus[,] fieldsStatus, Vector2 current, Vector2 newVector2, Vector2 direction, 
+        public static bool LegalMovement(Figure?[,] fieldsStatus, Vector2 current, Vector2 newVector2, Vector2 direction, 
             bool color)
         {
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
@@ -25,68 +24,50 @@ namespace Chess.Core.Domain.Utils
                 if (!CheckOccupied(fieldsStatus, current))
                     return false;
             }
-            return !(fieldsStatus[newVector2.X, newVector2.Y].Figure?.WhiteColor == color);
+            return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
         }
-        public static void AttackFields(FieldsStatus[,] fieldsStatus, Vector2 current, Vector2 direction, bool[,] newAttackedFields)
+        public static bool CheckRevealAttack(Vector2 currentVector2, Vector2 kingVector2, Board board,
+            List<Figure> attackingFigures)
         {
-            var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
-
-            while (current.X < 8 || current.X >= 0 || current.Y < 8 || current.Y >= 0)
+            var figure = board.FieldsStatus[currentVector2.X, currentVector2.Y];
+            board.FieldsStatus[currentVector2.X, currentVector2.Y] = null;
+            var checkLegal = figure.ChcekLegalMovement(board, kingVector2, attackingFigures);
+            board.FieldsStatus[figure.Vector2.X, figure.Vector2.Y] = figure;
+            return checkLegal;
+        }
+        public static void ShowLegalMovement(Figure?[,] fieldsStatus, Vector2 current, Vector2 step, Vector2 distance, bool[,] CanOccupied, bool color)
+        {
+            while ((current.X != distance.X) && (current.Y != distance.Y))
             {
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (!SetAttackFields(fieldsStatus, newAttackedFields, current))
-                    break;
+                if (!CheckOccupied(fieldsStatus, current))
+                {
+                    if (fieldsStatus[current.X, current.Y].WhiteColor == color)
+                    {
+                        return;
+                    }
+                    CanOccupied[current.X, current.Y] = true;
+                    return;
+                }
+                CanOccupied[current.X, current.Y] = true;
             }
         }
-        public static bool[,] SetNewAttackFields(IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus)
+        public static bool CheckCover(Vector2 current, IEnumerable<Figure> defendingFigures, List<Figure> attackingFigures,
+            Board board)
         {
-            bool[,] newAttackFields = new bool[Board.X, Board.Y];
-            foreach (var f in attackingFigures)
-            {
-                f.SetAttackFields(fieldsStatus, newAttackFields);
-            }
-            return newAttackFields;
-        }
-        public static void SetAttackingFigures(IEnumerable<Figure> attackingFigures, FieldsStatus[,] fieldsStatus, Vector2 king)
-        {
-            foreach (var f in attackingFigures)
-            {
-                bool[,] newAttackFields = new bool[Board.X, Board.Y];
-                f.SetAttackFields(fieldsStatus, newAttackFields);
-                if (newAttackFields[king.X, king.Y])
-                    f.IsAttacking = true;
-            }
-        }
-        public static bool CheckRevealAttack(Figure figure, FieldsStatus[,] fieldsStatus, 
-            IEnumerable<Figure> attackingFigures, Vector2 kingVector2)
-        {
-            var _figure = figure;
-            fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure = null;
-            var newAttackFields = SetNewAttackFields(attackingFigures, fieldsStatus);
-            fieldsStatus[figure.Vector2.X, figure.Vector2.Y].Figure = _figure;
-            return newAttackFields[kingVector2.X, kingVector2.Y];
-        }
-        private static bool SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields, Vector2 vector2)
-        {
-            newAttackedFields[vector2.X, vector2.Y] = true;
-            return fieldsStatus[vector2.X, vector2.Y].Figure is not null;
-        }
-        public static bool CheckCover(Vector2 vector2, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures,
-            LiveGame liveGame, Vector2 kingVector2)
-        {
-            var fieldsStatus = liveGame.FieldsStatus;
             foreach (var f in defendingFigures)
             {
-                if (CheckRevealAttack(f, fieldsStatus, attackingFigures, kingVector2))
-                    return false;
-                if (f.ChcekLegalMovement(liveGame, vector2))
+                if (f.ChcekLegalMovement(board, current, attackingFigures))
                     return true;
             }
             return false;
         }
-        internal static bool CheckOccupied(FieldsStatus[,] fieldsStatus, Vector2 current)
-            => fieldsStatus[current.X, current.Y].Figure is null;
+        internal static bool CheckOccupied(Figure?[,] fieldsStatus, Vector2 current)
+            => fieldsStatus[current.X, current.Y] is null;
+
+        public static Figure GetKing(List<Figure> figures, bool color)
+            => figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == color);
     }
 }
