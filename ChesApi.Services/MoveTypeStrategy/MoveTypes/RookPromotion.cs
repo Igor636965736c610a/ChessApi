@@ -11,7 +11,7 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
 {
     public class RookPromotion : IStrategy
     {
-        public GameStatus Move(Vector2 newVector2, Vector2 oldVector2, Board board, out Figure figureToDelete)
+        public GameStatus Move(Vector2 newVector2, Figure figure, Board board, out Figure? figureToDelete)
         {
             throw new NotImplementedException();
         }

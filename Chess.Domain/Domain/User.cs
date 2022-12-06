@@ -13,24 +13,13 @@ namespace Chess.Core.Domain
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public Guid Id { get; set; }
-        public LiveGame LiveGame { get; set; }
-        public bool WhiteColor { get; set; }
-        public User(string name, string email, string password, Guid id)
+        public Guid Id { get; set; } = new Guid();
+        public int EloRanking { get; set; } = 1000;
+        public User(string name, string userName, string email)
         {
             Name = name;
+            UserName = userName;
             Email = email;
-            Password = password;
-            Id = id;
-        }
-        public User(string name, string email, string password, Guid id, LiveGame liveGame, bool whiteColor)
-        {
-            Name = name;
-            Email = email;
-            Password = password;
-            Id = id;
-            LiveGame = liveGame;
-            whiteColor = WhiteColor;
         }
     }
 }

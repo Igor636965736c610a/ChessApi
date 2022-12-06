@@ -10,7 +10,7 @@ namespace Chess.Core.Domain
 {
     public class Board
     {
-        public Board(List<Figure> figures, Figure[,] fieldsStatus, Vector2 maxDimensions)
+        public Board(List<Figure> figures, Figure?[,] fieldsStatus, Vector2 maxDimensions)
         {
             Figures = figures;
             FieldsStatus = fieldsStatus;

@@ -12,39 +12,25 @@ namespace ChesApi.Infrastructure.Services
 {
     public class MoveService : IMoveService
     {
-        private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
         private readonly IStrategyFactory<IStrategy> _strategyFactor;
         public MoveService
-            (IUserInGameRepository userInGameRepository, IFigureRepository figureRepository, IStrategyFactory<IStrategy> strategyFactory)
+            (IFigureRepository figureRepository, IStrategyFactory<IStrategy> strategyFactory)
         {
-            _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
             _strategyFactor = strategyFactory;
         }
 
-        public GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, Guid userId)  //userId from JWT
+        public GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, LiveGame liveGame)
         {
-            //validations and needed properties
-
-            var user = _userInGameRepository.GetUserById(userId);
-            if (user is null)
-                throw new NullReferenceException();
-
-            if(user.LiveGame is null)
+            if(liveGame is null)
                 throw new Exception("404 sesion");
 
-            if(user.LiveGame.IsGaming == false)
-                throw new InvalidOperationException();
-
-            if(user.WhiteColor != user.LiveGame.WhiteColor)
-                throw new InvalidOperationException();
-
-            var figure = _figureRepository.GetFigure(user.LiveGame.Board, oldVector2);
+            var figure = _figureRepository.GetFigure(liveGame.Board, oldVector2);
             if(figure is null)
                 throw new NullReferenceException();
 
-            var board = user.LiveGame.Board;
+            var board = liveGame.Board;
             if (newVector2.X < board.XMin && newVector2.X >= board.XMax && newVector2.Y < board.YMin && newVector2.Y >= board.YMax)
                 throw new InvalidOperationException();
 
@@ -70,19 +56,17 @@ namespace ChesApi.Infrastructure.Services
             var king = _figureRepository.GetKing(board, figure.WhiteColor);
             List<Figure> figures = board.Figures.Where(x => x.WhiteColor == figure.WhiteColor && x.FigureType != FigureType.King)
                 .ToList();
-            List<Figure> attackingFigures = new List<Figure>();
+            List<Figure> attackingFigures = new();
             foreach(var f in figures)
             {
                 if(f.ChcekLegalMovement(board, enemyKing.Vector2, enemyFigures))
                     attackingFigures.Add(f);
             }
-            if(CheckCheckmate(board, enemyKing, king, attackingFigures))
+            if(attackingFigures.Count > 0 || CheckCheckmate(board, enemyKing, king, attackingFigures))
             {
-                return figure.WhiteColor ? GameStatus.WhiteMat : GameStatus.BlackMat;
+                return liveGame.WhiteColor ? GameStatus.WhiteMat : GameStatus.BlackMat;
             }
-            user.LiveGame.WhiteColor = !figure.WhiteColor;
-            user.LiveGame.HostUser.WhiteColor = !figure.WhiteColor;
-            user.LiveGame.User2.WhiteColor = !figure.WhiteColor;
+            liveGame.WhiteColor = !liveGame.WhiteColor;
 
             return GameStatus.IsGaming;
         }

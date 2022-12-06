@@ -1,5 +1,4 @@
-﻿using Chess.Core.Domain.DefaultConst;
-using Chess.Core.Domain.Enums;
+﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using System;
@@ -13,15 +12,18 @@ namespace Chess.Core.Domain
     public class LiveGame
     {
         public Board Board { get; set; }
-        public bool IsGaming { get; set; } = false;
-        public Guid Id { get; set; }
-        public User HostUser { get; set; }
-        public User? User2 { get; set; }
+        public Guid Id { get; set; } = new Guid();
+        public Player Player1 { get; set; }
+        public Player Player2 { get; set; }
         public bool WhiteColor { get; set; } = true;
-        public LiveGame(User userHost, Board board)
+        
+        public LiveGame(Board board, Player player1, Player player2)
         {
-            HostUser = userHost;
             Board = board;
+            Player1 = player1;
+            Player2 = player2;
+            player1.GameId = Id;
+            player2.GameId = Id;
         }
     }
 }

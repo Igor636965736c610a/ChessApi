@@ -14,11 +14,9 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
 {
     public class StandartMove : IStrategy
     {
-        private readonly IUserInGameRepository _userInGameRepository;
         private readonly IFigureRepository _figureRepository;
-        StandartMove(IUserInGameRepository userInGameRepository, IFigureRepository figureRepository)
+        public StandartMove(IFigureRepository figureRepository)
         {
-            _userInGameRepository = userInGameRepository;
             _figureRepository = figureRepository;
         }
 

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ChesApi.Infrastructure.DTO;
 using Chess.Core.Domain;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ChesApi.Infrastructure.AutoMapper
         public static IMapper Initialize()
             => new MapperConfiguration(cfg =>
             {
-                
+                cfg.CreateMap<User, UserDto>();
             })
             .CreateMapper();
     }

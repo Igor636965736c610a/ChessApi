@@ -1,4 +1,5 @@
 ﻿using ChesApi.Infrastructure.MoveTypeStrategy.Enum;
+using Chess.Core.Domain;
 using Chess.Core.Domain.EnumsAndStructs;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,6 @@ namespace ChesApi.Infrastructure.Services
 {
     public interface IMoveService
     {
-        GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, Guid userId);
+        GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, LiveGame liveGame);
     }
 }
