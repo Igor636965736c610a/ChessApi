@@ -16,7 +16,9 @@ namespace Chess.Api.Controllers
 
         [HttpPost("user/register")]
         public async Task Register([FromBody] RegisterUser request)
-            => await _userService.CreateUser(request.Name, request.UserName, request.Password, request.Email);
+        {
+            await _userService.CreateUser(request.Name, request.UserName, request.Password, request.Email);
+        }
 
         [HttpPost("user/login")]
         public async Task<IActionResult> Login([FromBody] LoginUser request)

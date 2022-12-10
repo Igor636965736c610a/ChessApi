@@ -33,17 +33,17 @@ namespace ChesApi.Infrastructure.Services
         {
             if (name is null || username is null || password is null || email is null)
             {
-                throw new NullReferenceException();
+                throw new NullReferenceException("puste dane");
             }
             var usernameValidation = await _userRepository.GetUserByUsername(username);
             if (usernameValidation is not null)
             {
-                throw new Exception("");
+                throw new InvalidOperationException($"user with that username: {username} already exist");
             }
             var emailValidation = await _userRepository.GetUserByEmail(email);
             if (emailValidation is not null)
             {
-                throw new Exception("User with that email already exist");
+                throw new InvalidOperationException($"User with that email: {email} already exist");
             }
             User user = new User(name, username, email);
             var hashedPassword = _passwordHasher.HashPassword(user, password);
@@ -56,7 +56,7 @@ namespace ChesApi.Infrastructure.Services
             var user = await _userRepository.GetUserByUsername(username);
             if (user is null)
             {
-                throw new Exception("null");
+                throw new NullReferenceException();
             }
 
             return _mapper.Map<User, UserDto>(user);
@@ -67,7 +67,7 @@ namespace ChesApi.Infrastructure.Services
             var user = await _userRepository.GetUserByEmail(email);
             if (user is null)
             {
-                throw new Exception("null");
+                throw new NullReferenceException();
             }
 
             return _mapper.Map<User, UserDto>(user);
@@ -78,7 +78,7 @@ namespace ChesApi.Infrastructure.Services
             var users = await _userRepository.GetUsersByName(name);
             if (users is null)
             {
-                throw new Exception("null");
+                throw new NullReferenceException();
             }
 
             return _mapper.Map<IEnumerable<User>, IEnumerable<UserDto>>(users);
@@ -89,12 +89,12 @@ namespace ChesApi.Infrastructure.Services
             var user = await _userRepository.GetUserByEmail(email);
             if (user is null)
             {
-                throw new Exception("nieprawidlowy adres email albo haslo");
+                throw new InvalidOperationException("nieprawidlowy adres email albo haslo");
             }
             var result = _passwordHasher.VerifyHashedPassword(user, user.Password, password);
             if (result == PasswordVerificationResult.Failed)
             {
-                throw new Exception("nieprawidlowy adres email albo haslo");
+                throw new InvalidOperationException("nieprawidlowy adres email albo haslo");
             }
 
             var claims = new List<Claim>()
@@ -124,7 +124,7 @@ namespace ChesApi.Infrastructure.Services
             var user = await _userRepository.GetUserById(id);
             if (user is null)
             {
-                throw new Exception("null");
+                throw new NullReferenceException(); 
             }
 
             return _mapper.Map<User, UserDto>(user);

@@ -13,7 +13,7 @@ namespace Chess.Core.Domain
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public int EloRanking { get; set; } = 1000;
         public User(string name, string userName, string email)
         {

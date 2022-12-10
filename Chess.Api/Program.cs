@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Chess.Core.Domain;
 using Chess.Api.Controllers;
 using Microsoft.AspNetCore.Http.Connections;
+using ChesApi.Infrastructure.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,8 @@ builder.Services.AddScoped<IFigureRepository, FigureRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMoveService, MoveService>();
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddSingleton<IHubLobby, HubLobby>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -38,18 +38,21 @@ namespace ChesApi.Infrastructure.Services
                 throw new InvalidOperationException();
 
             var strategy = _strategyFactor.GetStrategy(moveType.ToString());
-            Figure? figureToDelete;
 
-            var gameStatus = strategy.Move(newVector2, figure, board, out figureToDelete);
-            if(gameStatus == GameStatus.IllegalMove)
+            var legal = strategy.Move(newVector2, figure, board);
+            if(!legal)
                 throw new InvalidOperationException();
-            figure.SetNewPosition(newVector2);
-            board.EnPassant = new EnPassant();
             if (figure.FigureType == FigureType.Pown && Math.Abs(newVector2.Y - figure.Vector2.Y) == 2)
                 board.EnPassant = new EnPassant(true, new Vector2(newVector2.Y - Math.Sign(newVector2.Y - figure.Vector2.Y), newVector2.X));
-    
+            else
+                board.EnPassant = new EnPassant();
+            var figureToDelete = board.FieldsStatus[newVector2.X, newVector2.Y];
             if (figureToDelete is not null)
                 _figureRepository.RemoveFigure(board, figureToDelete);
+
+            figure.SetNewPosition(newVector2);
+            board.FieldsStatus[oldVector2.X, oldVector2.Y] = null;
+            board.FieldsStatus[newVector2.X, newVector2.Y] = figure;
 
             List<Figure> enemyFigures = _figureRepository.GetFiguresByColor(board, !figure.WhiteColor).ToList();
             var enemyKing = _figureRepository.GetKing(board, !figure.WhiteColor);
@@ -62,11 +65,13 @@ namespace ChesApi.Infrastructure.Services
                 if(f.ChcekLegalMovement(board, enemyKing.Vector2, enemyFigures))
                     attackingFigures.Add(f);
             }
-            if(attackingFigures.Count > 0 || CheckCheckmate(board, enemyKing, king, attackingFigures))
+            if(attackingFigures.Count > 0)
             {
-                return liveGame.WhiteColor ? GameStatus.WhiteMat : GameStatus.BlackMat;
+                if(CheckCheckmate(board, enemyKing, king, attackingFigures))
+                    return liveGame.WhiteColor ? GameStatus.WhiteCheckMate : GameStatus.BlackCheckMate;
+                else
+                    return liveGame.WhiteColor ? GameStatus.WhiteCheck : GameStatus.BlackCheck;
             }
-            liveGame.WhiteColor = !liveGame.WhiteColor;
 
             return GameStatus.IsGaming;
         }

@@ -13,7 +13,7 @@ namespace Chess.Core.Domain.EnumsAndStructs
             X = x;
             Y = y;
         }
-        public int X;
-        public int Y;
+        public int X { get; set; }
+        public int Y { get; set; }
     }
 }

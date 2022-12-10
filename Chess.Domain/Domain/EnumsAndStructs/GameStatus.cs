@@ -8,9 +8,11 @@ namespace Chess.Core.Domain.EnumsAndStructs
 {
     public enum GameStatus
     {
-        WhiteMat = 0,
-        BlackMat = 1,
+        WhiteCheckMate = 0,
+        BlackCheckMate = 1,
         IsGaming = 2,
-        IllegalMove = 3,
+        WhiteCheck = 3,
+        BlackCheck = 4,
+        Pat = 5,
     }
 }

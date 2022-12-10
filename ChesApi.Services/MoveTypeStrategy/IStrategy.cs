@@ -11,6 +11,6 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy
 {
     public interface IStrategy
     {
-        GameStatus Move(Vector2 newVector2, Figure figure, Board board, out Figure? figureToDelete);
+        bool Move(Vector2 newVector2, Figure figure, Board board);
     }
 }

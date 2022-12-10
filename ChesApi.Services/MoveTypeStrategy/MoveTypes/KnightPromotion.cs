@@ -11,7 +11,7 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
 {
     public class KnightPromotion : IStrategy
     {
-        public GameStatus Move(Vector2 newVector2, Figure figure, Board board, out Figure? figureToDelete)
+        public bool Move(Vector2 newVector2, Figure figure, Board board)
         {
             throw new NotImplementedException();
         }

@@ -12,7 +12,7 @@ namespace Chess.Core.Domain
     public class LiveGame
     {
         public Board Board { get; set; }
-        public Guid Id { get; set; } = new Guid();
+        public Guid Id { get; set; } = Guid.NewGuid();
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
         public bool WhiteColor { get; set; } = true;
