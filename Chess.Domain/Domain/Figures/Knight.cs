@@ -11,13 +11,13 @@ namespace Chess.Core.Domain.Figures
             FigureType = FigureType.Knight;
         }
 
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> attackingFigures)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)
         {
             var king = UtilsMethods.GetKing(board.Figures, WhiteColor);
             var fieldsStatus = board.FieldsStatus;
             if (!CheckDirectionValid(newVector2))
                 return false;
-            if (!UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, attackingFigures))
+            if (!UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
                 return false;
             return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == WhiteColor);
         }
@@ -36,6 +36,11 @@ namespace Chess.Core.Domain.Figures
             => Math.Abs(Vector2.X - newVector2.X) * Math.Abs(Vector2.Y - newVector2.Y) == 2;
 
         public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Vector2[] GetDirs()
         {
             throw new NotImplementedException();
         }

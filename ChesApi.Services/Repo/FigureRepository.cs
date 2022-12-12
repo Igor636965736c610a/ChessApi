@@ -18,11 +18,5 @@ namespace ChesApi.Infrastructure.Repo
 
         public Figure GetKing(Board board, bool color)
             => board.Figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == color);
- 
-        public void RemoveFigure(Board board, Figure figure)
-            => board.Figures.Remove(figure);
-
-        public IEnumerable<Figure> GetFiguresByColor(Board board, bool figureColor)
-            => board.Figures.Where(x => x.WhiteColor == figureColor);
     }
 }

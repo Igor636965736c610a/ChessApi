@@ -14,7 +14,5 @@ namespace Chess.Core.Repo.Game
     {
         Figure? GetFigure(Board board, Vector2 vector2);
         Figure GetKing(Board board, bool color);
-        void RemoveFigure(Board board, Figure figure);
-        IEnumerable<Figure> GetFiguresByColor(Board board, bool figureColor);
     }
 }

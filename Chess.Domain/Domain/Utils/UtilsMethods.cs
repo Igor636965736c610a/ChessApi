@@ -27,32 +27,15 @@ namespace Chess.Core.Domain.Utils
             return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
         }
         public static bool CheckRevealAttack(Vector2 currentVector2, Vector2 kingVector2, Board board,
-            List<Figure> attackingFigures)
+            List<Figure> enemyFigures)
         {
             var figure = board.FieldsStatus[currentVector2.X, currentVector2.Y];
+            if (figure is null)
+                throw new Exception("debil alert");
             board.FieldsStatus[currentVector2.X, currentVector2.Y] = null;
-            var checkLegal = figure.ChcekLegalMovement(board, kingVector2, attackingFigures);
+            var checkLegal = figure.ChcekLegalMovement(board, kingVector2, enemyFigures);
             board.FieldsStatus[figure.Vector2.X, figure.Vector2.Y] = figure;
             return checkLegal;
-        }
-        public static void ShowLegalMovement(Figure?[,] fieldsStatus, Vector2 current, Vector2 step, Vector2 distance, bool[,] CanOccupied, bool color)
-        {
-            while ((current.X != distance.X) && (current.Y != distance.Y))
-            {
-                current.X += step.X;
-                current.Y += step.Y;
-
-                if (!CheckOccupied(fieldsStatus, current))
-                {
-                    if (fieldsStatus[current.X, current.Y].WhiteColor == color)
-                    {
-                        return;
-                    }
-                    CanOccupied[current.X, current.Y] = true;
-                    return;
-                }
-                CanOccupied[current.X, current.Y] = true;
-            }
         }
         public static bool CheckCover(Vector2 current, IEnumerable<Figure> defendingFigures, List<Figure> attackingFigures,
             Board board)

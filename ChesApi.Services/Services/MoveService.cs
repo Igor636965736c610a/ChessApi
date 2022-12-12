@@ -6,7 +6,6 @@ using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using Chess.Core.Domain.Utils;
 using Chess.Core.Repo.Game;
-using Chess.Core.Repo.UserRepository;
 
 namespace ChesApi.Infrastructure.Services
 {
@@ -45,7 +44,7 @@ namespace ChesApi.Infrastructure.Services
             figure.SetNewPosition(newVector2, board);        
 
             var enemyKing = _figureRepository.GetKing(board, !figure.WhiteColor);
-            var king = _figureRepository.GetKing(board, figure.WhiteColor);
+            var playerKing = _figureRepository.GetKing(board, figure.WhiteColor);
             
             var attackingFigures = board.Figures
                 .Where(x => x.WhiteColor == figure.WhiteColor && x.FigureType != FigureType.King)
@@ -55,7 +54,7 @@ namespace ChesApi.Infrastructure.Services
 
             if(attackingFigures.Count > 0)
             {
-                if(CheckCheckmate(board, enemyKing, king, attackingFigures))
+                if(CheckCheckmate(board, enemyKing, playerKing, attackingFigures))
                     return liveGame.WhiteColor ? GameStatus.WhiteCheckMate : GameStatus.BlackCheckMate;
                 else
                     return liveGame.WhiteColor ? GameStatus.WhiteCheck : GameStatus.BlackCheck;

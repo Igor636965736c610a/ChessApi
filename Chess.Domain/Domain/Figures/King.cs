@@ -16,11 +16,11 @@ namespace Chess.Core.Domain.Figures
             FigureType = FigureType.King;
         }
 
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> attackingFigures)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)
         {
             if (!ChechDirectionValid(newVector2))
                 return false;
-            foreach (var f in attackingFigures)
+            foreach (var f in enemyFigures)
             {
                 if (f.ChcekLegalMovement(board, newVector2, new List<Figure>()))
                     return false;
