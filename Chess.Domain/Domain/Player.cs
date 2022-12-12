@@ -8,11 +8,11 @@ namespace Chess.Core.Domain
 {
     public class Player
     {
-        public Guid UserId { get; set; }
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public Guid GameId { get; set; }
-        public string Name { get; set; }
-        public string ConntectionId { get; set; }
+        public Guid UserId { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
+        public Guid GameId { get; private set; }
+        public string Name { get; private set; }
+        public string ConntectionId { get; private set; }
         public bool HasMove { get; set; }
         public bool WhiteColor { get; set; }
 

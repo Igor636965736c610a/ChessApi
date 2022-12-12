@@ -12,13 +12,12 @@ namespace Chess.Core.Domain.Figures
     public abstract class Figure
     {
         public Vector2 Vector2 { get; set; }
-        public Value Value { get; set; }
+        public int Value { get; protected set; }
         public bool WhiteColor { get; set; }
         public FigureType FigureType { get; set; }
 
-        protected Figure(Value value, bool color, Vector2 vector2)
+        protected Figure(bool color, Vector2 vector2)
         {
-            Value = value;
             WhiteColor = color;
             Vector2 = vector2;
         }

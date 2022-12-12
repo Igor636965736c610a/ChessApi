@@ -11,9 +11,10 @@ namespace Chess.Core.Domain.Figures
 {
     public class Bishop : Figure
     {
-        public Bishop(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
+        public Bishop(bool color, Vector2 vector2) : base(color, vector2)
         {
             FigureType = FigureType.Bishop;
+            Value = 3;
         }
 
         public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)

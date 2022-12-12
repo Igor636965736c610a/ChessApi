@@ -11,10 +11,11 @@ namespace Chess.Core.Domain.Figures
 {
     public class Rook : Figure
     {
-        public bool FirstMove { get; set; } = true;
-        public Rook(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
+        public bool FirstMove { get; private set; } = true;
+        public Rook(bool color, Vector2 vector2) : base(color, vector2)
         {
             FigureType = FigureType.Rook;
+            Value = 5;
         }
 
         public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)

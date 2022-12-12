@@ -11,9 +11,10 @@ namespace Chess.Core.Domain.Figures
 {
     public class Queen : Figure
     {
-        public Queen(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
+        public Queen(bool color, Vector2 vector2) : base(color, vector2)
         {
             FigureType = FigureType.Queen;
+            Value = 8;
         }
         //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
         //{

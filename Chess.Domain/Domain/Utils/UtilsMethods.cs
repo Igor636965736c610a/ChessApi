@@ -11,7 +11,7 @@ namespace Chess.Core.Domain.Utils
 {
     public static class UtilsMethods
     {
-        public static bool LegalMovement(Figure?[,] fieldsStatus, Vector2 current, Vector2 newVector2, Vector2 direction, 
+        internal static bool LegalMovement(Figure?[,] fieldsStatus, Vector2 current, Vector2 newVector2, Vector2 direction, 
             bool color)
         {
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
@@ -26,7 +26,7 @@ namespace Chess.Core.Domain.Utils
             }
             return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
         }
-        public static bool CheckRevealAttack(Vector2 currentVector2, Vector2 kingVector2, Board board,
+        internal static bool CheckRevealAttack(Vector2 currentVector2, Vector2 kingVector2, Board board,
             List<Figure> enemyFigures)
         {
             var figure = board.FieldsStatus[currentVector2.X, currentVector2.Y];
@@ -50,10 +50,10 @@ namespace Chess.Core.Domain.Utils
         internal static bool CheckOccupied(Figure?[,] fieldsStatus, Vector2 current)
             => fieldsStatus[current.X, current.Y] is null;
 
-        public static Figure GetKing(List<Figure> figures, bool color)
+        internal static Figure GetKing(List<Figure> figures, bool color)
             => figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == color);
 
-        public static void SetNewPosition(Vector2 newVector2, Board board, Figure figure)
+        internal static void SetNewPosition(Vector2 newVector2, Board board, Figure figure)
         {
             var figureToDelete = board.FieldsStatus[newVector2.X, newVector2.Y];
             if (figureToDelete is not null)

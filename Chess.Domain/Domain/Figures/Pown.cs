@@ -11,10 +11,11 @@ namespace Chess.Core.Domain.Figures
 {
     public class Pown : Figure
     {
-        private bool FirstMove { get; set; } = true;
-        public Pown(Value value, bool color, Vector2 vector2) : base(value, color, vector2)
+        public bool FirstMove { get; private set; } = true;
+        public Pown(bool color, Vector2 vector2) : base(color, vector2)
         {
             FigureType = FigureType.Pown;
+            Value = 1;
         }
 
         //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
