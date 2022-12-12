@@ -42,10 +42,22 @@ namespace Chess.Core.Domain.Figures
                 return false;
             return !(direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor);
         }
-        public override void SetNewPosition(Vector2 newVector2)
+        public override void SetNewPosition(Vector2 newVector2, Board board)
         {
-            Vector2 = new Vector2(newVector2.X, newVector2.Y);
-            FirstMove = false;
+            Figure? figureToDelete;
+            if (board.EnPassant.CanEnPassant && newVector2.X == board.EnPassant.Vector2.X && newVector2.Y == board.EnPassant.Vector2.Y)
+                figureToDelete = board.FieldsStatus[newVector2.X, Vector2.Y];
+            else
+                figureToDelete = board.FieldsStatus[newVector2.X, newVector2.Y];
+            if (figureToDelete is not null)
+                board.Figures.Remove(figureToDelete);
+            if (Math.Abs(newVector2.Y - Vector2.Y) == 2)
+                board.EnPassant = new EnPassant(true, new Vector2(newVector2.X, newVector2.Y - Math.Sign(newVector2.Y - Vector2.Y)));
+            else
+                board.EnPassant = new EnPassant();
+            board.FieldsStatus[Vector2.X, Vector2.Y] = null;
+            board.FieldsStatus[newVector2.X, newVector2.Y] = this;
+            Vector2 = newVector2;
         }
         private bool CheckDirectionValid(Vector2 newVector2, out Vector2 movement, out Vector2 dir)
         {

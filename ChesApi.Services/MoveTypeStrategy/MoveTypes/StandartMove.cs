@@ -23,11 +23,12 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
         public bool Move(Vector2 newVector2, Figure figure, Board board)
         {
             if(figure.FigureType == FigureType.Pown && (newVector2.Y == 7 || newVector2.Y == 0)) 
-            {
                 return false;
-            }
+
             IEnumerable<Figure> enemyFigures = _figureRepository.GetFiguresByColor(board, !figure.WhiteColor);
-            List<Figure> attackingFigures = enemyFigures.SkipWhile(x => x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y).ToList();
+            List<Figure> attackingFigures = board.Figures
+                .Where(x => x.WhiteColor = !figure.WhiteColor && x.Vector2.X == newVector2.X && x.Vector2.Y == newVector2.Y)
+                .ToList();
             return !figure.ChcekLegalMovement(board, newVector2, attackingFigures);
         }
     }

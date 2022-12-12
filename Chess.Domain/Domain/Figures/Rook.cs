@@ -28,9 +28,9 @@ namespace Chess.Core.Domain.Figures
 
             return UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, newVector2, direction, WhiteColor);
         }
-        public override void SetNewPosition(Vector2 newVector2)
+        public override void SetNewPosition(Vector2 newVector2, Board board)
         {
-            Vector2 = new Vector2(newVector2.X, newVector2.Y);
+            UtilsMethods.SetNewPosition(newVector2, board, this);
             FirstMove = false;
         }
         private bool CheckDirectionValid(Vector2 newVector2)

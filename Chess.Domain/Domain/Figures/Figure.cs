@@ -1,5 +1,6 @@
 ﻿using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
+using Chess.Core.Domain.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,9 +29,12 @@ namespace Chess.Core.Domain.Figures
 
         //public abstract void SetAttackFields(Figure[,] fieldsStatus, bool[,] newAttackedFields);
 
-        public virtual void SetNewPosition(Vector2 newVector2)
+        public virtual void SetNewPosition(Vector2 newVector2, Board board)
         {
-            Vector2 = new Vector2(newVector2.X, newVector2.Y);
+            UtilsMethods.SetNewPosition(newVector2, board, this);
         }
+
+        public abstract Vector2[] GetDirs();   
+
     }   
 }

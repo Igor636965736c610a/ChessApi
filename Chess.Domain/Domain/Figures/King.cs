@@ -52,10 +52,8 @@ namespace Chess.Core.Domain.Figures
         private bool ChechDirectionValid(Vector2 newVector2)
             => !(Vector2.X - newVector2.X > 1 || Vector2.Y - newVector2.Y > 1);
 
-        //public override bool CheckLegalMoveDirection(Vector2 newVector2)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public override Vector2[] GetDirs()
+            => Dirs;
 
         private readonly Vector2[] Dirs = 
         { 

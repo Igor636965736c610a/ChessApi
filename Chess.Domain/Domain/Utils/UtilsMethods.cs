@@ -69,5 +69,16 @@ namespace Chess.Core.Domain.Utils
 
         public static Figure GetKing(List<Figure> figures, bool color)
             => figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == color);
+
+        public static void SetNewPosition(Vector2 newVector2, Board board, Figure figure)
+        {
+            var figureToDelete = board.FieldsStatus[newVector2.X, newVector2.Y];
+            if (figureToDelete is not null)
+                board.Figures.Remove(figureToDelete);
+            board.FieldsStatus[figure.Vector2.X, figure.Vector2.Y] = null;
+            board.FieldsStatus[newVector2.X, newVector2.Y] = figure;
+            figure.Vector2 = newVector2;
+            board.EnPassant = new EnPassant();
+        }
     }
 }
