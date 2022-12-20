@@ -41,7 +41,17 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        builder =>
+        {
+            builder.WithOrigins("")
+                .AllowAnyHeader()
+                .WithMethods("GET", "POST")
+                .AllowCredentials();
+        });
+});
 builder.Services.AddControllers();
 builder.Services.AddSignalR().AddJsonProtocol(option => option.PayloadSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddSingleton(AutoMapperConfig.Initialize());
@@ -54,7 +64,6 @@ builder.Services.AddScoped<IStrategyFactory<IStrategy>, StrategyFactory<IStrateg
 builder.Services.AddScoped<IFigureRepository, FigureRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IMoveService, MoveService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<IHubLobby, HubLobby>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -71,6 +80,8 @@ builder.Services.AddDbContext<ChessApiContext>(options =>
 
 var app = builder.Build();
 
+app.UseCors();
+
 app.MapHub<LobbyGameHub>("/ChessHub", option => option.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling);
 
 // Configure the HTTP request pipeline.
@@ -83,6 +94,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
 
 app.UseAuthorization();
 

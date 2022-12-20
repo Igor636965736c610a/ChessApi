@@ -18,9 +18,9 @@ namespace ChesApi.Infrastructure.Hub
             Players.Add(connectionId, player);
             return Task.CompletedTask;
         }
-        public Task AddGame(string connectionId, LiveGame liveGame)
+        public Task AddGame(string gameId, LiveGame liveGame)
         {
-            Games.Add(connectionId, liveGame);
+            Games.Add(gameId, liveGame);
             return Task.CompletedTask;
         }
         public Task AddWaitingPlayer(Player player)
@@ -34,8 +34,8 @@ namespace ChesApi.Infrastructure.Hub
         public List<Player> GetWaitingPlayers()
             => WaitingPlayers;
 
-        public LiveGame GetGame(string connectionId)
-            => Games[connectionId];
+        public LiveGame GetGame(string gameId)
+            => Games[gameId];
 
         public Task RemovePlayer(string connectionId)
         {

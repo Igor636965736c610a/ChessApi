@@ -1,4 +1,5 @@
-﻿using ChesApi.Infrastructure.Factory;
+﻿using ChesApi.Infrastructure.DTO;
+using ChesApi.Infrastructure.Factory;
 using ChesApi.Infrastructure.Hub;
 using ChesApi.Infrastructure.MoveTypeStrategy.Enum;
 using ChesApi.Infrastructure.Services;
@@ -15,18 +16,33 @@ namespace Chess.Api.Controllers
     [Authorize]
     public class LobbyGameHub : Hub
     {
-        private readonly IMoveService _moveService;
         private readonly IHubLobby _hubLobby;
         private readonly IGameService _gameService;
-        public LobbyGameHub(IMoveService moveService, IHubLobby hubLobby, IGameService gameService)
+        public LobbyGameHub(IHubLobby hubLobby, IGameService gameService)
         {
-            _moveService = moveService;
             _hubLobby = hubLobby;
             _gameService = gameService;
         }
         public override Task OnConnectedAsync()
         {
             return Clients.Caller.SendAsync("Witaj", _hubLobby.GetWaitingPlayers());
+        }
+        public override async Task OnDisconnectedAsync(Exception? exception)
+        {
+            var leavingPlayer = _hubLobby.GetPlayer(Context.ConnectionId);
+            if(_hubLobby.GetGame(leavingPlayer.GameId.ToString()) is not null)
+            {
+                if (leavingPlayer.WhiteColor)
+                    await Clients.Group(leavingPlayer.GameId.ToString()).SendAsync("White Player Win");
+                else
+                    await Clients.Group(leavingPlayer.GameId.ToString()).SendAsync("Black Player Win");
+                var game = _hubLobby.GetGame(leavingPlayer.GameId.ToString());
+                await _hubLobby.RemoveGame(leavingPlayer.GameId.ToString());
+                var player1 = game.Player1;
+                var player2 = game.Player2;
+                await _hubLobby.RemovePlayer(player1.ConntectionId);
+                await _hubLobby.RemovePlayer(player2.ConntectionId);
+            }
         }
         public async Task CreateRoom()
         {
@@ -68,7 +84,7 @@ namespace Chess.Api.Controllers
                 try
                 {
                     Console.WriteLine("move");
-                    var moveResponse = _moveService.Move(moveType, target, current, game);
+                    var moveResponse = _gameService.Move(moveType, target, current, game);
                     game.Player1.HasMove = !game.Player1.HasMove;
                     game.Player2.HasMove = !game.Player2.HasMove;
                     game.WhiteColor = !game.WhiteColor;
@@ -76,8 +92,9 @@ namespace Chess.Api.Controllers
                     if(moveResponse == GameStatus.WhiteCheckMate || moveResponse == GameStatus.BlackCheckMate || moveResponse == GameStatus.Pat)
                     {
                         await _hubLobby.RemoveGame(player.GameId.ToString());
+                        var player1 = game.Player1;
                         var player2 = game.Player2;
-                        await _hubLobby.RemovePlayer(player.ConntectionId);
+                        await _hubLobby.RemovePlayer(player1.ConntectionId);
                         await _hubLobby.RemovePlayer(player2.ConntectionId);
                     }
                     await Task.CompletedTask;
@@ -92,10 +109,31 @@ namespace Chess.Api.Controllers
             await Task.CompletedTask;
         }
 
-        public Task ShowGameStatus()
+        public async Task GetGame()
         {
             var player = _hubLobby.GetPlayer(Context.ConnectionId);
-            return Task.FromResult(_gameService.GetGame(player.GameId.ToString()));
+            var game = _gameService.GetGameByGameId(player.GameId.ToString());
+            if(game is null)
+            {
+                await Clients.Caller.SendAsync("Nie jestes w trakcie gry!");
+                return;
+            }
+            await Clients.Caller.SendAsync("Status planszy", game);
+        }
+
+        public async Task Surrender()
+        {
+            var player = _hubLobby.GetPlayer(Context.ConnectionId);
+            var game = _hubLobby.GetGame(player.GameId.ToString());
+            if (game.Player1 == player)
+                await Clients.Group(game.Id.ToString()).SendAsync($"{game.Player2.Name} Win!");
+            else
+                await Clients.Group(game.Id.ToString()).SendAsync($"{game.Player1.Name} Win!");
+            await _hubLobby.RemoveGame(player.GameId.ToString());
+            var player1 = game.Player1;
+            var player2 = game.Player2;
+            await _hubLobby.RemovePlayer(player1.ConntectionId);
+            await _hubLobby.RemovePlayer(player2.ConntectionId);
         }
     }
 }

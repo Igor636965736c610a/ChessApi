@@ -1,4 +1,7 @@
 ﻿using ChesApi.Infrastructure.DTO;
+using ChesApi.Infrastructure.MoveTypeStrategy.Enum;
+using Chess.Core.Domain;
+using Chess.Core.Domain.EnumsAndStructs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,8 @@ namespace ChesApi.Infrastructure.Services
 {
     public interface IGameService
     {
-        LiveGameDTO GetGame(string connectionId);
+        LiveGameDTO GetGameByGameId(string gameId);
         PlayerDTO GetPlayer(string connectionId);
+        GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, LiveGame liveGame);
     }
 }
