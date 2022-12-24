@@ -16,32 +16,34 @@ namespace Chess.Core.Domain.Figures
         {
             FigureType = FigureType.Pown;
             Value = 1;
+            FigureChar = 'p';
         }
 
         //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
         //{
         //    throw new NotImplementedException();
         //}
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
             var fieldsStatus = board.FieldsStatus;
-            var king = UtilsMethods.GetKing(board.Figures, WhiteColor);
             Vector2 movement;
             Vector2 direction;
             if(!CheckDirectionValid(newVector2, out movement, out direction))
                 return false;
-            if (!UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
+            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
                 return false;
             if (Math.Abs(movement.Y) == 2 && FirstMove == false)
                 return false;
-            if(Math.Abs(direction.X) == 1 && ((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == WhiteColor)
-                || (board.EnPassant.CanEnPassant == true 
-                && board.EnPassant.Vector2.X == newVector2.X 
+            if (Math.Abs(direction.X) == 1 && !((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor) || (board.EnPassant.CanEnPassant == true
+                && board.EnPassant.Vector2.X == newVector2.X
                 && board.EnPassant.Vector2.Y == newVector2.Y)))
-                return false; 
+                return false;
+            
             if(Math.Abs(movement.Y) == 2 && !UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor))
                 return false;
-            return !(direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor);
+            if (direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y] is not null)
+                return false;
+            return true;
         }
         public override void SetNewPosition(Vector2 newVector2, Board board)
         {

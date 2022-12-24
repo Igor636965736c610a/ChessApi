@@ -17,11 +17,11 @@ namespace Chess.Core.Domain.Utils
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
 
             while ((current.X != newVector2.X) && (current.Y != newVector2.Y))
-            {
+            {                
                 current.X += step.X;
                 current.Y += step.Y;
-
-                if (!CheckOccupied(fieldsStatus, current))
+                
+                if (!CheckOccupied(fieldsStatus, current) && (current.X != newVector2.X) && (current.Y != newVector2.Y))
                     return false;
             }
             return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
@@ -33,25 +33,22 @@ namespace Chess.Core.Domain.Utils
             if (figure is null)
                 throw new Exception("debil alert");
             board.FieldsStatus[currentVector2.X, currentVector2.Y] = null;
-            var checkLegal = figure.ChcekLegalMovement(board, kingVector2, enemyFigures);
+            var checkLegal = !enemyFigures.Any(x => x.ChcekLegalMovement(board, kingVector2, new List<Figure>(), null));
             board.FieldsStatus[figure.Vector2.X, figure.Vector2.Y] = figure;
             return checkLegal;
         }
         public static bool CheckCover(Vector2 current, IEnumerable<Figure> defendingFigures, List<Figure> attackingFigures,
-            Board board)
+            Board board, Figure king)
         {
             foreach (var f in defendingFigures)
             {
-                if (f.ChcekLegalMovement(board, current, attackingFigures))
+                if (f.ChcekLegalMovement(board, current, attackingFigures, king))
                     return true;
             }
             return false;
         }
         internal static bool CheckOccupied(Figure?[,] fieldsStatus, Vector2 current)
             => fieldsStatus[current.X, current.Y] is null;
-
-        internal static Figure GetKing(List<Figure> figures, bool color)
-            => figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == color);
 
         internal static void SetNewPosition(Vector2 newVector2, Board board, Figure figure)
         {

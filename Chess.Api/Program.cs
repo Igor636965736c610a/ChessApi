@@ -16,6 +16,7 @@ using Chess.Core.Domain;
 using Chess.Api.Controllers;
 using Microsoft.AspNetCore.Http.Connections;
 using ChesApi.Infrastructure.Hub;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,19 @@ builder.Services.AddAuthentication(option =>
 {
     cfg.RequireHttpsMetadata = false;
     cfg.SaveToken = true;
+    cfg.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accesToken = context.Request.Query["access_token"];
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accesToken) && path.StartsWithSegments("/Hubs"))
+            {
+                context.Token = accesToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
     cfg.TokenValidationParameters = new TokenValidationParameters
     {
         ValidIssuer = authenticationSettings.JwtIssuer,
@@ -82,7 +96,7 @@ var app = builder.Build();
 
 app.UseCors();
 
-app.MapHub<LobbyGameHub>("/ChessHub", option => option.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling);
+app.MapHub<LobbyGameHub>("/Hubs/ChessHub", option => option.Transports = HttpTransportType.WebSockets | HttpTransportType.LongPolling);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

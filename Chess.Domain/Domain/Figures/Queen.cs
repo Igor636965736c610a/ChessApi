@@ -15,6 +15,7 @@ namespace Chess.Core.Domain.Figures
         {
             FigureType = FigureType.Queen;
             Value = 8;
+            FigureChar = 'q';
         }
         //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
         //{
@@ -27,12 +28,11 @@ namespace Chess.Core.Domain.Figures
         //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir7, newAttackedFields);
         //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir8, newAttackedFields);
         //}
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
-            var king = UtilsMethods.GetKing(board.Figures, WhiteColor);
             if (!CheckDirectionValid(newVector2))
                 return false;
-            if (!UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
+            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
                 return false;
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
 

@@ -38,3 +38,36 @@
         -1px 0 5px black, 
         0 0 5px black;
 }
+#submit-button {
+    width: 100px;
+    height: 50px;
+    padding: 10px;
+}
+#JWT {
+    margin-top: 20px;
+}
+.form-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 75rem;
+}
+#start-game-button {
+    width: 100px;
+    height: 50px;
+    padding: 10px;
+    margin-top: 30px;
+}
+#joining-room {
+    margin-top: 20px;
+}
+#join-to-the-room {
+    width: 100px;
+    height: 50px;
+    padding: 10px;
+}
+#connection-on {
+    width: 100px;
+    height: 50px;
+    padding: 10px;
+}

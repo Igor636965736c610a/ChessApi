@@ -1,4 +1,5 @@
 ﻿using Chess.Core.Domain;
+using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using System;
@@ -13,7 +14,9 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
     {
         public bool Move(Vector2 newVector2, Figure figure, Board board)
         {
-            throw new NotImplementedException();
+            if (figure.FigureType != FigureType.Pown && (newVector2.Y != 7 || newVector2.Y != 0))
+                return false;
+            return true;
         }
     }
 }

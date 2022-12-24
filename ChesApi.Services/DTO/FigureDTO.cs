@@ -13,6 +13,6 @@ namespace ChesApi.Infrastructure.DTO
         public Vector2 Vector2 { get; set; }
         public Value Value { get; set; }
         public bool WhiteColor { get; set; }
-        public FigureType FigureType { get; set; }
+        public string FigureType { get; set; }
     }
 }

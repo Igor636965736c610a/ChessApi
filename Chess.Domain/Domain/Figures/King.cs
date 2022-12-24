@@ -15,15 +15,16 @@ namespace Chess.Core.Domain.Figures
         {
             FigureType = FigureType.King;
             Value = 0;
+            FigureChar = 'k';
         }
 
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures)
+        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
             if (!ChechDirectionValid(newVector2))
                 return false;
             foreach (var f in enemyFigures)
             {
-                if (f.ChcekLegalMovement(board, newVector2, new List<Figure>()))
+                if (f.ChcekLegalMovement(board, newVector2, new List<Figure>(), null))
                     return false;
             }
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
@@ -40,7 +41,7 @@ namespace Chess.Core.Domain.Figures
                 bool checkedField = false;
                 foreach (var f in attackingFigures)
                 {
-                    if(f.ChcekLegalMovement(board, direction, new List<Figure>()))
+                    if(f.ChcekLegalMovement(board, direction, new List<Figure>(), null))
                         checkedField = true;
                 }
                 if (checkedField == false 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
-    <link rel="stylesheet" href="css/main.css" >
+    <link rel="stylesheet" href="css/main.css">
     <script src="js/Main.js" defer></script>
     <title></title>
 </head>
@@ -11,5 +11,52 @@
     <div id="chess-board" class="chess-board">
 
     </div>
+    <div id="login-form">
+        <form class="JWT" id="JWT">
+            <label for="token">Wpisz token JWT:</label><br>
+            <input type="text" id="token" name="token"><br>
+        </form>
+
+        <button id="submit-button">Przypisz token</button>
+        <button id="connection-on">Connection on</button>
+    </div>
+    <button id="login-xxxx" onclick="loginAsXXXX()">loginAsX</button>
+    <button id="login-yyyy" onclick="loginAsYYYY()">loginAsY</button>
+    <br />
+    <button id="start-game-button">StartGame</button>
+    <br />
+    <form class="joining-room" id="joining-room">
+        <label for="kodPokoju">Kod Pokoju:</label><br>
+        <input type="text" id="kodPokoju" name="kodPokoju"><br>
+    </form>
+
+    <button id="join-to-the-room">Dołącz do pokoju</button>
+
+    <!--<div class="form-container">-->
+    <!--    <form id="form">-->
+    <!--        <label for="CurrentX">CurrentX:</label><br>-->
+    <!--        <input type="number" min="1" max="8" id="CurrentX"><br>-->
+    <!--        <label for="CurrentY">CurrentY:</label><br>-->
+    <!--        <input type="number" min="1" max="8" id="CurrentY"><br>-->
+    <!--        <label for="newX">newX:</label><br>-->
+    <!--        <input type="number" min="1" max="8" id="newX"><br>-->
+    <!--        <label for="newY">newY:</label><br>-->
+    <!--        <input type="number" min="1" max="8" id="newY"><br>-->
+    <!--        <label for="MoveType">MoveType:</label><br>-->
+    <!--        <select id="input3">-->
+    <!--            <option value="StandardMove">Standard Move</option>-->
+    <!--            <option value="RookPromotion">Rook Promotion</option>-->
+    <!--            <option value="QueenPromotion">Queen Promotion</option>-->
+    <!--            <option value="KnightPromotion">Knight Promotion</option>-->
+    <!--            <option value="BischopPromotion">Bischop Promotion</option>-->
+    <!--        </select><br><br />-->
+    <!--        <button type="submit" id="Move">Submit</button>-->
+    <!--        <br />-->
+    <!--    </form>-->
+    <!--    <br />-->
+    <!--    Status Gry:-->
+    <!--    <br />-->
+    <!--    <input type="text" id="gameStatus" name="gameStatus"><br>-->
+    <!--</div>-->
 </body>
 </html>

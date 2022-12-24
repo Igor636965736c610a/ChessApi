@@ -14,7 +14,8 @@ namespace Chess.Core.Domain.Figures
         public Vector2 Vector2 { get; set; }
         public int Value { get; protected set; }
         public bool WhiteColor { get; set; }
-        public FigureType FigureType { get; set; }
+        public  FigureType FigureType { get; set; }
+        public char FigureChar { get; set; }
 
         protected Figure(bool color, Vector2 vector2)
         {
@@ -22,7 +23,7 @@ namespace Chess.Core.Domain.Figures
             Vector2 = vector2;
         }
 
-        public abstract bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures);
+        public abstract bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king);
 
         public abstract bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures);
 

@@ -38,6 +38,21 @@ namespace ChesApi.Infrastructure.Services
             return _mapper.Map<LiveGame, LiveGameDTO>(game);
         }
 
+        public GameCharDTO[] GetArrayGameRepresentation(LiveGame game)
+        {
+            GameCharDTO[] local = new GameCharDTO[64];
+            int i = 0;
+            foreach(var f in game.Board.FieldsStatus)
+            {
+                if(f is not null)
+                    local[i] = _mapper.Map<Figure, GameCharDTO>(f);
+                else
+                    local[i] = new GameCharDTO(' ');
+                i++;
+            }
+            return local;
+        }
+
         public PlayerDTO GetPlayer(string connectionId)
         {
             var player = _hubLobby.GetPlayer(connectionId);
@@ -65,7 +80,6 @@ namespace ChesApi.Infrastructure.Services
             var legalMoveType = strategy.Move(newVector2, figure, board);
             if (!legalMoveType)
                 throw new InvalidOperationException();
-            figure.SetNewPosition(newVector2, board);
 
             var enemyKing = _figureRepository.GetKing(board, !figure.WhiteColor);
             var playerKing = _figureRepository.GetKing(board, figure.WhiteColor);
@@ -73,7 +87,7 @@ namespace ChesApi.Infrastructure.Services
             var attackingFigures = board.Figures
                 .Where(x => x.WhiteColor == figure.WhiteColor && x.FigureType != FigureType.King)
                 .Where(x => x.ChcekLegalMovement(board, enemyKing.Vector2, board.Figures.Where(x => x.WhiteColor != figure.WhiteColor)
-                .ToList()))
+                .ToList(), null))
                 .ToList();
 
             if (attackingFigures.Count > 0)
@@ -93,7 +107,7 @@ namespace ChesApi.Infrastructure.Services
             var enemyFigures = board.Figures.Where(x => x.WhiteColor != king.WhiteColor).ToList();
             foreach (var dir in dirs)
             {
-                if (king.ChcekLegalMovement(board, new Vector2(king.Vector2.X + dir.X, king.Vector2.Y + dir.Y), enemyFigures))
+                if (king.ChcekLegalMovement(board, new Vector2(king.Vector2.X + dir.X, king.Vector2.Y + dir.Y), enemyFigures, null))
                     return false;
             }
 
@@ -126,7 +140,7 @@ namespace ChesApi.Infrastructure.Services
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (UtilsMethods.CheckCover(current, defendingFigures, enemyFigures, board))
+                if (UtilsMethods.CheckCover(current, defendingFigures, enemyFigures, board, king))
                     return true;
             }
             return false;
