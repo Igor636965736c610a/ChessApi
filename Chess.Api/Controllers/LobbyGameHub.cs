@@ -18,14 +18,16 @@ namespace Chess.Api.Controllers
     {
         private readonly IHubLobby _hubLobby;
         private readonly IGameService _gameService;
-        public LobbyGameHub(IHubLobby hubLobby, IGameService gameService)
+        private readonly IMappedHubLobby _mappedHubLobby;
+        public LobbyGameHub(IHubLobby hubLobby, IGameService gameService, IMappedHubLobby mappedHubLobby)
         {
             _hubLobby = hubLobby;
             _gameService = gameService;
+            _mappedHubLobby = mappedHubLobby;
         }
         public override Task OnConnectedAsync()
         {
-            return Clients.Caller.SendAsync("onConnected", "Witaj", _hubLobby.GetWaitingPlayers());
+            return Clients.Caller.SendAsync("onConnected", "Witaj", _mappedHubLobby.GetWaitingPlayersDTO());
         }
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
@@ -86,7 +88,7 @@ namespace Chess.Api.Controllers
                     game.Player1.HasMove = !game.Player1.HasMove;
                     game.Player2.HasMove = !game.Player2.HasMove;
                     game.WhiteColor = !game.WhiteColor;
-                    var gameRepresentation = _gameService.GetArrayGameRepresentation(game);
+                    var gameRepresentation = _mappedHubLobby.GetArrayGameRepresentation(game);
                     await Clients.Group(game.Id.ToString()).SendAsync("MoveResponse", moveResponse.ToString(), gameRepresentation);
                     if(moveResponse == GameStatus.WhiteCheckMate || moveResponse == GameStatus.BlackCheckMate || moveResponse == GameStatus.Pat)
                     {
@@ -110,7 +112,7 @@ namespace Chess.Api.Controllers
         public async Task GetGame()
         {
             var player = _hubLobby.GetPlayer(Context.ConnectionId);
-            var game = _gameService.GetGameByGameId(player.GameId.ToString());
+            var game = _mappedHubLobby.GetGameByGameId(player.GameId.ToString());
             if(game is null)
             {
                 await Clients.Caller.SendAsync("NotFoundGame", "Nie jestes w trakcie gry!");

@@ -23,20 +23,19 @@ namespace Chess.Core.Domain.Figures
         //{
         //    throw new NotImplementedException();
         //}
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
-            var fieldsStatus = board.FieldsStatus;
             Vector2 movement;
             Vector2 direction;
             if(!CheckDirectionValid(newVector2, out movement, out direction))
                 return false;
-            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
+            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, newVector2, king.Vector2, board, enemyFigures))
                 return false;
             if (Math.Abs(movement.Y) == 2 && FirstMove == false)
                 return false;
-            if (Math.Abs(direction.X) == 1 && !((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor) || (board.EnPassant.CanEnPassant == true
-                && board.EnPassant.Vector2.X == newVector2.X
-                && board.EnPassant.Vector2.Y == newVector2.Y)))
+            if (Math.Abs(direction.X) == 1 && !((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor)
+                || (board.EnPassant.CanEnPassant == true
+                && UtilsMethods.CompareVector2(board.EnPassant.Vector2, newVector2))))
                 return false;
             
             if(Math.Abs(movement.Y) == 2 && !UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor))

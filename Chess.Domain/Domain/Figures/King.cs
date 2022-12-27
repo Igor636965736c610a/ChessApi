@@ -18,18 +18,15 @@ namespace Chess.Core.Domain.Figures
             FigureChar = 'k';
         }
 
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
             if (!ChechDirectionValid(newVector2))
                 return false;
-            foreach (var f in enemyFigures)
-            {
-                if (f.ChcekLegalMovement(board, newVector2, new List<Figure>(), null))
-                    return false;
-            }
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
-
-            return UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, newVector2, direction, WhiteColor);
+            if(!UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, newVector2, direction, WhiteColor))
+                return false;
+            var attackingFieldFigures = enemyFigures.Where(x => !UtilsMethods.CompareVector2(Vector2, newVector2));
+            return !attackingFieldFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, newVector2, new List<Figure>(), null));
         }
 
         public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
@@ -39,13 +36,9 @@ namespace Chess.Core.Domain.Figures
             {
                 var direction = new Vector2(Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y);
                 bool checkedField = false;
-                foreach (var f in attackingFigures)
-                {
-                    if(f.ChcekLegalMovement(board, direction, new List<Figure>(), null))
-                        checkedField = true;
-                }
-                if (checkedField == false 
-                    && UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, direction, direction, WhiteColor))
+                if (attackingFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, direction, new List<Figure>(), null)))
+                    checkedField = true;
+                if (!checkedField && UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, direction, direction, WhiteColor))
                     CanOccupied[Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y] = true;
             }
             return CanOccupied;

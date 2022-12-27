@@ -22,6 +22,7 @@ namespace ChesApi.Infrastructure.AutoMapper
                 cfg.CreateMap<Board, BoardDTO>();
                 cfg.CreateMap<LiveGame, LiveGameDTO>();
                 cfg.CreateMap<Player, PlayerDTO>();
+                cfg.CreateMap<Player, WaitingPlayersDTO>();
                 cfg.CreateMap<Figure, GameCharDTO>();
             })
             .CreateMapper();

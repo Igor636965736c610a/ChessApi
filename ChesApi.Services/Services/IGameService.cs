@@ -12,9 +12,6 @@ namespace ChesApi.Infrastructure.Services
 {
     public interface IGameService
     {
-        LiveGameDTO GetGameByGameId(string gameId);
-        public GameCharDTO[] GetArrayGameRepresentation(LiveGame game);
-        PlayerDTO GetPlayer(string connectionId);
         GameStatus Move(MoveType moveType, Vector2 newVector2, Vector2 oldVector2, LiveGame liveGame);
     }
 }

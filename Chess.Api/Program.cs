@@ -66,7 +66,6 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
-builder.Services.AddControllers();
 builder.Services.AddSignalR().AddJsonProtocol(option => option.PayloadSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddSingleton(AutoMapperConfig.Initialize());
 builder.Services.AddScoped<IStrategy, BischopPromotion>();
@@ -80,6 +79,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<IHubLobby, HubLobby>();
+builder.Services.AddScoped<IMappedHubLobby, MappedHubLobby>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -2,6 +2,7 @@
 using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
+using Chess.Core.Domain.Utils;
 using Chess.Core.Repo.Game;
 using Chess.Core.Repo.UserRepository;
 using System;
@@ -20,11 +21,11 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
                 return false;
 
             List<Figure> enemyFigures = board.Figures
-                .Where(x => x.WhiteColor == !figure.WhiteColor && x.Vector2.X != newVector2.X && x.Vector2.Y != newVector2.Y
+                .Where(x => x.WhiteColor == !figure.WhiteColor && !UtilsMethods.CompareVector2(x.Vector2, newVector2)
                 && x.FigureType != FigureType.King)
                 .ToList();
             var king = board.Figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == figure.WhiteColor);
-            if (!figure.ChcekLegalMovement(board, newVector2, enemyFigures, king))
+            if (!figure.ChcekLegalMovement(board, board.FieldsStatus, newVector2, enemyFigures, king))
                 return false;
             figure.SetNewPosition(newVector2, board);
             return true;

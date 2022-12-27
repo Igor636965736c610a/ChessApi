@@ -19,15 +19,15 @@ namespace Chess.Core.Domain.Figures
             FigureChar = 'r';
         }
 
-        public override bool ChcekLegalMovement(Board board, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
         {
             if (!CheckDirectionValid(newVector2))
                 return false;
-            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, king.Vector2, board, enemyFigures))
+            if (king is not null && !UtilsMethods.CheckRevealAttack(Vector2, newVector2, king.Vector2, board, enemyFigures))
                 return false;
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
 
-            return UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, newVector2, direction, WhiteColor);
+            return UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor);
         }
         public override void SetNewPosition(Vector2 newVector2, Board board)
         {
