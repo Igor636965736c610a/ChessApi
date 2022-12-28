@@ -32,6 +32,9 @@ namespace ChesApi.Infrastructure.Services
             if (figure is null)
                 throw new NullReferenceException();
 
+            if (figure.WhiteColor != liveGame.WhiteColor)
+                throw new NullReferenceException("gowno");
+
             var board = liveGame.Board;
             if (UtilsMethods.ValidateVetor2(oldVector2, board) && UtilsMethods.ValidateVetor2(newVector2, board))
                 throw new InvalidOperationException();
@@ -65,14 +68,14 @@ namespace ChesApi.Infrastructure.Services
             return GameStatus.IsGaming;
         }
 
-        private bool CheckCheckmate(Board board, Figure enemyKing, List<Figure> attackingFigures)
+        private bool CheckCheckmate(Board board, Figure attackedKing, List<Figure> attackingFigures)
         {
-            var dirs = enemyKing.GetDirs();
-            var defendingFigures = board.Figures.Where(x => x.WhiteColor != enemyKing.WhiteColor).ToList();
-            if (dirs.Any(x => !UtilsMethods.ValidateVetor2(new Vector2(enemyKing.Vector2.X + x.X, enemyKing.Vector2.Y + x.Y),
+            var dirs = attackedKing.GetDirs();
+            var enemyFigures = board.Figures.Where(x => x.WhiteColor != attackedKing.WhiteColor).ToList();
+            if (dirs.Any(x => !UtilsMethods.ValidateVetor2(new Vector2(attackedKing.Vector2.X + x.X, attackedKing.Vector2.Y + x.Y),
                 board)
-                && enemyKing.ChcekLegalMovement(board, board.FieldsStatus,
-                new Vector2(enemyKing.Vector2.X + x.X, enemyKing.Vector2.Y + x.Y),defendingFigures, null)))
+                && attackedKing.ChcekLegalMovement(board, board.FieldsStatus,
+                new Vector2(attackedKing.Vector2.X + x.X, attackedKing.Vector2.Y + x.Y), enemyFigures, null)))
                 return false;
 
             if (attackingFigures.Count() > 1)
@@ -85,26 +88,26 @@ namespace ChesApi.Infrastructure.Services
                     return true;
 
                 List<Vector2> attackDirections = attackingFigures
-                    .Select(x => new Vector2(Math.Sign(enemyKing.Vector2.X - x.Vector2.X), Math.Sign(enemyKing.Vector2.Y - x.Vector2.Y)))
+                    .Select(x => new Vector2(Math.Sign(attackedKing.Vector2.X - x.Vector2.X), Math.Sign(attackedKing.Vector2.Y - x.Vector2.Y)))
                     .ToList();
 
                 if (!attackDirections.All(x => x.X == attackDirections.First().X && x.Y == attackDirections.First().Y))
                     return true;
             }
-            var defendingFiguresToCheckCover = board.Figures.Where(x => x.WhiteColor == enemyKing.WhiteColor && x.FigureType != FigureType.King);
+            var defendingFiguresToCheckCover = board.Figures.Where(x => x.WhiteColor == attackedKing.WhiteColor && x.FigureType != FigureType.King);
             var firsInTheRowFigure = attackingFigures
-                .OrderBy(x => Math.Abs(enemyKing.Vector2.X + enemyKing.Vector2.Y - x.Vector2.X + x.Vector2.Y))
+                .OrderBy(x => Math.Abs(attackedKing.Vector2.X + attackedKing.Vector2.Y - x.Vector2.X + x.Vector2.Y))
                 .First();
-            var direction = new Vector2(firsInTheRowFigure.Vector2.X - enemyKing.Vector2.X, firsInTheRowFigure.Vector2.Y - enemyKing.Vector2.Y);
+            var direction = new Vector2(firsInTheRowFigure.Vector2.X - attackedKing.Vector2.X, firsInTheRowFigure.Vector2.Y - attackedKing.Vector2.Y);
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
-            var current = enemyKing.Vector2;
+            var current = attackedKing.Vector2;
 
-            while ((current.X != firsInTheRowFigure.Vector2.X) && (current.Y != firsInTheRowFigure.Vector2.Y))
+            while (!((current.X == firsInTheRowFigure.Vector2.X) && (current.Y == firsInTheRowFigure.Vector2.Y)))
             {
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (!UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, defendingFigures, board, enemyKing))
+                if (!UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, enemyFigures, board, attackedKing))
                     return true; 
             }
             return false;

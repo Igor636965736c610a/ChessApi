@@ -33,7 +33,7 @@ namespace Chess.Core.Domain.Figures
                 return false;
             if (Math.Abs(movement.Y) == 2 && FirstMove == false)
                 return false;
-            if (Math.Abs(direction.X) == 1 && !((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != WhiteColor)
+            if (Math.Abs(direction.X) == 1 && !((fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == !WhiteColor)
                 || (board.EnPassant.CanEnPassant == true
                 && UtilsMethods.CompareVector2(board.EnPassant.Vector2, newVector2))))
                 return false;

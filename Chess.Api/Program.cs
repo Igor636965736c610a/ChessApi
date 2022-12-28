@@ -9,7 +9,6 @@ using Chess.Core.Repo.UserRepository;
 using System.Text;
 using ChesApi.Infrastructure.MyContext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using ChesApi.Infrastructure.AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Chess.Core.Domain;
@@ -66,6 +65,7 @@ builder.Services.AddCors(options =>
                 .AllowCredentials();
         });
 });
+builder.Services.AddControllers();
 builder.Services.AddSignalR().AddJsonProtocol(option => option.PayloadSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddSingleton(AutoMapperConfig.Initialize());
 builder.Services.AddScoped<IStrategy, BischopPromotion>();
@@ -83,12 +83,6 @@ builder.Services.AddScoped<IMappedHubLobby, MappedHubLobby>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSwaggerGen(options =>
-{ 
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "ChessApi", Version = "v1" });
-    // here some other configurations maybe...
-    options.AddSignalRSwaggerGen();
-});
 builder.Services.AddDbContext<ChessApiContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("MyChessApiCS")));
 

@@ -10,8 +10,9 @@ namespace ChesApi.Infrastructure.Hub
 {
     public interface IMappedHubLobby
     {
-        LiveGameDTO GetGameByGameId(string gameId);
-        PlayerDTO GetPlayer(string connectionId);
+        LiveGameDTO GetGameByGameIdDTO(string gameId);
+        PlayerDTO GetPlayerDTO(string connectionId);
         public List<WaitingPlayersDTO> GetWaitingPlayersDTO();
+        public BoardDTO GetBoardDTO(string gameId);
     }
 }

@@ -25,7 +25,7 @@ function PieceClick(x, y) {
         x: x,
         y: y
     };
-    let selectedOptionIndex = 0; //StandardMove
+    let selectedOptionIndex = 0; 
     connection.send('Move', currentVector, newVector, selectedOptionIndex);
     selectedPiece = null;
     console.log('MovePiece');
@@ -42,8 +42,15 @@ let initBoard = [
     ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r']
 ];
 
-function generateChessBoard(rootElement) {
+/**
+ * 
+ * @param {HTMLElement} rootElement
+ * @param {any} board
+ */
+
+function generateChessBoard(rootElement, board) {
     let aChar = 'a'.charCodeAt(0);
+    rootElement.innerHTML = '';
     for (let i = 7; i >= 0; i--) {
         for (let z = 0; z < 8; z++) {
             let currentFile = String.fromCharCode(aChar + z);
@@ -54,7 +61,7 @@ function generateChessBoard(rootElement) {
                 element.classList.add('field-black');
             else
                 element.classList.add('field-white');
-            let local = initBoard[i][z];
+            let local = board[i][z];
             if (local !== " ") {
                 let div = charToPIece(local);
                 element.appendChild(div);
@@ -62,6 +69,7 @@ function generateChessBoard(rootElement) {
             element.addEventListener('click', () => {
                 PieceClick(z, i);
                 console.log('klik ' + currentFile + (i + 1));
+                element.classList.add('field-selected');
             })
 
             rootElement.appendChild(element);
@@ -82,12 +90,11 @@ function charToPIece(char) {
     keysDiv.classList.add('piece');
     return keysDiv;
 }
-//dodać klase piece-nazwa figury
 
 token = localStorage.getItem('token');
 document.getElementById('token').value = token;
 
-generateChessBoard(document.getElementById('chess-board'));
+generateChessBoard(document.getElementById('chess-board'), initBoard);
 
 let submitButton = document.getElementById('submit-button');
 submitButton.addEventListener('click', setToken);
@@ -110,17 +117,6 @@ joinGameButton.addEventListener("click", () => {
     let kod = document.getElementById('kodPokoju');
     connection.send('JoinRoom', kod.value);
 });
-
-//const moveButton = document.getElementById("Move");
-//moveButton.addEventListener("click", () => {
-//    currentVector.oldX = document.getElementById("CurrentX").value;
-//    currentVector.oldY = document.getElementById("CurrentY").value;
-//    newVector.newX = document.getElementById("newX").value;
-//    newVector.newY = document.getElementById("newY").value;
-//    const select = document.getElementById('input3');
-//    const selectedOptionIndex = select.selectedIndex;
-//    connection.send('Move', currentVector, newVector, selectedOptionIndex);
-//});
 
 function login(email, password) {
     fetch('/EnglishApi/account/user/login', {
@@ -180,7 +176,31 @@ function connect() {
     })
 
     connection.on("ErrorMove", (message) => {
-        console.log('error move' , message);
+        console.log('error move', message);
+        document.querySelectorAll('.field-selected').forEach(element => {
+            element.classList.remove('.field-selected');
+        })
+    })
+
+    connection.on("MoveResponse", (message, boardStatus) => {
+        let localBoard = [
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+        ];
+        console.log(message);
+        boardStatus.Figures.map(x => {
+            let localChar = x.FigureChar;
+            if (x.WhiteColor)
+                localChar = localChar.toUpperCase();
+            localBoard[x.Vector2.Y][x.Vector2.X] = `${localChar}`;
+        })
+        generateChessBoard(document.getElementById('chess-board'), localBoard);
     })
 
     connection.start()

@@ -39,11 +39,9 @@ namespace Chess.Api.Controllers
                 else
                     await Clients.Group(leavingPlayer.GameId.ToString()).SendAsync("disconected", "Black Player Win");
                 var game = _hubLobby.GetGame(leavingPlayer.GameId.ToString());
+                await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
+                await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
                 await _hubLobby.RemoveGame(leavingPlayer.GameId.ToString());
-                var player1 = game.Player1;
-                var player2 = game.Player2;
-                await _hubLobby.RemovePlayer(player1.ConntectionId);
-                await _hubLobby.RemovePlayer(player2.ConntectionId);
             }
         }
         public async Task CreateRoom()
@@ -88,15 +86,13 @@ namespace Chess.Api.Controllers
                     game.Player1.HasMove = !game.Player1.HasMove;
                     game.Player2.HasMove = !game.Player2.HasMove;
                     game.WhiteColor = !game.WhiteColor;
-                    var gameRepresentation = _mappedHubLobby.GetArrayGameRepresentation(game);
-                    await Clients.Group(game.Id.ToString()).SendAsync("MoveResponse", moveResponse.ToString(), gameRepresentation);
+                    var boardDTO = _mappedHubLobby.GetBoardDTO(player.GameId.ToString());
+                    await Clients.Group(game.Id.ToString()).SendAsync("MoveResponse", moveResponse.ToString(), boardDTO);
                     if(moveResponse == GameStatus.WhiteCheckMate || moveResponse == GameStatus.BlackCheckMate || moveResponse == GameStatus.Pat)
                     {
+                        await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
+                        await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
                         await _hubLobby.RemoveGame(player.GameId.ToString());
-                        var player1 = game.Player1;
-                        var player2 = game.Player2;
-                        await _hubLobby.RemovePlayer(player1.ConntectionId);
-                        await _hubLobby.RemovePlayer(player2.ConntectionId);
                     }
                     await Task.CompletedTask;
                 }
@@ -109,10 +105,10 @@ namespace Chess.Api.Controllers
             await Task.CompletedTask;
         }
 
-        public async Task GetGame()
+        public async Task GetGameStatus()
         {
             var player = _hubLobby.GetPlayer(Context.ConnectionId);
-            var game = _mappedHubLobby.GetGameByGameId(player.GameId.ToString());
+            var game = _mappedHubLobby.GetGameByGameIdDTO(player.GameId.ToString());
             if(game is null)
             {
                 await Clients.Caller.SendAsync("NotFoundGame", "Nie jestes w trakcie gry!");
@@ -129,11 +125,9 @@ namespace Chess.Api.Controllers
                 await Clients.Group(game.Id.ToString()).SendAsync("WinAfterSurrender", $"{game.Player2.Name} Win!");
             else
                 await Clients.Group(game.Id.ToString()).SendAsync("WinAfterSurrender", $"{game.Player1.Name} Win!");
+            await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
+            await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
             await _hubLobby.RemoveGame(player.GameId.ToString());
-            var player1 = game.Player1;
-            var player2 = game.Player2;
-            await _hubLobby.RemovePlayer(player1.ConntectionId);
-            await _hubLobby.RemovePlayer(player2.ConntectionId);
         }
     }
 }

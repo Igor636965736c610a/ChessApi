@@ -19,13 +19,13 @@ namespace ChesApi.Infrastructure.Hub
             _hubLobby = hubLobby;
             _mapper = mapper;
         }
-        public LiveGameDTO GetGameByGameId(string gameId)
+        public LiveGameDTO GetGameByGameIdDTO(string gameId)
         {
             var game = _hubLobby.GetGame(gameId);
             return _mapper.Map<LiveGame, LiveGameDTO>(game);
         }
 
-        public PlayerDTO GetPlayer(string connectionId)
+        public PlayerDTO GetPlayerDTO(string connectionId)
         {
             var player = _hubLobby.GetPlayer(connectionId);
             return _mapper.Map<Player, PlayerDTO>(player);
@@ -35,6 +35,12 @@ namespace ChesApi.Infrastructure.Hub
         {
             var players = _hubLobby.GetWaitingPlayers();
             return _mapper.Map<List<Player>, List<WaitingPlayersDTO>>(players);
+        }
+
+        public BoardDTO GetBoardDTO(string gameId)
+        {
+            var game = _hubLobby.GetGame(gameId);
+            return _mapper.Map<Board, BoardDTO>(game.Board);
         }
     }
 }

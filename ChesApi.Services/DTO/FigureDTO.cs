@@ -14,5 +14,6 @@ namespace ChesApi.Infrastructure.DTO
         public Value Value { get; set; }
         public bool WhiteColor { get; set; }
         public string FigureType { get; set; }
+        public char FigureChar { get; set; }
     }
 }

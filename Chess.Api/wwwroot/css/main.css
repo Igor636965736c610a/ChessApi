@@ -20,6 +20,12 @@
 .field-white {
     background-color: white;
 }
+.field-black.field-selected {
+    background-color: blue;
+}
+.field-white.field-selected {
+    background-color: cornflowerblue;
+}
 .piece-black{
     color: black;
     text-shadow:
