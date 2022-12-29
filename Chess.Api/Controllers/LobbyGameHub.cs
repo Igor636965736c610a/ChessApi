@@ -77,6 +77,11 @@ namespace Chess.Api.Controllers
         public async Task Move(Vector2 current, Vector2 target, MoveType moveType)
         {
             var player = _hubLobby.GetPlayer(Context.ConnectionId);
+            if (player is null)
+            {
+                await Clients.Caller.SendAsync("MoveResponse", "Nie jesteś w grze");
+                return;
+            }
             var game = _hubLobby.GetGame(player.GameId.ToString());
             if (player.HasMove)
             {
@@ -108,12 +113,12 @@ namespace Chess.Api.Controllers
         public async Task GetGameStatus()
         {
             var player = _hubLobby.GetPlayer(Context.ConnectionId);
-            var game = _mappedHubLobby.GetGameByGameIdDTO(player.GameId.ToString());
-            if(game is null)
+            if(player is null)
             {
                 await Clients.Caller.SendAsync("NotFoundGame", "Nie jestes w trakcie gry!");
                 return;
             }
+            var game = _mappedHubLobby.GetGameByGameIdDTO(player.GameId.ToString());
             await Clients.Caller.SendAsync("BoardStatus", game);
         }
 

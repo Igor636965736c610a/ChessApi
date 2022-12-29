@@ -23,7 +23,7 @@ namespace Chess.Core.Domain.Figures
         //{
         //    throw new NotImplementedException();
         //}
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             Vector2 movement;
             Vector2 direction;
@@ -52,7 +52,10 @@ namespace Chess.Core.Domain.Figures
             else
                 figureToDelete = board.FieldsStatus[newVector2.X, newVector2.Y];
             if (figureToDelete is not null)
+            {
                 board.Figures.Remove(figureToDelete);
+                board.FieldsStatus[figureToDelete.Vector2.X, figureToDelete.Vector2.Y] = null;
+            }
             if (Math.Abs(newVector2.Y - Vector2.Y) == 2)
                 board.EnPassant = new EnPassant(true, new Vector2(newVector2.X, newVector2.Y - Math.Sign(newVector2.Y - Vector2.Y)));
             else

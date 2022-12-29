@@ -18,7 +18,7 @@ namespace Chess.Core.Domain.Figures
             FigureChar = 'k';
         }
 
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             if (!ChechDirectionValid(newVector2) && !CheckCanCastle(newVector2, board, enemyFigures))
                 return false;
@@ -38,8 +38,8 @@ namespace Chess.Core.Domain.Figures
                 && kingDirectionMove + Math.Sign(x.Vector2.X - Vector2.X) == 0);
                 var castelingRookSite = new Vector2(newVector2.X + kingDirectionMove, newVector2.Y);
                 UtilsMethods.SetNewPosition(castelingRookSite, board, rook);
-                UtilsMethods.SetNewPosition(newVector2, board, this);
             }
+            UtilsMethods.SetNewPosition(newVector2, board, this);
         }
 
         public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
@@ -77,7 +77,7 @@ namespace Chess.Core.Domain.Figures
 
         private bool CheckCanCastle(Vector2 newVector2, Board board, IEnumerable<Figure> enemyFigures)
             => Vector2.Y - newVector2.Y == 0 && Math.Abs(Vector2.X - newVector2.X) == 2
-            && !enemyFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, newVector2, new List<Figure>(), null))
+            && !enemyFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, Vector2, new List<Figure>(), null))
             && board.Figures.Where(x => x.FigureType == FigureType.Rook && x.WhiteColor == WhiteColor).Cast<Rook>().Any(x => x.FirstMove
             && Math.Sign(Vector2.X - newVector2.X) + Math.Sign(x.Vector2.X - Vector2.X) == 0);
 

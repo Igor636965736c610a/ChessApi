@@ -28,7 +28,7 @@ namespace Chess.Core.Domain.Figures
         //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir7, newAttackedFields);
         //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir8, newAttackedFields);
         //}
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             if (!CheckDirectionValid(newVector2))
                 return false;

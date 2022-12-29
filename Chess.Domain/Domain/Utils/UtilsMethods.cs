@@ -27,7 +27,7 @@ namespace Chess.Core.Domain.Utils
             return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
         }
         internal static bool CheckRevealAttack(Vector2 currentVector2, Vector2 newVector2, Vector2 kingVector2, Board board,
-            List<Figure> enemyFigures)
+            IEnumerable<Figure> enemyFigures)
         {
             var copiedFieldsStatus = Copy2dArray(board.FieldsStatus);
             var figure = copiedFieldsStatus[currentVector2.X, currentVector2.Y];

@@ -30,10 +30,10 @@ namespace ChesApi.Infrastructure.Services
 
             var figure = _figureRepository.GetFigure(liveGame.Board, oldVector2);
             if (figure is null)
-                throw new NullReferenceException();
+                throw new NullReferenceException("Wybierz figure");
 
             if (figure.WhiteColor != liveGame.WhiteColor)
-                throw new NullReferenceException("gowno");
+                throw new NullReferenceException("Wybierz swoja figure");
 
             var board = liveGame.Board;
             if (UtilsMethods.ValidateVetor2(oldVector2, board) && UtilsMethods.ValidateVetor2(newVector2, board))
@@ -68,14 +68,14 @@ namespace ChesApi.Infrastructure.Services
             return GameStatus.IsGaming;
         }
 
-        private bool CheckCheckmate(Board board, Figure attackedKing, List<Figure> attackingFigures)
+        private bool CheckCheckmate(Board board, Figure checkKing, List<Figure> attackingFigures)
         {
-            var dirs = attackedKing.GetDirs();
-            var enemyFigures = board.Figures.Where(x => x.WhiteColor != attackedKing.WhiteColor).ToList();
-            if (dirs.Any(x => !UtilsMethods.ValidateVetor2(new Vector2(attackedKing.Vector2.X + x.X, attackedKing.Vector2.Y + x.Y),
+            var dirs = checkKing.GetDirs();
+            var enemyFigures = board.Figures.Where(x => x.WhiteColor != checkKing.WhiteColor).ToList();
+            if (dirs.Any(x => !UtilsMethods.ValidateVetor2(new Vector2(checkKing.Vector2.X + x.X, checkKing.Vector2.Y + x.Y),
                 board)
-                && attackedKing.ChcekLegalMovement(board, board.FieldsStatus,
-                new Vector2(attackedKing.Vector2.X + x.X, attackedKing.Vector2.Y + x.Y), enemyFigures, null)))
+                && checkKing.ChcekLegalMovement(board, board.FieldsStatus,
+                new Vector2(checkKing.Vector2.X + x.X, checkKing.Vector2.Y + x.Y), enemyFigures, null)))
                 return false;
 
             if (attackingFigures.Count() > 1)
@@ -88,26 +88,26 @@ namespace ChesApi.Infrastructure.Services
                     return true;
 
                 List<Vector2> attackDirections = attackingFigures
-                    .Select(x => new Vector2(Math.Sign(attackedKing.Vector2.X - x.Vector2.X), Math.Sign(attackedKing.Vector2.Y - x.Vector2.Y)))
+                    .Select(x => new Vector2(Math.Sign(checkKing.Vector2.X - x.Vector2.X), Math.Sign(checkKing.Vector2.Y - x.Vector2.Y)))
                     .ToList();
 
                 if (!attackDirections.All(x => x.X == attackDirections.First().X && x.Y == attackDirections.First().Y))
                     return true;
             }
-            var defendingFiguresToCheckCover = board.Figures.Where(x => x.WhiteColor == attackedKing.WhiteColor && x.FigureType != FigureType.King);
+            var defendingFiguresToCheckCover = board.Figures.Where(x => x.WhiteColor == checkKing.WhiteColor && x.FigureType != FigureType.King);
             var firsInTheRowFigure = attackingFigures
-                .OrderBy(x => Math.Abs(attackedKing.Vector2.X + attackedKing.Vector2.Y - x.Vector2.X + x.Vector2.Y))
+                .OrderBy(x => Math.Abs(checkKing.Vector2.X + checkKing.Vector2.Y - x.Vector2.X + x.Vector2.Y))
                 .First();
-            var direction = new Vector2(firsInTheRowFigure.Vector2.X - attackedKing.Vector2.X, firsInTheRowFigure.Vector2.Y - attackedKing.Vector2.Y);
+            var direction = new Vector2(firsInTheRowFigure.Vector2.X - checkKing.Vector2.X, firsInTheRowFigure.Vector2.Y - checkKing.Vector2.Y);
             var step = new Vector2(Math.Sign(direction.X), Math.Sign(direction.Y));
-            var current = attackedKing.Vector2;
+            var current = checkKing.Vector2;
 
-            while (!((current.X == firsInTheRowFigure.Vector2.X) && (current.Y == firsInTheRowFigure.Vector2.Y)))
+            while (!UtilsMethods.CompareVector2(current, firsInTheRowFigure.Vector2))
             {
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (!UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, enemyFigures, board, attackedKing))
+                if (!UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, enemyFigures, board, checkKing))
                     return true; 
             }
             return false;

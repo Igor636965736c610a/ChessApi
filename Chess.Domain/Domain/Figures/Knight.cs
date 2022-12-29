@@ -13,7 +13,7 @@ namespace Chess.Core.Domain.Figures
             FigureChar = 'n';
         }
 
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king)
+        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             if (!CheckDirectionValid(newVector2))
                 return false;

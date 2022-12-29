@@ -23,7 +23,7 @@ namespace Chess.Core.Domain.Figures
             Vector2 = vector2;
         }
 
-        public abstract bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, List<Figure> enemyFigures, Figure? king);
+        public abstract bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king);
 
         public abstract bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures);
 
