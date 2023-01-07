@@ -35,11 +35,11 @@ namespace Chess.Core.Domain.Utils
                 throw new Exception("debil alert");
             copiedFieldsStatus[currentVector2.X, currentVector2.Y] = null;
             copiedFieldsStatus[newVector2.X, newVector2.Y] = figure;
-            return !enemyFigures.Any(x => x.ChcekLegalMovement(board, copiedFieldsStatus, kingVector2, new List<Figure>(), null));
+            return !enemyFigures.Any(x => x.CheckLegalMovement(board, copiedFieldsStatus, kingVector2, new List<Figure>(), null));
         }
-        public static bool CheckCover(Vector2 current, IEnumerable<Figure> defendingFigures, List<Figure> attackingFigures,
+        public static bool CheckCover(Vector2 current, IEnumerable<Figure> defendingFigures, IEnumerable<Figure> attackingFigures,
             Board board, Figure king)
-            => defendingFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, current, attackingFigures, king));
+            => defendingFigures.Any(x => x.CheckLegalMovement(board, board.FieldsStatus, current, attackingFigures, king));
 
         internal static bool CheckOccupied(Figure?[,] fieldsStatus, Vector2 current)
             => fieldsStatus[current.X, current.Y] is null;

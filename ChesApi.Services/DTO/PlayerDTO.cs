@@ -11,5 +11,6 @@ namespace ChesApi.Infrastructure.DTO
         public string Name { get; set; }
         public bool HasMove { get; set; }
         public bool WhiteColor { get; set; }
+        public string ConnectionId { get; private set; }
     }
 }

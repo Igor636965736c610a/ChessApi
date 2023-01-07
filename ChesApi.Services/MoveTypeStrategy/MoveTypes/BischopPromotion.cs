@@ -1,4 +1,5 @@
 ﻿using Chess.Core.Domain;
+using Chess.Core.Domain.Enums;
 using Chess.Core.Domain.EnumsAndStructs;
 using Chess.Core.Domain.Figures;
 using System;
@@ -9,11 +10,20 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
 {
-    public class BischopPromotion : IStrategy
+    public class BishopPromotion : IStrategy
     {
         public bool Move(Vector2 newVector2, Figure figure, Board board)
         {
-            throw new NotImplementedException();
+            if (figure.FigureType != FigureType.Pown && (newVector2.Y != 7 || newVector2.Y != 0))
+                return false;
+
+            if (!UtilsMove.BaseMove(newVector2, figure, board))
+                return false;
+
+            var bishop = new Bishop(figure.WhiteColor, newVector2);
+            UtilsMove.Promotion(newVector2, figure, board, bishop);
+
+            return true;
         }
     }
 }

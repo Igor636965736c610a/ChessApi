@@ -8,7 +8,7 @@ namespace ChesApi.Infrastructure.MoveTypeStrategy.Enum
 {
     public enum MoveType
     {
-        Standart,
+        Standard,
         QuennPromotion,
         RookPromotion,
         BischopPromotion,

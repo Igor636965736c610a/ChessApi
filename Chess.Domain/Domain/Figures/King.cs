@@ -18,14 +18,15 @@ namespace Chess.Core.Domain.Figures
             FigureChar = 'k';
         }
 
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
+        public override bool CheckLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
-            if (!ChechDirectionValid(newVector2) && !CheckCanCastle(newVector2, board, enemyFigures))
+            if (!CheckDirectionValid(newVector2) && !CheckCanCastle(newVector2, board, enemyFigures))
                 return false;
             var direction = new Vector2(newVector2.X - Vector2.X, newVector2.Y - Vector2.Y);
             var attackingFieldFigures = enemyFigures.Where(x => !UtilsMethods.CompareVector2(x.Vector2, newVector2));
             var copy2dArray = UtilsMethods.Copy2dArray(fieldsStatus);
-            copy2dArray[newVector2.X, newVector2.Y] = null;
+            copy2dArray[newVector2.X, newVector2.Y] = this;
+            copy2dArray[Vector2.X, Vector2.Y] = null;
             return LegalMovement(board, copy2dArray, newVector2, direction, WhiteColor, attackingFieldFigures);
         }
 
@@ -36,34 +37,24 @@ namespace Chess.Core.Domain.Figures
                 var kingDirectionMove = Math.Sign(Vector2.X - newVector2.X);
                 var rook = board.Figures.First(x => x.WhiteColor == WhiteColor && x.FigureType == FigureType.Rook
                 && kingDirectionMove + Math.Sign(x.Vector2.X - Vector2.X) == 0);
-                var castelingRookSite = new Vector2(newVector2.X + kingDirectionMove, newVector2.Y);
-                UtilsMethods.SetNewPosition(castelingRookSite, board, rook);
+                var castlingRookSide = new Vector2(newVector2.X + kingDirectionMove, newVector2.Y);
+                UtilsMethods.SetNewPosition(castlingRookSide, board, rook);
             }
             UtilsMethods.SetNewPosition(newVector2, board, this);
         }
 
-        public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
-        {
-            var CanOccupied = new bool[board.XMax, board.YMax];
-            for (int i = 0; i < Dirs.Length; i++)
-            {
-                var direction = new Vector2(Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y);
-                bool checkedField = false;
-                if (attackingFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, direction, new List<Figure>(), null)))
-                    checkedField = true;
-                if (!checkedField && UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, direction, direction, WhiteColor))
-                    CanOccupied[Vector2.X + Dirs[i].X, Vector2.Y + Dirs[i].Y] = true;
-            }
-            return CanOccupied;
-        }
+        public override IEnumerable<Vector2> ShowLegalMovement(Board board, IEnumerable<Figure> attackingFigures)
+            => Dirs.Where(v => {
+                var direction = new Vector2(Vector2.X + v.X, Vector2.Y + v.Y);
+                return !attackingFigures.Any(x => x.CheckLegalMovement(board, board.FieldsStatus, direction,
+                    new List<Figure>(), null))
+                    && UtilsMethods.LegalMovement(board.FieldsStatus, Vector2, direction, direction, WhiteColor);
+            }).Select(z => new Vector2(Vector2.X + z.X, Vector2.Y + z.Y));
 
-        private bool ChechDirectionValid(Vector2 newVector2)
+        private bool CheckDirectionValid(Vector2 newVector2)
             => !(Math.Abs(Vector2.X - newVector2.X) > 1 || Math.Abs(Vector2.Y - newVector2.Y) > 1);
 
-        public override Vector2[] GetDirs()
-            => Dirs;
-
-        private readonly Vector2[] Dirs = 
+        public override IEnumerable<Vector2> Dirs { get; } = new List<Vector2>()
         { 
             new Vector2(1, 0), 
             new Vector2(-1, 0), 
@@ -77,7 +68,7 @@ namespace Chess.Core.Domain.Figures
 
         private bool CheckCanCastle(Vector2 newVector2, Board board, IEnumerable<Figure> enemyFigures)
             => Vector2.Y - newVector2.Y == 0 && Math.Abs(Vector2.X - newVector2.X) == 2
-            && !enemyFigures.Any(x => x.ChcekLegalMovement(board, board.FieldsStatus, Vector2, new List<Figure>(), null))
+            && !enemyFigures.Any(x => x.CheckLegalMovement(board, board.FieldsStatus, Vector2, new List<Figure>(), null))
             && board.Figures.Where(x => x.FigureType == FigureType.Rook && x.WhiteColor == WhiteColor).Cast<Rook>().Any(x => x.FirstMove
             && Math.Sign(Vector2.X - newVector2.X) + Math.Sign(x.Vector2.X - Vector2.X) == 0);
 
@@ -94,10 +85,10 @@ namespace Chess.Core.Domain.Figures
 
                 if (!UtilsMethods.CheckOccupied(fieldsStatus, current) && !UtilsMethods.CompareVector2(current, newVector2))
                     return false;
-                if (attackingFigures.Any(x => x.ChcekLegalMovement(board, fieldsStatus, newVector2, new List<Figure>(), null)))
+                if (attackingFigures.Any(x => x.CheckLegalMovement(board, fieldsStatus, newVector2, new List<Figure>(), null)))
                     return false;
             }
-            return !(fieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor == color);
+            return board.FieldsStatus[newVector2.X, newVector2.Y]?.WhiteColor != color;
         }
     }
 }

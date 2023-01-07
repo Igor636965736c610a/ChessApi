@@ -23,8 +23,8 @@ namespace ChesApi.Infrastructure.Factory
         {
             var figures = new List<Figure>()
             {
-                new Rook(true, new Vector2(0, 0)),
-                new Rook(true, new Vector2(7, 0)),
+                new Rook(true, new Vector2(0, 0), true),
+                new Rook(true, new Vector2(7, 0), true),
                 new Knight(true, new Vector2(1, 0)),
                 new Knight(true, new Vector2(6, 0)),
                 new Bishop(true, new Vector2(2, 0)),
@@ -39,8 +39,8 @@ namespace ChesApi.Infrastructure.Factory
                 new Pown(true, new Vector2(5, 1)),
                 new Pown(true, new Vector2(6, 1)),
                 new Pown(true, new Vector2(7, 1)),
-                new Rook(false, new Vector2(0, 7)),
-                new Rook(false, new Vector2(7, 7)),
+                new Rook(false, new Vector2(0, 7), true),
+                new Rook(false, new Vector2(7, 7), true),
                 new Knight(false, new Vector2(1, 7)),
                 new Knight(false, new Vector2(6, 7)),
                 new Bishop(false, new Vector2(2, 7)),

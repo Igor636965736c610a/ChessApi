@@ -12,7 +12,7 @@ namespace Chess.Core.Domain
         public Guid Id { get; private set; } = Guid.NewGuid();
         public Guid GameId { get; internal set; }
         public string Name { get; private set; }
-        public string ConntectionId { get; private set; }
+        public string ConnectionId { get; private set; }
         public bool HasMove { get; set; }
         public bool WhiteColor { get; set; }
 
@@ -20,7 +20,7 @@ namespace Chess.Core.Domain
         {
             UserId = userId;
             Name = name;
-            ConntectionId = conntectionId;
+            ConnectionId = conntectionId;
             HasMove = hasMove;
             WhiteColor = whiteColor;
         }

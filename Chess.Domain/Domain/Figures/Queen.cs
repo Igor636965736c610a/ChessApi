@@ -17,18 +17,8 @@ namespace Chess.Core.Domain.Figures
             Value = 8;
             FigureChar = 'q';
         }
-        //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
-        //{
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir1, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir2, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir3, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir4, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir5, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir6, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir7, newAttackedFields);
-        //    UtilsMethods.AttackFields(fieldsStatus, Vector2, Dir8, newAttackedFields);
-        //}
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
+
+        public override bool CheckLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             if (!CheckDirectionValid(newVector2))
                 return false;
@@ -41,17 +31,12 @@ namespace Chess.Core.Domain.Figures
         private bool CheckDirectionValid(Vector2 newVector2)
             => (Vector2.X != newVector2.X && Vector2.Y == newVector2.Y) || (Vector2.Y != newVector2.Y && Vector2.X == newVector2.X) || (Math.Abs(Vector2.X - newVector2.X) == Math.Abs(Vector2.Y - newVector2.Y));
 
-        public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
+        public override IEnumerable<Vector2> ShowLegalMovement(Board board, IEnumerable<Figure> attackingFigures)
         {
             throw new NotImplementedException();
         }
 
-        public override Vector2[] GetDirs()
-        {
-            throw new NotImplementedException();
-        }
-
-        private readonly Vector2[] Dirs =
+        public override IEnumerable<Vector2> Dirs { get; } = new List<Vector2>()
         {
             new Vector2(1, 0),
             new Vector2(-1, 0),

@@ -12,18 +12,14 @@ namespace Chess.Core.Domain.Figures
     public class Pown : Figure
     {
         public bool FirstMove { get; private set; } = true;
+
         public Pown(bool color, Vector2 vector2) : base(color, vector2)
         {
             FigureType = FigureType.Pown;
             Value = 1;
             FigureChar = 'p';
         }
-
-        //public override void SetAttackFields(FieldsStatus[,] fieldsStatus, bool[,] newAttackedFields)
-        //{
-        //    throw new NotImplementedException();
-        //}
-        public override bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
+        public override bool CheckLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king)
         {
             Vector2 movement;
             Vector2 direction;
@@ -40,9 +36,7 @@ namespace Chess.Core.Domain.Figures
             
             if(Math.Abs(movement.Y) == 2 && !UtilsMethods.LegalMovement(fieldsStatus, Vector2, newVector2, direction, WhiteColor))
                 return false;
-            if (direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y] is not null)
-                return false;
-            return true;
+            return !(direction.X == 0 && fieldsStatus[newVector2.X, newVector2.Y] is not null);
         }
         public override void SetNewPosition(Vector2 newVector2, Board board)
         {
@@ -77,12 +71,12 @@ namespace Chess.Core.Domain.Figures
             return WhiteColor ? dir.Y > 0 : dir.Y < 0;
         }
 
-        public override bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures)
+        public override IEnumerable<Vector2> Dirs { get; } = new List<Vector2>()
         {
-            throw new NotImplementedException();
-        }
 
-        public override Vector2[] GetDirs()
+        };
+
+        public override IEnumerable<Vector2> ShowLegalMovement(Board board, IEnumerable<Figure> attackingFigures)
         {
             throw new NotImplementedException();
         }

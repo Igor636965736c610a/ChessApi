@@ -68,11 +68,11 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddSignalR().AddJsonProtocol(option => option.PayloadSerializerOptions.PropertyNamingPolicy = null);
 builder.Services.AddSingleton(AutoMapperConfig.Initialize());
-builder.Services.AddScoped<IStrategy, BischopPromotion>();
+builder.Services.AddScoped<IStrategy, BishopPromotion>();
 builder.Services.AddScoped<IStrategy, KnightPromotion>();
 builder.Services.AddScoped<IStrategy, RookPromotion>();
 builder.Services.AddScoped<IStrategy, QueenPromotion>();
-builder.Services.AddScoped<IStrategy, StandartMove>();
+builder.Services.AddScoped<IStrategy, StandardMove>();
 builder.Services.AddScoped<IStrategyFactory<IStrategy>, StrategyFactory<IStrategy>>();
 builder.Services.AddScoped<IFigureRepository, FigureRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();

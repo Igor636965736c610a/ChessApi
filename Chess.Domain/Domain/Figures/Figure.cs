@@ -23,18 +23,15 @@ namespace Chess.Core.Domain.Figures
             Vector2 = vector2;
         }
 
-        public abstract bool ChcekLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king);
+        public abstract bool CheckLegalMovement(Board board, Figure?[,] fieldsStatus, Vector2 newVector2, IEnumerable<Figure> enemyFigures, Figure? king);
 
-        public abstract bool[,] ShowLegalMovement(Board board, List<Figure> attackingFigures);
-
-        //public abstract void SetAttackFields(Figure[,] fieldsStatus, bool[,] newAttackedFields);
+        public abstract IEnumerable<Vector2> ShowLegalMovement(Board board, IEnumerable<Figure> attackingFigures);
 
         public virtual void SetNewPosition(Vector2 newVector2, Board board)
         {
             UtilsMethods.SetNewPosition(newVector2, board, this);
         }
 
-        public abstract Vector2[] GetDirs();   
-
+        public abstract IEnumerable<Vector2> Dirs { get; }
     }   
 }

@@ -9,6 +9,7 @@ let newVector = {
     newX: null,
     newY: null
 };
+let moveResponse = document.getElementById("move-response");
 
 let selectedPiece = null;
 function PieceClick(x, y) {
@@ -163,19 +164,23 @@ function connect() {
         .build();
 
     connection.on("onConnected", (message, playerList) => {
+        moveResponse.value = message;
         console.log(message);
         console.log(playerList);
     });
 
     connection.on("AddRoom", (player) => {
-        console.log("connectionId =  ", player.ConntectionId);
+        moveResponse.value = "connectionId =  " + player.ConnectionId;
+        console.log("connectionId =  ", player.ConnectionId);
     })
 
     connection.on("StartGame", (message) => {
+        moveResponse.value = message;
         console.log(message);
     })
 
     connection.on("ErrorMove", (message) => {
+        moveResponse.value = message;
         console.log('error move', message);
         document.querySelectorAll('.field-selected').forEach(element => {
             element.classList.remove('.field-selected');
@@ -194,6 +199,7 @@ function connect() {
             [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
         ];
         console.log(message);
+        moveResponse.value = message;
         boardStatus.Figures.map(x => {
             let localChar = x.FigureChar;
             if (x.WhiteColor)

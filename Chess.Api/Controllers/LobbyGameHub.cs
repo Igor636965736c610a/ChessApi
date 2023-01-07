@@ -39,8 +39,8 @@ namespace Chess.Api.Controllers
                 else
                     await Clients.Group(leavingPlayer.GameId.ToString()).SendAsync("disconected", "Black Player Win");
                 var game = _hubLobby.GetGame(leavingPlayer.GameId.ToString());
-                await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
-                await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
+                await _hubLobby.RemovePlayer(game.Player1.ConnectionId);
+                await _hubLobby.RemovePlayer(game.Player2.ConnectionId);
                 await _hubLobby.RemoveGame(leavingPlayer.GameId.ToString());
             }
         }
@@ -51,7 +51,8 @@ namespace Chess.Api.Controllers
             var player = Factory.GetPlayer(userId, name, Context.ConnectionId, true, true);
             await _hubLobby.AddWaitingPlayer(player);
             await _hubLobby.AddPlayer(Context.ConnectionId, player);
-            await Clients.All.SendAsync("AddRoom", player);
+            var playerDto = _mappedHubLobby.GetPlayerDTO(Context.ConnectionId);
+            await Clients.All.SendAsync("AddRoom", playerDto);
         }
 
         public async Task JoinRoom(string roomId)
@@ -69,8 +70,8 @@ namespace Chess.Api.Controllers
             await _hubLobby.RemoveWaitingPlayer(player1);
             await _hubLobby.AddGame(game.Id.ToString(), game);
             await _hubLobby.AddPlayer(Context.ConnectionId, player2);
-            await Groups.AddToGroupAsync(game.Player1.ConntectionId, groupName: game.Id.ToString());
-            await Groups.AddToGroupAsync(game.Player2.ConntectionId, groupName: game.Id.ToString());
+            await Groups.AddToGroupAsync(game.Player1.ConnectionId, groupName: game.Id.ToString());
+            await Groups.AddToGroupAsync(game.Player2.ConnectionId, groupName: game.Id.ToString());
             await Clients.Group(game.Id.ToString()).SendAsync("StartGame", "Start");
         }
 
@@ -95,8 +96,8 @@ namespace Chess.Api.Controllers
                     await Clients.Group(game.Id.ToString()).SendAsync("MoveResponse", moveResponse.ToString(), boardDTO);
                     if(moveResponse == GameStatus.WhiteCheckMate || moveResponse == GameStatus.BlackCheckMate || moveResponse == GameStatus.Pat)
                     {
-                        await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
-                        await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
+                        await _hubLobby.RemovePlayer(game.Player1.ConnectionId);
+                        await _hubLobby.RemovePlayer(game.Player2.ConnectionId);
                         await _hubLobby.RemoveGame(player.GameId.ToString());
                     }
                     await Task.CompletedTask;
@@ -130,8 +131,8 @@ namespace Chess.Api.Controllers
                 await Clients.Group(game.Id.ToString()).SendAsync("WinAfterSurrender", $"{game.Player2.Name} Win!");
             else
                 await Clients.Group(game.Id.ToString()).SendAsync("WinAfterSurrender", $"{game.Player1.Name} Win!");
-            await _hubLobby.RemovePlayer(game.Player1.ConntectionId);
-            await _hubLobby.RemovePlayer(game.Player2.ConntectionId);
+            await _hubLobby.RemovePlayer(game.Player1.ConnectionId);
+            await _hubLobby.RemovePlayer(game.Player2.ConnectionId);
             await _hubLobby.RemoveGame(player.GameId.ToString());
         }
     }

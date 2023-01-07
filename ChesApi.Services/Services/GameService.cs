@@ -49,32 +49,28 @@ namespace ChesApi.Infrastructure.Services
                 throw new InvalidOperationException();
 
             var enemyKing = _figureRepository.GetKing(board, !figure.WhiteColor);
-            var playerKing = _figureRepository.GetKing(board, figure.WhiteColor);
 
             var attackingFigures = board.Figures
                 .Where(x => x.WhiteColor == figure.WhiteColor && x.FigureType != FigureType.King
-                 && x.ChcekLegalMovement(board, board.FieldsStatus, enemyKing.Vector2, board.Figures.Where(x => x.WhiteColor != figure.WhiteColor)
-                .ToList(), null))
+                 && x.CheckLegalMovement(board, board.FieldsStatus, enemyKing.Vector2, board.Figures.Where(z => z.WhiteColor != figure.WhiteColor)
+                ,null))
                 .ToList();
 
-            if (attackingFigures.Count > 0)
-            {
-                if (CheckCheckmate(board, enemyKing, attackingFigures))
-                    return liveGame.WhiteColor ? GameStatus.WhiteCheckMate : GameStatus.BlackCheckMate;
-                else
-                    return liveGame.WhiteColor ? GameStatus.WhiteCheck : GameStatus.BlackCheck;
-            }
+            if (attackingFigures.Count <= 0)
+                return GameStatus.IsGaming;
+            if (CheckCheckmate(board, enemyKing, attackingFigures))
+                return liveGame.WhiteColor ? GameStatus.WhiteCheckMate : GameStatus.BlackCheckMate;
+            return liveGame.WhiteColor ? GameStatus.WhiteCheck : GameStatus.BlackCheck;
 
-            return GameStatus.IsGaming;
         }
 
-        private bool CheckCheckmate(Board board, Figure checkKing, List<Figure> attackingFigures)
+        private static bool CheckCheckmate(Board board, Figure checkKing, IEnumerable<Figure> attackingFigures)
         {
-            var dirs = checkKing.GetDirs();
-            var enemyFigures = board.Figures.Where(x => x.WhiteColor != checkKing.WhiteColor).ToList();
+            var dirs = checkKing.Dirs;
+            var enemyFigures = board.Figures.Where(x => x.WhiteColor != checkKing.WhiteColor);
             if (dirs.Any(x => !UtilsMethods.ValidateVetor2(new Vector2(checkKing.Vector2.X + x.X, checkKing.Vector2.Y + x.Y),
                 board)
-                && checkKing.ChcekLegalMovement(board, board.FieldsStatus,
+                && checkKing.CheckLegalMovement(board, board.FieldsStatus,
                 new Vector2(checkKing.Vector2.X + x.X, checkKing.Vector2.Y + x.Y), enemyFigures, null)))
                 return false;
 
@@ -87,9 +83,8 @@ namespace ChesApi.Infrastructure.Services
                     .Any(x => x.FigureType == FigureType.Bishop))
                     return true;
 
-                List<Vector2> attackDirections = attackingFigures
-                    .Select(x => new Vector2(Math.Sign(checkKing.Vector2.X - x.Vector2.X), Math.Sign(checkKing.Vector2.Y - x.Vector2.Y)))
-                    .ToList();
+                var attackDirections = attackingFigures
+                    .Select(x => new Vector2(Math.Sign(checkKing.Vector2.X - x.Vector2.X), Math.Sign(checkKing.Vector2.Y - x.Vector2.Y)));
 
                 if (!attackDirections.All(x => x.X == attackDirections.First().X && x.Y == attackDirections.First().Y))
                     return true;
@@ -107,10 +102,10 @@ namespace ChesApi.Infrastructure.Services
                 current.X += step.X;
                 current.Y += step.Y;
 
-                if (!UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, enemyFigures, board, checkKing))
-                    return true; 
+                if (UtilsMethods.CheckCover(current, defendingFiguresToCheckCover, enemyFigures, board, checkKing))
+                    return false; 
             }
-            return false;
+            return true;
         }
     }
 }

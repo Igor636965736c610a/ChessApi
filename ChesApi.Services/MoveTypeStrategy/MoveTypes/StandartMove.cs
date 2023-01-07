@@ -13,22 +13,14 @@ using System.Threading.Tasks;
 
 namespace ChesApi.Infrastructure.MoveTypeStrategy.MoveTypes
 {
-    public class StandartMove : IStrategy
+    public class StandardMove : IStrategy
     {
         public bool Move(Vector2 newVector2, Figure figure, Board board)
         {
             if(figure.FigureType == FigureType.Pown && (newVector2.Y == 7 || newVector2.Y == 0)) 
                 return false;
 
-            List<Figure> enemyFigures = board.Figures
-                .Where(x => x.WhiteColor == !figure.WhiteColor && !UtilsMethods.CompareVector2(x.Vector2, newVector2)
-                && x.FigureType != FigureType.King)
-                .ToList();
-            var king = board.Figures.First(x => x.FigureType == FigureType.King && x.WhiteColor == figure.WhiteColor);
-            if (!figure.ChcekLegalMovement(board, board.FieldsStatus, newVector2, enemyFigures, king))
-                return false;
-            figure.SetNewPosition(newVector2, board);
-            return true;
+            return UtilsMove.BaseMove(newVector2, figure, board);
         }
     }
 }
